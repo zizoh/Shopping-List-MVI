@@ -1,2 +1,5 @@
 rootProject.name = "Shopping List"
-include ':app'
+include(
+    ":app"
+)
+
