@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cont_desc_empty_state_icon">Empty state icon</string>
+    <string name="retry">Retry</string>
+    <string name="no_data">No shopping list added yet.</string>
+    <string name="an_error_occurred">An error occured.</string>
+</resources>

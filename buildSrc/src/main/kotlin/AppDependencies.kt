@@ -151,4 +151,5 @@ object ProjectLib {
     const val data: String = ":libraries:data"
     const val cache: String = ":libraries:cache"
     const val testUtils: String = ":libraries:testUtils"
+    const val shoppingList:String = ":shopping_list"
 }
