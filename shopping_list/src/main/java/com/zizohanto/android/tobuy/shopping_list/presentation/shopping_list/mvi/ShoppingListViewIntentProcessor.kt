@@ -27,6 +27,7 @@ class ShoppingListViewIntentProcessor @Inject constructor(
                 }
             }.catch { error ->
                 error.printStackTrace()
+                emit(ShoppingListViewResult.Error(error))
             }
     }
 }

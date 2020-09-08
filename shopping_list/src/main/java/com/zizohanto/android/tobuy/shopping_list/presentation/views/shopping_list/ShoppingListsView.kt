@@ -4,13 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.core.ext.getImage
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
-import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcherImpl
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
@@ -19,10 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
-import javax.inject.Provider
 
 @AndroidEntryPoint
 class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet) :
