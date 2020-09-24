@@ -2,8 +2,6 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.Product.Companion.createNewProduct
-import com.zizohanto.android.tobuy.domain.models.ShoppingList
-import com.zizohanto.android.tobuy.domain.models.ShoppingList.Companion.createNewShoppingList
 import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.usecase.GetShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.usecase.SaveProduct
@@ -30,8 +28,8 @@ class ProductViewIntentProcessor @Inject constructor(
         return when (viewIntent) {
             ProductsViewIntent.Idle -> flowOf(ProductsViewResult.Idle)
             is ShoppingListViewIntent.LoadShoppingListWithProducts -> {
-                if (isNewShoppingList(viewIntent)) loadNewShoppingList()
-                else loadShoppingListWithProducts(viewIntent.shoppingListId!!)
+                if (viewIntent.isNewShoppingList) loadNewShoppingList(viewIntent.shoppingListId)
+                else loadShoppingListWithProducts(viewIntent.shoppingListId)
             }
             is ShoppingListViewIntent.SaveShoppingList -> flow {
                 saveShoppingList(shoppingListMapper.mapToDomain(viewIntent.shoppingList))
@@ -48,15 +46,11 @@ class ProductViewIntentProcessor @Inject constructor(
         }
     }
 
-    private fun isNewShoppingList(viewIntent: ShoppingListViewIntent.LoadShoppingListWithProducts) =
-        viewIntent.shoppingListId == null
-
-    private fun loadNewShoppingList(): Flow<ProductsViewResult> {
-        val list: ShoppingList = createNewShoppingList()
+    private fun loadNewShoppingList(shoppingListId: String): Flow<ProductsViewResult> {
         return flow {
-            val product: Product = createNewProduct(list.id)
+            val product: Product = createNewProduct(shoppingListId)
             emit(ProductViewResult.FirstProduct(product))
-            emit(ShoppingListViewResult.NewShoppingList(list))
+            emit(ShoppingListViewResult.NewShoppingList)
         }
     }
 

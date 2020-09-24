@@ -7,7 +7,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingLis
 sealed class ProductsViewState : ViewState {
     object Idle : ProductsViewState()
     sealed class ShoppingListState : ProductsViewState() {
-        data class NewShoppingList(val listModel: ShoppingListModel) : ShoppingListState()
+        object NewShoppingList : ShoppingListState()
         data class Success(val listModel: ShoppingListModel) : ShoppingListState()
     }
 

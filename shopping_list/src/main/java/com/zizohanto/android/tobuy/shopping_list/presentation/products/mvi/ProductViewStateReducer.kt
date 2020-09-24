@@ -21,9 +21,8 @@ class ProductViewStateReducer @Inject constructor(
     ): ProductsViewState {
         return when (result) {
             Idle -> ProductsViewState.Idle
-            is ShoppingListViewResult.NewShoppingList -> {
-                val listModel: ShoppingListModel = listMapper.mapToModel(result.shoppingList)
-                ShoppingListState.NewShoppingList(listModel)
+            ShoppingListViewResult.NewShoppingList -> {
+                ShoppingListState.NewShoppingList
             }
             is ShoppingListViewResult.Success -> {
                 val listModel: ShoppingListModel = listMapper.mapToModel(result.shoppingList)

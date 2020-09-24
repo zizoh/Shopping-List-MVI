@@ -8,7 +8,7 @@ sealed class ProductsViewResult : ViewResult {
     object Idle : ProductsViewResult()
 
     sealed class ShoppingListViewResult : ProductsViewResult() {
-        data class NewShoppingList(val shoppingList: ShoppingList) : ShoppingListViewResult()
+        object NewShoppingList : ShoppingListViewResult()
         data class Success(val shoppingList: ShoppingList) : ShoppingListViewResult()
     }
 

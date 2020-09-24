@@ -7,7 +7,11 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingLis
 sealed class ProductsViewIntent : ViewIntent {
     object Idle : ProductsViewIntent()
     sealed class ShoppingListViewIntent : ProductsViewIntent() {
-        data class LoadShoppingListWithProducts(val shoppingListId: String?) : ProductsViewIntent()
+        data class LoadShoppingListWithProducts(
+            val shoppingListId: String,
+            val isNewShoppingList: Boolean
+        ) : ProductsViewIntent()
+
         data class SaveShoppingList(val shoppingList: ShoppingListModel) : ShoppingListViewIntent()
     }
 

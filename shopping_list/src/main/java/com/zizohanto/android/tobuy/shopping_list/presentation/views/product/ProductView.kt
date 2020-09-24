@@ -40,10 +40,7 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
         when (state) {
             ProductsViewState.Idle -> {
             }
-            is ShoppingListState.NewShoppingList -> {
-                with(binding) {
-                    shoppingListTitle.text = state.listModel.name
-                }
+            ShoppingListState.NewShoppingList -> {
             }
             is ShoppingListState.Success -> {
                 with(binding) {

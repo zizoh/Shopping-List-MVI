@@ -24,9 +24,11 @@
 
         <argument
             android:name="shoppingListId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
+            app:argType="string" />
+
+        <argument
+            android:name="isNewShoppingList"
+            app:argType="boolean" />
 
     </fragment>
 

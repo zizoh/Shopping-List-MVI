@@ -10,6 +10,7 @@ import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcherImpl
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel.Companion.createNewShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
@@ -40,10 +41,13 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         binding = LayoutShoppingListBinding.inflate(inflater, this, true)
         with(binding) {
             shoppingLists.adapter = shoppingListAdapter.apply {
-                clickListener = navigator::openShoppingListDetail
+                clickListener = { navigator.openShoppingListDetail(it, isNewShoppingList = false) }
             }
             addShoppingList.setOnClickListener {
-                navigator.openShoppingListDetail(null)
+                navigator.openShoppingListDetail(
+                    createNewShoppingList().id,
+                    isNewShoppingList = true
+                )
             }
         }
     }
