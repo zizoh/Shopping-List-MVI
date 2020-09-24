@@ -11,6 +11,23 @@
         android:label="ShoppingListFragment"
         tools:layout="@layout/fragment_shopping_list">
 
+        <action
+            android:id="@+id/action_shoppingListFragment_to_productFragment"
+            app:destination="@id/productFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.zizohanto.android.tobuy.shopping_list.ui.products.ProductFragment"
+        android:label="ProductFragment"
+        tools:layout="@layout/fragment_products">
+
+        <argument
+            android:name="shoppingListId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+
     </fragment>
 
 </navigation>

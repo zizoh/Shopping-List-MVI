@@ -10,7 +10,8 @@ abstract class StateMachine<I : ViewIntent, S : ViewState, out R : ViewResult>(
     initialState: S
 ) {
 
-    private val viewStateFlow: MutableStateFlow<S> = MutableStateFlow(initialState)
+    private val viewStateFlow: ConflatedBroadcastChannel<S> =
+        ConflatedBroadcastChannel(initialState)
 
     private val intentsChannel: ConflatedBroadcastChannel<I> =
         ConflatedBroadcastChannel(initialIntent)
@@ -19,15 +20,16 @@ abstract class StateMachine<I : ViewIntent, S : ViewState, out R : ViewResult>(
         intentsChannel.offer(viewIntents)
     }
 
-    val viewState: StateFlow<S>
-        get() = viewStateFlow
+    val viewState: Flow<S>
+        get() = viewStateFlow.asFlow()
 
     val processor: Flow<S> = intentsChannel.asFlow()
         .flatMapMerge { action ->
             intentProcessor.intentToResult(action)
         }.scan(initialState) { previous, result ->
             reducer.reduce(previous, result)
-        }.onEach { recipeViewState ->
-            viewStateFlow.value = recipeViewState
+        }.distinctUntilChanged()
+        .onEach { state ->
+            viewStateFlow.offer(state)
         }
 }

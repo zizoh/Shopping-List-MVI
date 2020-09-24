@@ -2,29 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zizohanto.android.tobuy.shopping_list.presentation.views.product.ProductView">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/shopping_list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/black"
-        android:textSize="@dimen/shopping_list_title_text_size"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Shopping List" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_products"
-        android:layout_width="wrap_content"
+        android:id="@+id/products"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/shopping_list_title"
         tools:itemCount="5"
-        tools:listitem="@layout/item_product" />
+        tools:listitem="@layout/item_product_editable" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

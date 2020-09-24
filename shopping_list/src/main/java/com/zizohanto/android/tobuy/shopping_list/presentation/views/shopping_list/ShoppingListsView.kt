@@ -38,8 +38,13 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         binding = LayoutShoppingListBinding.inflate(inflater, this, true)
-        binding.shoppingLists.adapter = shoppingListAdapter.apply {
-            clickListener = navigator::openShoppingListDetail
+        with(binding) {
+            shoppingLists.adapter = shoppingListAdapter.apply {
+                clickListener = navigator::openShoppingListDetail
+            }
+            addShoppingList.setOnClickListener {
+                navigator.openShoppingListDetail(null)
+            }
         }
     }
 
