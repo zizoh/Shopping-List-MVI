@@ -4,4 +4,5 @@ import com.zizohanto.android.tobuy.presentation.mvi.ViewIntent
 
 sealed class ShoppingListViewIntent : ViewIntent {
     object LoadShoppingLists : ShoppingListViewIntent()
+    object CreateNewShoppingList : ShoppingListViewIntent()
 }

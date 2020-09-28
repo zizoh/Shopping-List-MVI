@@ -1,68 +1,69 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
 import com.zizohanto.android.tobuy.domain.models.Product
-import com.zizohanto.android.tobuy.domain.models.Product.Companion.createNewProduct
+import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.usecase.GetShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.usecase.SaveProduct
 import com.zizohanto.android.tobuy.domain.usecase.SaveShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
+import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductIntentProcessor
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ShoppingListViewIntent
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent.*
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult.ProductViewResult
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult.ShoppingListViewResult
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class ProductViewIntentProcessor @Inject constructor(
     private val getShoppingListWithProducts: GetShoppingListWithProducts,
+    private val mapper: ShoppingListWithProductsModelMapper,
     private val saveProduct: SaveProduct,
-    private val saveShoppingList: SaveShoppingList,
     private val productMapper: ProductModelMapper,
-    private val shoppingListMapper: ShoppingListModelMapper
+    private val saveShoppingList: SaveShoppingList,
+    private val listMapper: ShoppingListModelMapper
 ) : ProductIntentProcessor {
 
     override fun intentToResult(viewIntent: ProductsViewIntent): Flow<ProductsViewResult> {
         return when (viewIntent) {
             ProductsViewIntent.Idle -> flowOf(ProductsViewResult.Idle)
-            is ShoppingListViewIntent.LoadShoppingListWithProducts -> {
-                if (viewIntent.isNewShoppingList) loadNewShoppingList(viewIntent.shoppingListId)
-                else loadShoppingListWithProducts(viewIntent.shoppingListId)
-            }
-            is ShoppingListViewIntent.SaveShoppingList -> flow {
-                saveShoppingList(shoppingListMapper.mapToDomain(viewIntent.shoppingList))
-            }
-            is ProductViewIntent.EditProduct -> flow {
-                ProductViewResult.EditProduct(productMapper.mapToDomain(viewIntent.product))
+            is LoadShoppingListWithProducts -> {
+                loadShoppingListWithProducts(viewIntent)
             }
             is ProductViewIntent.SaveProduct -> flow {
                 saveProduct(productMapper.mapToDomain(viewIntent.product))
+
+                val shoppingListWithProducts: ShoppingListWithProducts =
+                    mapper.mapToDomain(viewIntent.listWithProducts)
+                val product: Product = productMapper.mapToDomain(viewIntent.product)
+                emit(ProductViewResult.ProductSaved(shoppingListWithProducts, product))
             }
-            is ProductViewIntent.DeleteProduct -> flow {
-                ProductViewResult.DeleteProduct(viewIntent.productId)
+            is DeleteProduct -> flow {
+                val listWithProducts: ShoppingListWithProducts =
+                    mapper.mapToDomain(viewIntent.shoppingListWithProductsModel)
+                emit(ProductViewResult.ProductDeleted(listWithProducts))
             }
+            is ProductViewIntent.SaveShoppingList -> flow {
+                val shoppingList: ShoppingList =
+                    listMapper.mapToDomain(viewIntent.shoppingList)
+                saveShoppingList(shoppingList)
+
+                emit(ProductViewResult.ShoppingListSaved(shoppingList))
+            }
+            is DeleteShoppingList -> flowOf(ProductViewResult.ShoppingListDeleted)
         }
     }
 
-    private fun loadNewShoppingList(shoppingListId: String): Flow<ProductsViewResult> {
-        return flow {
-            val product: Product = createNewProduct(shoppingListId)
-            emit(ProductViewResult.FirstProduct(product))
-            emit(ShoppingListViewResult.NewShoppingList)
-        }
-    }
-
-    private fun loadShoppingListWithProducts(shoppingListId: String): Flow<ProductsViewResult> {
-        return getShoppingListWithProducts(shoppingListId)
-            .flatMapLatest { listWithProducts: ShoppingListWithProducts ->
-                merge(
-                    flowOf(ShoppingListViewResult.Success(listWithProducts.shoppingList)),
-                    flowOf(ProductViewResult.Success(listWithProducts.products))
-                )
+    private fun loadShoppingListWithProducts(
+        viewIntent: LoadShoppingListWithProducts
+    ): Flow<ProductsViewResult> {
+        return getShoppingListWithProducts(viewIntent.shoppingListId)
+            .map { shoppingListWithProducts ->
+                ProductViewResult.Success(shoppingListWithProducts)
             }.catch { error ->
                 error.printStackTrace()
             }
     }
+
 }

@@ -6,21 +6,23 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutProductsBinding
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ShoppingListState
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter
+import com.zizohanto.android.tobuy.shopping_list.ui.products.checkDistinct
+import com.zizohanto.android.tobuy.shopping_list.ui.products.textChanges
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProductView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet) :
     LinearLayout(context, attributeSet),
-    MVIView<ProductViewIntent, ProductsViewState> {
+    MVIView<ProductsViewIntent, ProductsViewState> {
 
     @Inject
     lateinit var productAdapter: ProductAdapter
@@ -40,29 +42,31 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
         when (state) {
             ProductsViewState.Idle -> {
             }
-            ShoppingListState.NewShoppingList -> {
-            }
-            is ShoppingListState.Success -> {
-                with(binding) {
-                    shoppingListTitle.text = state.listModel.name
-                }
-            }
-            is ProductViewState.FirstProduct -> {
-                val newProduct: List<ProductModel> = listOf(state.product)
-                productAdapter.submitList(newProduct)
-            }
             is ProductViewState.Success -> {
-                productAdapter.submitList(state.products)
+                with(binding) {
+                    shoppingListTitle.append(state.listWithProducts.shoppingList.name)
+                }
+                productAdapter.submitList(state.listWithProducts.products)
             }
-            is ProductViewState.EditProduct -> {
-                TODO()
+            is ProductViewState.SaveProduct -> {
+                productAdapter.submitList(state.listWithProducts.products)
             }
             is ProductViewState.DeleteProduct -> {
-                TODO()
+                productAdapter.submitList(state.listWithProducts.products)
             }
+            ProductViewState.SaveShoppingList -> {
+            }
+            ProductViewState.DeleteShoppingList -> TODO()
+            is ProductsViewState.Error -> TODO()
         }
     }
 
-    override val intents: Flow<ProductViewIntent>
+    fun saveShoppingList(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
+        return binding.shoppingListTitle.textChanges.checkDistinct.map {
+            ProductsViewIntent.ProductViewIntent.SaveShoppingList(shoppingList.copy(name = it))
+        }
+    }
+
+    override val intents: Flow<ProductsViewIntent>
         get() = emptyFlow()
 }

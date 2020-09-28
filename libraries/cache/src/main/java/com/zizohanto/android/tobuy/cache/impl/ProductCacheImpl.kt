@@ -18,8 +18,13 @@ class ProductCacheImpl @Inject constructor(
     }
 
     override suspend fun getProduct(id: String): ProductEntity {
-        val productEntity: ProductCacheModel = dao.getProductWithId(id)
-        return mapper.mapToEntity(productEntity)
+        val cacheModel: ProductCacheModel = dao.getProductWithId(id)
+        return mapper.mapToEntity(cacheModel)
+    }
+
+    override suspend fun getProducts(id: String): List<ProductEntity> {
+        val cacheModels: List<ProductCacheModel> = dao.getProducts(id)
+        return mapper.mapToEntityList(cacheModels)
     }
 
     override suspend fun deleteProduct(id: String) {

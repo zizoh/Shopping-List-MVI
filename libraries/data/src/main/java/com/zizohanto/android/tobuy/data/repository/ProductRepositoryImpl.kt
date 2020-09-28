@@ -7,6 +7,8 @@ import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import java.util.*
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
@@ -19,10 +21,24 @@ class ProductRepositoryImpl @Inject constructor(
         productCache.saveProduct(productEntity)
     }
 
-    override suspend fun getProduct(id: String): Flow<Product> {
+    override fun createProduct(shoppingListId: String): Flow<Product> {
+        return flowOf(createNewProduct(shoppingListId))
+    }
+
+    override fun getProduct(id: String): Flow<Product> {
         return flow {
             val productEntity: ProductEntity = productCache.getProduct(id)
             emit(mapper.mapFromEntity(productEntity))
+        }
+    }
+
+    override fun getProducts(shoppingListId: String): Flow<List<Product>> {
+        return flow {
+            val productEntities: List<ProductEntity> = productCache.getProducts(shoppingListId)
+            if (productEntities.isEmpty()) {
+                val listWithNewProduct: List<Product> = listOf(createNewProduct(shoppingListId))
+                emit(listWithNewProduct)
+            } else emit(mapper.mapFromEntityList(productEntities))
         }
     }
 
@@ -32,5 +48,12 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllProducts() {
         productCache.deleteAllProducts()
+    }
+
+    companion object {
+        fun createNewProduct(shoppingListId: String): Product {
+            val id: String = UUID.randomUUID().toString()
+            return Product(id, shoppingListId, "", 0.0)
+        }
     }
 }

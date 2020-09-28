@@ -6,8 +6,13 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingLis
 sealed class ShoppingListViewState : ViewState {
     object Idle : ShoppingListViewState()
     object Loading : ShoppingListViewState()
-    data class ShoppingListLoaded(val shoppingLists: List<ShoppingListModel>) :
-        ShoppingListViewState()
+    data class NewShoppingListLoaded(
+        val shoppingList: ShoppingListModel
+    ) : ShoppingListViewState()
+
+    data class ShoppingListLoaded(
+        val shoppingLists: List<ShoppingListModel>
+    ) : ShoppingListViewState()
 
     object ShoppingListEmpty : ShoppingListViewState()
     data class Error(val message: String) : ShoppingListViewState()

@@ -2,6 +2,7 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_li
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
@@ -10,14 +11,14 @@ import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcherImpl
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel.Companion.createNewShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,13 +42,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         binding = LayoutShoppingListBinding.inflate(inflater, this, true)
         with(binding) {
             shoppingLists.adapter = shoppingListAdapter.apply {
-                clickListener = { navigator.openShoppingListDetail(it, isNewShoppingList = false) }
-            }
-            addShoppingList.setOnClickListener {
-                navigator.openShoppingListDetail(
-                    createNewShoppingList().id,
-                    isNewShoppingList = true
-                )
+                clickListener = navigator::openShoppingListDetail
             }
         }
     }
@@ -58,6 +53,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         }
 
     override fun render(state: ShoppingListViewState) {
+        Log.e("tagz", "state: $state")
         when (state) {
             ShoppingListViewState.Idle -> {
             }
@@ -98,9 +94,17 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     emptyState.isButtonVisible = true
                 }
             }
+            is ShoppingListViewState.NewShoppingListLoaded -> {
+                navigator.openShoppingListDetail(state.shoppingList)
+            }
         }
     }
 
+    private val createNewShoppingListIntent: Flow<ShoppingListViewIntent>
+        get() = binding.addShoppingList.clicks().map {
+            ShoppingListViewIntent.CreateNewShoppingList
+        }
+
     override val intents: Flow<ShoppingListViewIntent>
-        get() = emptyFlow()
+        get() = merge(createNewShoppingListIntent)
 }

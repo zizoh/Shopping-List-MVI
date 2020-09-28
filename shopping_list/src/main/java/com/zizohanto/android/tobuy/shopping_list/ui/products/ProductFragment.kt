@@ -11,14 +11,16 @@ import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.FragmentProductsBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ShoppingListViewIntent.LoadShoppingListWithProducts
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,12 +40,8 @@ class ProductFragment : Fragment(R.layout.fragment_products),
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            loadShoppingListWithProducts.offer(
-                LoadShoppingListWithProducts(
-                    args.shoppingListId,
-                    args.isNewShoppingList
-                )
-            )
+            val shoppingList: ShoppingListModel = args.shoppingList
+            loadShoppingListWithProducts.offer(LoadShoppingListWithProducts(shoppingList.id))
         }
     }
 
@@ -62,9 +60,12 @@ class ProductFragment : Fragment(R.layout.fragment_products),
         binding.products.render(state)
     }
 
-    override val intents: Flow<ProductsViewIntent>
-        get() = loadShoppingListWithProducts.asFlow()
-
     private val loadShoppingListWithProducts =
         ConflatedBroadcastChannel<LoadShoppingListWithProducts>()
+
+    override val intents: Flow<ProductsViewIntent>
+        get() = merge(
+            loadShoppingListWithProducts.asFlow(),
+            binding.products.saveShoppingList(args.shoppingList)
+        )
 }
