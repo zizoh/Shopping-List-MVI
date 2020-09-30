@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface ShoppingListRepository {
     suspend fun saveShoppingList(shoppingList: ShoppingList)
     fun getShoppingList(id: String): Flow<ShoppingList>
+    fun createShoppingList(): Flow<ShoppingList>
     fun getShoppingListWithProducts(id: String): Flow<ShoppingListWithProducts>
     fun getAllShoppingLists(): Flow<List<ShoppingList>>
     suspend fun deleteShoppingList(id: String)

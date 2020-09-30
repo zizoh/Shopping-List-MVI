@@ -11,7 +11,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingLis
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter.ShoppingListViewHolder
 import javax.inject.Inject
 
-typealias ShoppingListClickListener = (String) -> Unit
+typealias ShoppingListClickListener = (ShoppingListModel) -> Unit
 
 class ShoppingListAdapter @Inject constructor() :
     ListAdapter<ShoppingListModel, ShoppingListViewHolder>(diffUtilCallback) {
@@ -37,7 +37,7 @@ class ShoppingListAdapter @Inject constructor() :
         fun bind(listModel: ShoppingListModel, clickListener: ShoppingListClickListener?) {
             binding.title.text = listModel.name
             binding.root.setOnClickListener {
-                clickListener?.invoke(listModel.id)
+                clickListener?.invoke(listModel)
             }
         }
     }

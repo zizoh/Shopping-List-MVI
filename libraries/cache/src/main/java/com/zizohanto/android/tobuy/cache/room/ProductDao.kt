@@ -15,8 +15,8 @@ interface ProductDao {
     @Query("SELECT * FROM product WHERE id=:productId")
     suspend fun getProductWithId(productId: String): ProductCacheModel
 
-    @Query("SELECT * FROM product")
-    suspend fun getProducts(): List<ProductCacheModel>
+    @Query("SELECT * FROM product WHERE shoppingListId=:shoppingListId")
+    suspend fun getProducts(shoppingListId: String): List<ProductCacheModel>
 
     @Query("DELETE FROM product WHERE id=:productId")
     suspend fun deleteProduct(productId: String)

@@ -23,12 +23,8 @@
         tools:layout="@layout/fragment_products">
 
         <argument
-            android:name="shoppingListId"
-            app:argType="string" />
-
-        <argument
-            android:name="isNewShoppingList"
-            app:argType="boolean" />
+            android:name="shoppingList"
+            app:argType="com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel" />
 
     </fragment>
 

@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.zizohanto.android.tobuy.core.ext.observe
-import com.zizohanto.android.tobuy.core.ext.onBackPress
 import com.zizohanto.android.tobuy.core.view_binding.viewBinding
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
@@ -35,7 +34,6 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
         super.onViewCreated(view, savedInstanceState)
         viewModel.processIntent(intents)
         viewModel.viewState.observe(viewLifecycleOwner, ::render)
-        onBackPress { requireActivity().finish() }
     }
 
     override fun render(state: ShoppingListViewState) {

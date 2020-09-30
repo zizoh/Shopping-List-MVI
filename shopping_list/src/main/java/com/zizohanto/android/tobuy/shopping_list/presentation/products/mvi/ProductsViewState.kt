@@ -1,21 +1,21 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
 import com.zizohanto.android.tobuy.presentation.mvi.ViewState
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 
 sealed class ProductsViewState : ViewState {
     object Idle : ProductsViewState()
-    sealed class ShoppingListState : ProductsViewState() {
-        object NewShoppingList : ShoppingListState()
-        data class Success(val listModel: ShoppingListModel) : ShoppingListState()
-    }
 
     sealed class ProductViewState : ProductsViewState() {
-        data class FirstProduct(val product: ProductModel) : ProductViewState()
-        data class Success(val products: List<ProductModel>) : ProductViewState()
-        data class EditProduct(val product: ProductModel) : ProductViewState()
-        data class DeleteProduct(val productId: String) : ProductViewState()
+        data class Success(val listWithProducts: ShoppingListWithProductsModel) : ProductViewState()
+        object SaveProduct : ProductViewState()
+        data class DeleteProduct(val listWithProducts: ShoppingListWithProductsModel) :
+            ProductViewState()
+
+        object SaveShoppingList : ProductViewState()
+        object DeleteShoppingList : ProductViewState()
     }
+
+    data class Error(val message: String) : ProductsViewState()
 
 }

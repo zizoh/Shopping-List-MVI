@@ -2,7 +2,6 @@ import Dependencies.AndroidX
 import Dependencies.Coroutines
 import Dependencies.DI
 import Dependencies.FlowBinding
-import Dependencies.Others
 import Dependencies.Test
 import Dependencies.View
 import ProjectLib.core
@@ -64,7 +63,6 @@ dependencies {
     implementation(FlowBinding.android)
     implementation(DI.hiltAndroid)
     implementation(DI.hiltViewModel)
-    implementation(Others.jodaTime)
     implementAll(AndroidX.components)
     implementAll(Coroutines.components)
 

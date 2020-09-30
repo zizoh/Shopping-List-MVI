@@ -10,14 +10,13 @@ import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcherImpl
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel.Companion.createNewShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
+import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,13 +40,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         binding = LayoutShoppingListBinding.inflate(inflater, this, true)
         with(binding) {
             shoppingLists.adapter = shoppingListAdapter.apply {
-                clickListener = { navigator.openShoppingListDetail(it, isNewShoppingList = false) }
-            }
-            addShoppingList.setOnClickListener {
-                navigator.openShoppingListDetail(
-                    createNewShoppingList().id,
-                    isNewShoppingList = true
-                )
+                clickListener = navigator::openShoppingListDetail
             }
         }
     }
@@ -98,9 +91,17 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     emptyState.isButtonVisible = true
                 }
             }
+            is ShoppingListViewState.NewShoppingListLoaded -> {
+                state.shoppingList.consume(navigator::openShoppingListDetail)
+            }
         }
     }
 
+    private val createNewShoppingListIntent: Flow<ShoppingListViewIntent>
+        get() = binding.addShoppingList.clicks().map {
+            ShoppingListViewIntent.CreateNewShoppingList
+        }
+
     override val intents: Flow<ShoppingListViewIntent>
-        get() = emptyFlow()
+        get() = createNewShoppingListIntent
 }

@@ -5,11 +5,17 @@ import com.zizohanto.android.tobuy.data.mappers.ShoppingListEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListWithProductsEntityMapper
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
+import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.repository.ShoppingListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
 
 class ShoppingListRepositoryImpl @Inject constructor(
@@ -30,12 +36,32 @@ class ShoppingListRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun createShoppingList(): Flow<ShoppingList> {
+        return flowOf(createNewShoppingList())
+    }
+
     override fun getShoppingListWithProducts(id: String): Flow<ShoppingListWithProducts> {
         return flow {
-            val listWithProductsEntity: ShoppingListWithProductsEntity =
+            val listWithProductsEntity: ShoppingListWithProductsEntity? =
                 shoppingListCache.getShoppingListWithProducts(id)
-            emit(listWithProductsMapper.mapFromEntity(listWithProductsEntity))
+            if (listWithProductsEntity == null) {
+                val shoppingList: ShoppingList = createNewShoppingList().copy(id = id)
+                val shoppingListWithProducts =
+                    ShoppingListWithProducts(shoppingList, addNewProduct(id))
+                emit(shoppingListWithProducts)
+            } else {
+                val listWithProducts: ShoppingListWithProducts =
+                    listWithProductsMapper.mapFromEntity(listWithProductsEntity)
+                if (listWithProducts.products.isEmpty()) {
+                    emit(listWithProducts.copy(products = addNewProduct(id)))
+                } else emit(listWithProducts)
+            }
         }
+    }
+
+    private fun addNewProduct(id: String): List<Product> {
+        val newProduct: Product = createNewProduct(id)
+        return listOf(newProduct)
     }
 
     override fun getAllShoppingLists(): Flow<List<ShoppingList>> {
@@ -52,5 +78,31 @@ class ShoppingListRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllShoppingLists() {
         shoppingListCache.deleteAllShoppingLists()
+    }
+
+    companion object {
+        fun createNewShoppingList(): ShoppingList {
+            val shoppingListId: String = UUID.randomUUID().toString()
+            val formattedDate: String = getCurrentTime()
+            return ShoppingList(
+                shoppingListId,
+                "",
+                0.0,
+                formattedDate,
+                formattedDate
+            )
+
+        }
+
+        private fun getCurrentTime(): String {
+            val fmt: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            val date: LocalDate = LocalDate.now()
+            return date.toString(fmt)
+        }
+
+        fun createNewProduct(shoppingListId: String): Product {
+            val id: String = UUID.randomUUID().toString()
+            return Product(id, shoppingListId, "", 0.0)
+        }
     }
 }

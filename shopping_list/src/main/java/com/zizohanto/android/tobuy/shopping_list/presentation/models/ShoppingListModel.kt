@@ -1,35 +1,13 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.models
 
-import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
-import java.util.*
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ShoppingListModel(
     val id: String,
     val name: String,
     val budget: Double,
     val dateCreated: String,
     val dateModified: String
-) {
-    companion object {
-        fun createNewShoppingList(): ShoppingListModel {
-            val shoppingListId: String = UUID.randomUUID().toString()
-            val formattedDate: String = getCurrentTime()
-            return ShoppingListModel(
-                shoppingListId,
-                "New Shopping List",
-                0.0,
-                formattedDate,
-                formattedDate
-            )
-
-        }
-
-        private fun getCurrentTime(): String {
-            val fmt: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            val date: LocalDate = LocalDate.now()
-            return date.toString(fmt)
-        }
-    }
-}
+) : Parcelable
