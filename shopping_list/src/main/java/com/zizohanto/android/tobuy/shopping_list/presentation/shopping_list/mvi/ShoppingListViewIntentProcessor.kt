@@ -1,5 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi
 
+import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.usecase.CreateShoppingList
 import com.zizohanto.android.tobuy.domain.usecase.GetShoppingLists
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListIntentProcessor
@@ -28,7 +29,7 @@ class ShoppingListViewIntentProcessor @Inject constructor(
                 if (shoppingList.isEmpty()) {
                     ShoppingListViewResult.Empty
                 } else {
-                    ShoppingListViewResult.Success(shoppingList)
+                    ShoppingListViewResult.Success(sortList(shoppingList))
                 }
             }.catch { error ->
                 error.printStackTrace()
@@ -40,6 +41,10 @@ class ShoppingListViewIntentProcessor @Inject constructor(
         return createShoppingList().map { shoppingList ->
             ShoppingListViewResult.NewShoppingListCreated(shoppingList)
         }
+    }
+
+    private fun sortList(shoppingList: List<ShoppingList>): List<ShoppingList> {
+        return shoppingList.toMutableList().sortedByDescending { it.dateModified }
     }
 
 }

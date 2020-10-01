@@ -8,6 +8,6 @@ data class ShoppingListModel(
     val id: String,
     val name: String,
     val budget: Double,
-    val dateCreated: String,
-    val dateModified: String
+    val dateCreated: Long,
+    val dateModified: Long
 ) : Parcelable

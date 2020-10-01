@@ -7,6 +7,7 @@ import com.zizohanto.android.tobuy.data.mappers.ShoppingListWithProductsEntityMa
 import com.zizohanto.android.tobuy.data.models.ProductEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity.Companion.createNewShoppingList
+import com.zizohanto.android.tobuy.data.models.ShoppingListEntity.Companion.getCurrentTime
 import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
@@ -19,28 +20,29 @@ import javax.inject.Inject
 
 class ShoppingListRepositoryImpl @Inject constructor(
     private val shoppingListCache: ShoppingListCache,
-    private val shoppingListMapper: ShoppingListEntityMapper,
+    private val listMapper: ShoppingListEntityMapper,
     private val listWithProductsMapper: ShoppingListWithProductsEntityMapper,
     private val productMapper: ProductEntityMapper
 ) : ShoppingListRepository {
 
     override suspend fun saveShoppingList(shoppingList: ShoppingList) {
-        val shoppingListEntity: ShoppingListEntity = shoppingListMapper.mapToEntity(shoppingList)
-        shoppingListCache.saveShoppingList(shoppingListEntity)
+        val list: ShoppingListEntity =
+            listMapper.mapToEntity(shoppingList).copy(dateModified = getCurrentTime())
+        shoppingListCache.saveShoppingList(list)
     }
 
     override fun getShoppingList(id: String): Flow<ShoppingList> {
         return flow {
             val shoppingListEntity: ShoppingListEntity? = shoppingListCache.getShoppingList(id)
             if (shoppingListEntity != null) {
-                emit(shoppingListMapper.mapFromEntity(shoppingListEntity))
+                emit(listMapper.mapFromEntity(shoppingListEntity))
             }
         }
     }
 
     override fun createShoppingList(): Flow<ShoppingList> {
         val shoppingListEntity: ShoppingListEntity = createNewShoppingList()
-        return flowOf(shoppingListMapper.mapFromEntity(shoppingListEntity))
+        return flowOf(listMapper.mapFromEntity(shoppingListEntity))
     }
 
     override fun getShoppingListWithProducts(id: String): Flow<ShoppingListWithProducts> {
@@ -50,7 +52,7 @@ class ShoppingListRepositoryImpl @Inject constructor(
             if (listWithProductsEntity == null) {
                 val shoppingListEntity: ShoppingListEntity = createNewShoppingList().copy(id = id)
                 val shoppingList: ShoppingList =
-                    shoppingListMapper.mapFromEntity(shoppingListEntity)
+                    listMapper.mapFromEntity(shoppingListEntity)
                 val shoppingListWithProducts =
                     ShoppingListWithProducts(shoppingList, addNewProduct(id))
                 emit(shoppingListWithProducts)
@@ -73,7 +75,7 @@ class ShoppingListRepositoryImpl @Inject constructor(
         return flow {
             val shoppingListsEntities: List<ShoppingListEntity> =
                 shoppingListCache.getAllShoppingLists()
-            emit(shoppingListsEntities.map(shoppingListMapper::mapFromEntity))
+            emit(shoppingListsEntities.map(listMapper::mapFromEntity))
         }
     }
 
