@@ -1,5 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.products.adapter
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,38 +11,38 @@ import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductEditableBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter.ProductViewHolder
-import com.zizohanto.android.tobuy.shopping_list.ui.products.checkDistinct
-import com.zizohanto.android.tobuy.shopping_list.ui.products.textChanges
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
 
-typealias ProductEditListener = (Flow<ProductsViewIntent>) -> Unit
+typealias ProductEditListener = (ProductModel) -> Unit
 
 class ProductAdapter @Inject constructor() :
     ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
 
     var editListener: ProductEditListener? = null
 
-    val edits: Flow<ProductsViewIntent>
+    val edits: Flow<ProductModel>
         get() = callbackFlow {
-            val listener: ProductEditListener = {
-                safeOffer(it)
+            val listener: ProductEditListener = { product ->
+                safeOffer(product)
                 Unit
             }
             editListener = listener
-            awaitClose { editListener = null }
-        }.flattenConcat().conflate()
+            awaitClose {
+                editListener = null
+            }
+        }.conflate()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         return ProductViewHolder(ItemProductEditableBinding.bind(parent.inflate(R.layout.item_product_editable)))
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(getItem(position), editListener)
+        holder.bind(getItem(holder.bindingAdapterPosition), editListener)
     }
 
     class ProductViewHolder(
@@ -49,12 +51,22 @@ class ProductAdapter @Inject constructor() :
 
         fun bind(product: ProductModel, editListener: ProductEditListener?) {
             binding.productName.setText(product.name)
-
-            val saveProduct: Flow<ProductViewIntent.SaveProduct> =
-                binding.productName.textChanges.checkDistinct.map {
-                    ProductViewIntent.SaveProduct(product.copy(name = it))
+            binding.productName.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                 }
-            editListener?.invoke(saveProduct)
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    editListener?.invoke(product.copy(name = s?.trim().toString()))
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                }
+            })
         }
     }
 

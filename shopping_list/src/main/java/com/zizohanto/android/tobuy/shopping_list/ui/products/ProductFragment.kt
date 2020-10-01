@@ -67,6 +67,7 @@ class ProductFragment : Fragment(R.layout.fragment_products),
         get() = merge(
             loadShoppingListWithProducts.asFlow(),
             binding.products.saveShoppingList(args.shoppingList),
+            binding.products.createNewProduct(args.shoppingList),
             binding.products.intents
         )
 }

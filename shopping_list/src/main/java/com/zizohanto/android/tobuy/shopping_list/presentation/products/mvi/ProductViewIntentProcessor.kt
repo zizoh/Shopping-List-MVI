@@ -3,6 +3,7 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
+import com.zizohanto.android.tobuy.domain.usecase.CreateProduct
 import com.zizohanto.android.tobuy.domain.usecase.GetShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.usecase.SaveProduct
 import com.zizohanto.android.tobuy.domain.usecase.SaveShoppingList
@@ -22,14 +23,18 @@ class ProductViewIntentProcessor @Inject constructor(
     private val saveProduct: SaveProduct,
     private val productMapper: ProductModelMapper,
     private val saveShoppingList: SaveShoppingList,
-    private val listMapper: ShoppingListModelMapper
+    private val listMapper: ShoppingListModelMapper,
+    private val createProduct: CreateProduct
 ) : ProductIntentProcessor {
 
     override fun intentToResult(viewIntent: ProductsViewIntent): Flow<ProductsViewResult> {
         return when (viewIntent) {
             ProductsViewIntent.Idle -> flowOf(ProductsViewResult.Idle)
             is LoadShoppingListWithProducts -> {
-                loadShoppingListWithProducts(viewIntent)
+                loadShoppingListWithProducts(viewIntent.shoppingListId)
+            }
+            is AddNewProduct -> {
+                loadShoppingListWithNewProduct(viewIntent.shoppingListId)
             }
             is ProductViewIntent.SaveProduct -> flow {
                 saveProduct(productMapper.mapToDomain(viewIntent.product))
@@ -53,10 +58,28 @@ class ProductViewIntentProcessor @Inject constructor(
         }
     }
 
+    private fun loadShoppingListWithNewProduct(shoppingListId: String): Flow<ProductViewResult.ProductAdded> {
+        val productFlow: Flow<Product> = createProduct(shoppingListId)
+        val listWithProductsFlow: Flow<ShoppingListWithProducts> =
+            getShoppingListWithProducts(shoppingListId)
+        return productFlow.zip(listWithProductsFlow) { product: Product, listWithProducts ->
+            val products: MutableList<Product> = mutableListOf()
+            val elements = listWithProducts.products
+            products.addAll(elements)
+            products.add(product)
+            ProductViewResult.ProductAdded(
+                listWithProducts.copy(
+                    shoppingList = listWithProducts.shoppingList,
+                    products = products
+                )
+            )
+        }
+    }
+
     private fun loadShoppingListWithProducts(
-        viewIntent: LoadShoppingListWithProducts
+        shoppingListId: String
     ): Flow<ProductsViewResult> {
-        return getShoppingListWithProducts(viewIntent.shoppingListId)
+        return getShoppingListWithProducts(shoppingListId)
             .map { shoppingListWithProducts ->
                 ProductViewResult.Success(shoppingListWithProducts)
             }.catch { error ->

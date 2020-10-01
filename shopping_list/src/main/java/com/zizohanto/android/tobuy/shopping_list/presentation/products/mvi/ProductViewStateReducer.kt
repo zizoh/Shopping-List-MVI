@@ -22,6 +22,11 @@ class ProductViewStateReducer @Inject constructor(
                     listWithProductsMapper.mapToModel(result.listWithProducts)
                 ProductViewState.Success(listWithProducts)
             }
+            is ProductViewResult.ProductAdded -> {
+                val listWithProducts: ShoppingListWithProductsModel =
+                    listWithProductsMapper.mapToModel(result.listWithProducts)
+                ProductViewState.ProductAdded(listWithProducts)
+            }
             is ProductViewResult.ProductSaved -> {
                 ProductViewState.SaveProduct
             }

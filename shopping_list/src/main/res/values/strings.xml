@@ -7,4 +7,5 @@
     <string name="cont_desc_add_new_shopping_list">Add New Shopping List</string>
     <string name="title">Title</string>
     <string name="product">Product</string>
+    <string name="add_product">Add product</string>
 </resources>
