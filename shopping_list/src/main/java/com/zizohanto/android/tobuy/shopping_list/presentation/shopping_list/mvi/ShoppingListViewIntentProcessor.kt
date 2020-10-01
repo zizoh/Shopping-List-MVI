@@ -5,6 +5,7 @@ import com.zizohanto.android.tobuy.domain.usecase.GetShoppingLists
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListIntentProcessor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -15,6 +16,7 @@ class ShoppingListViewIntentProcessor @Inject constructor(
 
     override fun intentToResult(viewIntent: ShoppingListViewIntent): Flow<ShoppingListViewResult> {
         return when (viewIntent) {
+            ShoppingListViewIntent.Idle -> flowOf(ShoppingListViewResult.Idle)
             ShoppingListViewIntent.LoadShoppingLists -> loadShoppingLists()
             ShoppingListViewIntent.CreateNewShoppingList -> loadNewShoppingList()
         }

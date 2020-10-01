@@ -11,9 +11,12 @@ import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.FragmentShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
+import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent.LoadShoppingLists
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.merge
 
 @AndroidEntryPoint
@@ -24,8 +27,11 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
 
     private val binding: FragmentShoppingListBinding by viewBinding(FragmentShoppingListBinding::bind)
 
+    private val loadShoppingLists = ConflatedBroadcastChannel<LoadShoppingLists>()
+
     override val intents: Flow<ShoppingListViewIntent>
         get() = merge(
+            loadShoppingLists.asFlow(),
             binding.shoppingList.intents,
             binding.shoppingList.retryIntent()
         )
@@ -34,6 +40,12 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
         super.onViewCreated(view, savedInstanceState)
         viewModel.processIntent(intents)
         viewModel.viewState.observe(viewLifecycleOwner, ::render)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        loadShoppingLists.offer(LoadShoppingLists)
     }
 
     override fun render(state: ShoppingListViewState) {

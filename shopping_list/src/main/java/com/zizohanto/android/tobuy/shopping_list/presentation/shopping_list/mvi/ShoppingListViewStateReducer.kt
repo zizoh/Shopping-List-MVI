@@ -16,6 +16,7 @@ class ShoppingListViewStateReducer @Inject constructor(
         result: ShoppingListViewResult
     ): ShoppingListViewState {
         return when (result) {
+            ShoppingListViewResult.Idle -> ShoppingListViewState.Idle
             ShoppingListViewResult.Loading -> ShoppingListViewState.Loading
             is ShoppingListViewResult.Success -> {
                 val shoppingLists: List<ShoppingListModel> =
