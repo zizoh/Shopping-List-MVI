@@ -63,25 +63,39 @@ class ProductViewIntentProcessor @Inject constructor(
         val listWithProductsFlow: Flow<ShoppingListWithProducts> =
             getShoppingListWithProducts(shoppingListId)
         return productFlow.zip(listWithProductsFlow) { product: Product, listWithProducts ->
-            val products: MutableList<Product> = mutableListOf()
-            val elements = listWithProducts.products
-            products.addAll(elements)
-            products.add(product)
             ProductViewResult.ProductAdded(
                 listWithProducts.copy(
                     shoppingList = listWithProducts.shoppingList,
-                    products = products
+                    products = getSortedListOfProducts(listWithProducts.products, product)
                 )
             )
         }
+    }
+
+    private fun getSortedListOfProducts(
+        existingProducts: List<Product>,
+        product: Product
+    ): List<Product> {
+        val products: MutableList<Product> = mutableListOf()
+        products.addAll(existingProducts)
+        products.add(product)
+        return sortList(products)
+    }
+
+    private fun sortList(products: MutableList<Product>): List<Product> {
+        return products.sortedByDescending { it.dateAdded }
     }
 
     private fun loadShoppingListWithProducts(
         shoppingListId: String
     ): Flow<ProductsViewResult> {
         return getShoppingListWithProducts(shoppingListId)
-            .map { shoppingListWithProducts ->
-                ProductViewResult.Success(shoppingListWithProducts)
+            .map { listWithProducts ->
+                ProductViewResult.Success(
+                    listWithProducts.copy(
+                        products = sortList(listWithProducts.products.toMutableList())
+                    )
+                )
             }.catch { error ->
                 error.printStackTrace()
             }

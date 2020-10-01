@@ -43,7 +43,6 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
         productAdapter.editListener = {}
     }
 
-
     override fun render(state: ProductsViewState) {
         when (state) {
             ProductsViewState.Idle -> {

@@ -3,12 +3,12 @@ package com.zizohanto.android.tobuy.data.repository
 import com.zizohanto.android.tobuy.data.contract.ProductCache
 import com.zizohanto.android.tobuy.data.mappers.ProductEntityMapper
 import com.zizohanto.android.tobuy.data.models.ProductEntity
+import com.zizohanto.android.tobuy.data.models.ProductEntity.Companion.createNewProduct
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import java.util.*
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
@@ -22,7 +22,8 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override fun createProduct(shoppingListId: String): Flow<Product> {
-        return flowOf(createNewProduct(shoppingListId))
+        val productEntity = createNewProduct(shoppingListId)
+        return flowOf(mapper.mapFromEntity(productEntity))
     }
 
     override fun getProduct(id: String): Flow<Product> {
@@ -36,7 +37,8 @@ class ProductRepositoryImpl @Inject constructor(
         return flow {
             val productEntities: List<ProductEntity> = productCache.getProducts(shoppingListId)
             if (productEntities.isEmpty()) {
-                val listWithNewProduct: List<Product> = listOf(createNewProduct(shoppingListId))
+                val productEntity: ProductEntity = createNewProduct(shoppingListId)
+                val listWithNewProduct: List<Product> = listOf(mapper.mapFromEntity(productEntity))
                 emit(listWithNewProduct)
             } else emit(mapper.mapFromEntityList(productEntities))
         }
@@ -50,10 +52,4 @@ class ProductRepositoryImpl @Inject constructor(
         productCache.deleteAllProducts()
     }
 
-    companion object {
-        fun createNewProduct(shoppingListId: String): Product {
-            val id: String = UUID.randomUUID().toString()
-            return Product(id, shoppingListId, "", 0.0)
-        }
-    }
 }
