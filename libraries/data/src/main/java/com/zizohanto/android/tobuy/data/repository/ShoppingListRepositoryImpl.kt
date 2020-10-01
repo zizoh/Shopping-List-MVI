@@ -31,8 +31,10 @@ class ShoppingListRepositoryImpl @Inject constructor(
 
     override fun getShoppingList(id: String): Flow<ShoppingList> {
         return flow {
-            val shoppingListEntity: ShoppingListEntity = shoppingListCache.getShoppingList(id)
-            emit(shoppingListMapper.mapFromEntity(shoppingListEntity))
+            val shoppingListEntity: ShoppingListEntity? = shoppingListCache.getShoppingList(id)
+            if (shoppingListEntity != null) {
+                emit(shoppingListMapper.mapFromEntity(shoppingListEntity))
+            }
         }
     }
 

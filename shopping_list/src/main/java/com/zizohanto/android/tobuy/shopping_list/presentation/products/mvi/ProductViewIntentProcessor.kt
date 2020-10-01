@@ -37,7 +37,10 @@ class ProductViewIntentProcessor @Inject constructor(
                 loadShoppingListWithNewProduct(viewIntent.shoppingListId)
             }
             is ProductViewIntent.SaveProduct -> flow {
-                saveProduct(productMapper.mapToDomain(viewIntent.product))
+                saveProduct(
+                    productMapper.mapToDomain(viewIntent.product),
+                    listMapper.mapToDomain(viewIntent.shoppingList)
+                )
 
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
                 emit(ProductViewResult.ProductSaved(product))

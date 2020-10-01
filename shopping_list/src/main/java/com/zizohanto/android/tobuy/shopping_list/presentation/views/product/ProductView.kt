@@ -19,6 +19,7 @@ import com.zizohanto.android.tobuy.shopping_list.ui.products.textChanges
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
@@ -75,10 +76,11 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
         }
     }
 
-    private val saveProductIntent: Flow<ProductsViewIntent>
-        get() = productAdapter.edits.debounce(DEBOUNCE_PERIOD).map { product ->
-            ProductViewIntent.SaveProduct(product)
+    fun saveProduct(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
+        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map { product ->
+            ProductViewIntent.SaveProduct(product, shoppingList)
         }
+    }
 
     fun createNewProduct(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
         return binding.addNewProduct.clicks().map {
@@ -87,5 +89,5 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     override val intents: Flow<ProductsViewIntent>
-        get() = saveProductIntent
+        get() = emptyFlow()
 }
