@@ -83,7 +83,7 @@ class ProductViewIntentProcessor @Inject constructor(
     }
 
     private fun sortList(products: MutableList<Product>): List<Product> {
-        return products.sortedByDescending { it.dateAdded }
+        return products.sortedBy { it.dateAdded }
     }
 
     private fun loadShoppingListWithProducts(
