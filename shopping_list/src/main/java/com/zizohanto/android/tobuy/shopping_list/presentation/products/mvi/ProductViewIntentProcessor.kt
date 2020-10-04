@@ -3,13 +3,12 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
-import com.zizohanto.android.tobuy.domain.usecase.CreateProduct
-import com.zizohanto.android.tobuy.domain.usecase.GetShoppingListWithProducts
+import com.zizohanto.android.tobuy.domain.usecase.*
 import com.zizohanto.android.tobuy.domain.usecase.SaveProduct
 import com.zizohanto.android.tobuy.domain.usecase.SaveShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
-import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductIntentProcessor
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent.*
@@ -51,8 +50,7 @@ class ProductViewIntentProcessor @Inject constructor(
                 emit(ProductViewResult.ProductDeleted(listWithProducts))
             }
             is ProductViewIntent.SaveShoppingList -> flow {
-                val shoppingList: ShoppingList =
-                    listMapper.mapToDomain(viewIntent.shoppingList)
+                val shoppingList: ShoppingList = listMapper.mapToDomain(viewIntent.shoppingList)
                 saveShoppingList(shoppingList)
 
                 emit(ProductViewResult.ShoppingListSaved(shoppingList))

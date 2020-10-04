@@ -48,7 +48,7 @@ class ShoppingListRepositoryImpl @Inject constructor(
     override fun getShoppingListWithProducts(id: String): Flow<ShoppingListWithProducts> {
         return flow {
             val listWithProductsEntity: ShoppingListWithProductsEntity? =
-                shoppingListCache.getShoppingListWithProducts(id)
+                shoppingListCache.getShoppingListWithProductsOrNull(id)
             if (listWithProductsEntity == null) {
                 val shoppingListEntity: ShoppingListEntity = createNewShoppingList().copy(id = id)
                 val shoppingList: ShoppingList =

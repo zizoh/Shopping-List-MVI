@@ -20,7 +20,10 @@ interface ShoppingListDao {
     suspend fun getShoppingLists(): List<ShoppingListCacheModel>
 
     @Query("SELECT * FROM shopping_list WHERE id=:shoppingListId")
-    suspend fun getShoppingListWithProducts(shoppingListId: String): ShoppingListWithProductsCacheModel?
+    suspend fun getShoppingListWithProductsOrNull(shoppingListId: String): ShoppingListWithProductsCacheModel?
+
+    @Query("SELECT * FROM shopping_list WHERE id=:shoppingListId")
+    suspend fun getShoppingListWithProducts(shoppingListId: String): ShoppingListWithProductsCacheModel
 
     @Query("DELETE FROM shopping_list WHERE id=:shoppingListId")
     suspend fun deleteShoppingList(shoppingListId: String)
