@@ -8,7 +8,6 @@ import com.zizohanto.android.tobuy.domain.usecase.SaveProduct
 import com.zizohanto.android.tobuy.domain.usecase.SaveShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductIntentProcessor
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent.*
@@ -18,12 +17,12 @@ import javax.inject.Inject
 
 class ProductViewIntentProcessor @Inject constructor(
     private val getShoppingListWithProducts: GetShoppingListWithProducts,
-    private val mapper: ShoppingListWithProductsModelMapper,
     private val saveProduct: SaveProduct,
     private val productMapper: ProductModelMapper,
     private val saveShoppingList: SaveShoppingList,
     private val listMapper: ShoppingListModelMapper,
-    private val createProduct: CreateProduct
+    private val createProduct: CreateProduct,
+    private val deleteProduct: DeleteProductAndGetShoppingListWithProducts
 ) : ProductIntentProcessor {
 
     override fun intentToResult(viewIntent: ProductsViewIntent): Flow<ProductsViewResult> {
@@ -45,8 +44,8 @@ class ProductViewIntentProcessor @Inject constructor(
                 emit(ProductViewResult.ProductSaved(product))
             }
             is DeleteProduct -> flow {
-                val listWithProducts: ShoppingListWithProducts =
-                    mapper.mapToDomain(viewIntent.shoppingListWithProductsModel)
+                val product: Product = productMapper.mapToDomain(viewIntent.product)
+                val listWithProducts: ShoppingListWithProducts = deleteProduct(product)
                 emit(ProductViewResult.ProductDeleted(listWithProducts))
             }
             is ProductViewIntent.SaveShoppingList -> flow {

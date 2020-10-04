@@ -19,7 +19,6 @@ import com.zizohanto.android.tobuy.shopping_list.ui.products.textChanges
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
@@ -88,6 +87,11 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
         }
     }
 
+    private val deleteProductIntent: Flow<ProductsViewIntent>
+        get() = productAdapter.deletes.map { product ->
+            ProductViewIntent.DeleteProduct(product)
+        }
+
     override val intents: Flow<ProductsViewIntent>
-        get() = emptyFlow()
+        get() = deleteProductIntent
 }

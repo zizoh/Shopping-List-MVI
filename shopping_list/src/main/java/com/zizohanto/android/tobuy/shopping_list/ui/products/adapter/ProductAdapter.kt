@@ -3,6 +3,7 @@ package com.zizohanto.android.tobuy.shopping_list.ui.products.adapter
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
 
 typealias ProductEditListener = (ProductModel) -> Unit
+
+typealias ProductDeleteListener = (ProductModel) -> Unit
 
 class ProductAdapter @Inject constructor() :
     ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
@@ -37,19 +40,37 @@ class ProductAdapter @Inject constructor() :
             }
         }.conflate()
 
+    var deleteListener: ProductDeleteListener? = null
+
+    val deletes: Flow<ProductModel>
+        get() = callbackFlow {
+            val listener: ProductDeleteListener = { product ->
+                safeOffer(product)
+                Unit
+            }
+            deleteListener = listener
+            awaitClose {
+                deleteListener = null
+            }
+        }.conflate()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         return ProductViewHolder(ItemProductEditableBinding.bind(parent.inflate(R.layout.item_product_editable)))
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(getItem(holder.bindingAdapterPosition), editListener)
+        holder.bind(getItem(holder.bindingAdapterPosition), editListener, deleteListener)
     }
 
     class ProductViewHolder(
         private val binding: ItemProductEditableBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(product: ProductModel, editListener: ProductEditListener?) {
+        fun bind(
+            product: ProductModel,
+            editListener: ProductEditListener?,
+            deleteListener: ProductDeleteListener?
+        ) {
             binding.productName.setText(product.name)
             binding.productName.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
@@ -67,6 +88,14 @@ class ProductAdapter @Inject constructor() :
                 override fun afterTextChanged(s: Editable?) {
                 }
             })
+
+            binding.productName.setOnFocusChangeListener { _, hasFocus ->
+                binding.remove.isVisible = hasFocus
+            }
+
+            binding.remove.setOnClickListener {
+                deleteListener?.invoke(product)
+            }
         }
     }
 

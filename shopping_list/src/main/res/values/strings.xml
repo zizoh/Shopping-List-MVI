@@ -8,4 +8,6 @@
     <string name="title">Title</string>
     <string name="product">Product</string>
     <string name="add_product">Add product</string>
+    <string name="cont_desc_remove_button">Remove button</string>
+    <string name="cont_desc_select_button">Select button</string>
 </resources>
