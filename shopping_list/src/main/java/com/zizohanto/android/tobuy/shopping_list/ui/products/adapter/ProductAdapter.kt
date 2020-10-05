@@ -71,8 +71,7 @@ class ProductAdapter @Inject constructor() :
             editListener: ProductEditListener?,
             deleteListener: ProductDeleteListener?
         ) {
-            binding.productName.setText(product.name)
-            binding.productName.addTextChangedListener(object : TextWatcher {
+            val textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -82,12 +81,20 @@ class ProductAdapter @Inject constructor() :
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    editListener?.invoke(product.copy(name = s?.trim().toString()))
+                    if (isValidTextChange(s, start, before, count)) {
+                        editListener?.invoke(
+                            product.copy(name = s?.trim().toString())
+                        )
+                    }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
                 }
-            })
+            }
+
+            binding.productName.removeTextChangedListener(textWatcher)
+            binding.productName.setText(product.name)
+            binding.productName.addTextChangedListener(textWatcher)
 
             binding.productName.setOnFocusChangeListener { _, hasFocus ->
                 binding.remove.isVisible = hasFocus
@@ -97,6 +104,13 @@ class ProductAdapter @Inject constructor() :
                 deleteListener?.invoke(product)
             }
         }
+
+        private fun isValidTextChange(
+            s: CharSequence?,
+            start: Int,
+            before: Int,
+            count: Int
+        ) = !(s.isNullOrEmpty() && start == 0 && before == 0 && count == 0)
     }
 
     companion object {
