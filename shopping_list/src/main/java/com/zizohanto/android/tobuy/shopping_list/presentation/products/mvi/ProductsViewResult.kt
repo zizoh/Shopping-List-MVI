@@ -12,7 +12,9 @@ sealed class ProductsViewResult : ViewResult {
             val listWithProducts: ShoppingListWithProducts
         ) : ProductViewResult()
 
-        data class ProductAdded(val product: Product) : ProductViewResult()
+        data class ProductAdded(val listWithProducts: ShoppingListWithProducts) :
+            ProductViewResult()
+
         data class ProductSaved(val product: Product) : ProductViewResult()
         data class ProductDeleted(val shoppingListWithProducts: ShoppingListWithProducts) :
             ProductViewResult()

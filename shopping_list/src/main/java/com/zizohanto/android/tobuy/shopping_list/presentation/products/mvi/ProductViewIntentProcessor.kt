@@ -59,8 +59,16 @@ class ProductViewIntentProcessor @Inject constructor(
     }
 
     private fun loadShoppingListWithNewProduct(shoppingListId: String): Flow<ProductViewResult.ProductAdded> {
-        return createProduct(shoppingListId).map { product: Product ->
-            ProductViewResult.ProductAdded(product)
+        val productFlow: Flow<Product> = createProduct(shoppingListId)
+        val listWithProductsFlow: Flow<ShoppingListWithProducts> =
+            getShoppingListWithProducts(shoppingListId)
+        return productFlow.zip(listWithProductsFlow) { product: Product, listWithProducts ->
+            ProductViewResult.ProductAdded(
+                listWithProducts.copy(
+                    shoppingList = listWithProducts.shoppingList,
+                    products = getSortedListOfProducts(listWithProducts.products, product)
+                )
+            )
         }
     }
 

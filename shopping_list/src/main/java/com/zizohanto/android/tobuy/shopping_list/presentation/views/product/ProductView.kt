@@ -48,17 +48,18 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
             }
             is ProductViewState.Success -> {
                 binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
-                productAdapter.addItems(state.listWithProducts.products)
+                productAdapter.submitList(state.listWithProducts.products)
                 binding.addNewProduct.isVisible = true
             }
             is ProductViewState.ProductAdded -> {
-                productAdapter.addNewProduct(state.product)
+                binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
+                productAdapter.submitList(state.listWithProducts.products)
                 binding.addNewProduct.isVisible = true
             }
             ProductViewState.SaveProduct -> {
             }
             is ProductViewState.DeleteProduct -> {
-                productAdapter.addItems(state.listWithProducts.products)
+                productAdapter.submitList(state.listWithProducts.products)
             }
             ProductViewState.SaveShoppingList -> {
             }

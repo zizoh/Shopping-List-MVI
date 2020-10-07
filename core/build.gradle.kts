@@ -43,7 +43,6 @@ dependencies {
     implementation(AndroidX.lifeCycleCommon)
     implementation(View.appCompat)
     implementation(View.fragment)
-    implementation(View.recyclerView)
     implementation(DI.hiltAndroid)
     implementation(Coroutines.core)
 

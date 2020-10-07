@@ -5,10 +5,10 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zizohanto.android.tobuy.core.ext.inflate
 import com.zizohanto.android.tobuy.core.ext.safeOffer
-import com.zizohanto.android.tobuy.core.utils.DiffUtilCallback
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductEditableBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
@@ -18,24 +18,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 typealias ProductEditListener = (ProductModel) -> Unit
 
 typealias ProductDeleteListener = (ProductModel) -> Unit
 
-class ProductAdapter @Inject constructor() : RecyclerView.Adapter<ProductViewHolder>() {
-
-    private var items by Delegates.observable<MutableList<ProductModel>>(mutableListOf()) { _, oldValue, newValue ->
-        DiffUtil
-            .calculateDiff(
-                DiffUtilCallback(
-                    oldValue,
-                    newValue
-                )
-            )
-            .dispatchUpdatesTo(this)
-    }
+class ProductAdapter @Inject constructor() :
+    ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
 
     private var editListener: ProductEditListener? = null
 
@@ -65,26 +54,13 @@ class ProductAdapter @Inject constructor() : RecyclerView.Adapter<ProductViewHol
             }
         }.conflate()
 
-    fun addItems(data: List<ProductModel>) {
-        items.clear()
-        items.addAll(data)
-        notifyDataSetChanged()
-    }
-
-    fun addNewProduct(product: ProductModel) {
-        items.add(items.size, product)
-        notifyItemInserted(items.size)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         return ProductViewHolder(ItemProductEditableBinding.bind(parent.inflate(R.layout.item_product_editable)))
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(items[position], editListener, deleteListener)
+        holder.bind(getItem(holder.bindingAdapterPosition), editListener, deleteListener)
     }
-
-    override fun getItemCount(): Int = items.size
 
     class ProductViewHolder(
         private val binding: ItemProductEditableBinding
@@ -137,5 +113,24 @@ class ProductAdapter @Inject constructor() : RecyclerView.Adapter<ProductViewHol
             before: Int,
             count: Int
         ) = !(s.isNullOrEmpty() && start == 0 && before == 0 && count == 0)
+    }
+
+    companion object {
+        val diffUtilCallback: DiffUtil.ItemCallback<ProductModel>
+            get() = object : DiffUtil.ItemCallback<ProductModel>() {
+                override fun areItemsTheSame(
+                    oldItem: ProductModel,
+                    newItem: ProductModel
+                ): Boolean {
+                    return oldItem.id == newItem.id
+                }
+
+                override fun areContentsTheSame(
+                    oldItem: ProductModel,
+                    newItem: ProductModel
+                ): Boolean {
+                    return oldItem == newItem
+                }
+            }
     }
 }
