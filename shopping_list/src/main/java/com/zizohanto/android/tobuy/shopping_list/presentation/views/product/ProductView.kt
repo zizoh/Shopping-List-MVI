@@ -40,7 +40,6 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
         binding = LayoutProductsBinding.inflate(inflater, this, true)
         binding.products.adapter = productAdapter
-        productAdapter.editListener = {}
     }
 
     override fun render(state: ProductsViewState) {
@@ -49,18 +48,17 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
             }
             is ProductViewState.Success -> {
                 binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
-                productAdapter.submitList(state.listWithProducts.products)
+                productAdapter.addItems(state.listWithProducts.products)
                 binding.addNewProduct.isVisible = true
             }
             is ProductViewState.ProductAdded -> {
-                binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
-                productAdapter.submitList(state.listWithProducts.products)
+                productAdapter.addNewProduct(state.product)
                 binding.addNewProduct.isVisible = true
             }
             ProductViewState.SaveProduct -> {
             }
             is ProductViewState.DeleteProduct -> {
-                productAdapter.submitList(state.listWithProducts.products)
+                productAdapter.addItems(state.listWithProducts.products)
             }
             ProductViewState.SaveShoppingList -> {
             }

@@ -1,6 +1,8 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
+import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductStateReducer
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult.*
@@ -8,7 +10,8 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.Produ
 import javax.inject.Inject
 
 class ProductViewStateReducer @Inject constructor(
-    private val listWithProductsMapper: ShoppingListWithProductsModelMapper
+    private val listWithProductsMapper: ShoppingListWithProductsModelMapper,
+    private val mapper: ProductModelMapper
 ) : ProductStateReducer {
 
     override fun reduce(
@@ -23,9 +26,8 @@ class ProductViewStateReducer @Inject constructor(
                 ProductViewState.Success(listWithProducts)
             }
             is ProductViewResult.ProductAdded -> {
-                val listWithProducts: ShoppingListWithProductsModel =
-                    listWithProductsMapper.mapToModel(result.listWithProducts)
-                ProductViewState.ProductAdded(listWithProducts)
+                val product: ProductModel = mapper.mapToModel(result.product)
+                ProductViewState.ProductAdded(product)
             }
             is ProductViewResult.ProductSaved -> {
                 ProductViewState.SaveProduct
