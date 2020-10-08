@@ -92,15 +92,16 @@ class ProductAdapter @Inject constructor() :
                 }
             }
 
-            binding.productName.setText(product.name)
-            binding.productName.addTextChangedListener(textWatcher)
-
             binding.productName.setOnFocusChangeListener { _, hasFocus ->
                 binding.remove.isVisible = hasFocus
-                if (!hasFocus) {
+                if (hasFocus) {
+                    binding.productName.addTextChangedListener(textWatcher)
+                } else {
                     binding.productName.removeTextChangedListener(textWatcher)
                 }
             }
+
+            binding.productName.setText(product.name)
 
             binding.remove.setOnClickListener {
                 deleteListener?.invoke(product)
