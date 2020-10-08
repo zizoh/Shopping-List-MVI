@@ -1,10 +1,12 @@
 package com.zizohanto.android.tobuy.cache.di
 
 import android.content.Context
+import com.zizohanto.android.tobuy.cache.impl.ProductCacheImpl
 import com.zizohanto.android.tobuy.cache.impl.ShoppingListCacheImpl
 import com.zizohanto.android.tobuy.cache.room.ProductDao
 import com.zizohanto.android.tobuy.cache.room.ShoppingListDao
 import com.zizohanto.android.tobuy.cache.room.ShoppingListDatabase
+import com.zizohanto.android.tobuy.data.contract.ProductCache
 import com.zizohanto.android.tobuy.data.contract.ShoppingListCache
 import dagger.Binds
 import dagger.Module
@@ -20,6 +22,9 @@ interface CacheModule {
 
     @get:Binds
     val ShoppingListCacheImpl.shoppingListCache: ShoppingListCache
+
+    @get:Binds
+    val ProductCacheImpl.productCache: ProductCache
 
     companion object {
         @[Provides Singleton]

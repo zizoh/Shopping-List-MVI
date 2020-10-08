@@ -1,5 +1,6 @@
 import Dependencies.AndroidX
 import Dependencies.DI
+import Dependencies.Others
 import Dependencies.View
 import ProjectLib.cache
 import ProjectLib.core
@@ -72,6 +73,7 @@ dependencies {
     implementAll(View.components)
     implementation(DI.hiltAndroid)
     implementation(DI.hiltViewModel)
+    implementation(Others.jodaTime)
 
     AndroidX.run {
         implementation(activity)

@@ -3,5 +3,11 @@
     <string name="cont_desc_empty_state_icon">Empty state icon</string>
     <string name="retry">Retry</string>
     <string name="no_data">No shopping list added yet.</string>
-    <string name="an_error_occurred">An error occured.</string>
+    <string name="an_error_occurred">An error occurred.</string>
+    <string name="cont_desc_add_new_shopping_list">Add New Shopping List</string>
+    <string name="title">Title</string>
+    <string name="product">Product</string>
+    <string name="add_product">Add product</string>
+    <string name="cont_desc_remove_button">Remove button</string>
+    <string name="cont_desc_select_button">Select button</string>
 </resources>

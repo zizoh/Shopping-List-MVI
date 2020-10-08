@@ -1,6 +1,9 @@
 package com.zizohanto.android.tobuy.cache.models
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "product",
@@ -11,9 +14,7 @@ import androidx.room.*
         ForeignKey(
             entity = ShoppingListCacheModel::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("shoppingListId"),
-            onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.CASCADE
+            childColumns = arrayOf("shoppingListId")
         )
     ]
 )
@@ -22,5 +23,6 @@ data class ProductCacheModel(
     val id: String,
     val shoppingListId: String,
     val name: String,
-    val price: Double
+    val price: Double,
+    val dateAdded: Long
 )

@@ -1,6 +1,6 @@
 package com.zizohanto.android.tobuy.domain.models
 
-class ShoppingListWithProducts(
+data class ShoppingListWithProducts(
     val shoppingList: ShoppingList,
     val products: List<Product>
 )

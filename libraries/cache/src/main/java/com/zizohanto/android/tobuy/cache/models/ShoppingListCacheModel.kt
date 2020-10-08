@@ -1,6 +1,9 @@
 package com.zizohanto.android.tobuy.cache.models
 
-import androidx.room.*
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 
 @Entity(tableName = "shopping_list")
 data class ShoppingListCacheModel(
@@ -8,8 +11,8 @@ data class ShoppingListCacheModel(
     val id: String,
     val name: String,
     val budget: Double = 0.0,
-    val dateCreated: String,
-    val dateModified: String
+    val dateCreated: Long,
+    val dateModified: Long
 )
 
 data class ShoppingListWithProductsCacheModel(

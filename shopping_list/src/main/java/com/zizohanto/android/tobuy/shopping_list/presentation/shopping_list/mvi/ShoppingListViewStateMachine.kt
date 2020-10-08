@@ -11,6 +11,6 @@ class ShoppingListViewStateMachine @Inject constructor(
 ) : ShoppingListStateMachine(
     intentProcessor,
     reducer,
-    ShoppingListViewIntent.LoadShoppingLists,
+    ShoppingListViewIntent.Idle,
     ShoppingListViewState.Idle
 )

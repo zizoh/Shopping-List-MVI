@@ -6,5 +6,6 @@
     android:layout_height="wrap_content"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
+    android:textColor="@color/black"
     android:textSize="@dimen/product_text_size"
     tools:text="Sucre" />

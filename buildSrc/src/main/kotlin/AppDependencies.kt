@@ -37,17 +37,21 @@ object Dependencies {
         }
 
         const val coreKtx: String = "androidx.core:core-ktx:${Version.coreKtx}"
-        const val navigationFragmentKtx: String = "androidx.navigation:navigation-fragment-ktx:${Version.navigation}"
-        const val navigationUiKtx: String = "androidx.navigation:navigation-ui-ktx:${Version.navigation}"
+        const val navigationFragmentKtx: String =
+            "androidx.navigation:navigation-fragment-ktx:${Version.navigation}"
+        const val navigationUiKtx: String =
+            "androidx.navigation:navigation-ui-ktx:${Version.navigation}"
         const val multiDex: String = "androidx.multidex:multidex:${Version.multidex}"
         const val activity: String = "androidx.activity:activity:${Version.activity}"
-        const val lifeCycleCommon: String = "androidx.lifecycle:lifecycle-common-java8:${Version.lifeCycle}"
-        const val viewModel: String = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Version.lifeCycle}"
+        const val lifeCycleCommon: String =
+            "androidx.lifecycle:lifecycle-common-java8:${Version.lifeCycle}"
+        const val viewModel: String =
+            "androidx.lifecycle:lifecycle-viewmodel-ktx:${Version.lifeCycle}"
 
         override val components: List<String>
             get() = listOf(
-                    coreKtx, navigationFragmentKtx, navigationUiKtx, multiDex, activity,
-                    lifeCycleCommon, viewModel
+                coreKtx, navigationFragmentKtx, navigationUiKtx, multiDex, activity,
+                lifeCycleCommon, viewModel
             )
     }
 
@@ -63,17 +67,30 @@ object Dependencies {
 
         const val appCompat: String = "androidx.appcompat:appcompat:${Version.appCompat}"
         const val fragment: String = "androidx.fragment:fragment-ktx:${Version.fragment}"
-        const val materialComponent: String = "com.google.android.material:material:${Version.materialComponent}"
+        const val materialComponent: String =
+            "com.google.android.material:material:${Version.materialComponent}"
         const val shimmerLayout: String = "com.facebook.shimmer:shimmer:${Version.shimmerLayout}"
-        const val constraintLayout: String = "androidx.constraintlayout:constraintlayout:${Version.constraintLayout}"
-        const val recyclerView: String = "androidx.recyclerview:recyclerview:${Version.recyclerView}"
+        const val constraintLayout: String =
+            "androidx.constraintlayout:constraintlayout:${Version.constraintLayout}"
+        const val recyclerView: String =
+            "androidx.recyclerview:recyclerview:${Version.recyclerView}"
         override val components: List<String> = listOf(appCompat, fragment)
+    }
+
+    object Others {
+        object Version {
+            const val jodaTime: String = "2.9.9.4"
+        }
+
+        const val jodaTime: String = "net.danlew:android.joda:${Version.jodaTime}"
     }
 
     object FlowBinding {
         private const val flowBinding: String = "1.0.0-alpha04"
-        const val android: String = "io.github.reactivecircus.flowbinding:flowbinding-android:$flowBinding"
-        const val lifecycle: String = "io.github.reactivecircus.flowbinding:flowbinding-lifecycle:$flowBinding"
+        const val android: String =
+            "io.github.reactivecircus.flowbinding:flowbinding-android:$flowBinding"
+        const val lifecycle: String =
+            "io.github.reactivecircus.flowbinding:flowbinding-lifecycle:$flowBinding"
     }
 
     object DI {
@@ -84,14 +101,17 @@ object Dependencies {
         }
 
         object AnnotationProcessor {
-            const val hiltAndroid: String = "com.google.dagger:hilt-android-compiler:${Version.hiltAndroid}"
+            const val hiltAndroid: String =
+                "com.google.dagger:hilt-android-compiler:${Version.hiltAndroid}"
             const val hiltCompiler: String = "androidx.hilt:hilt-compiler:${Version.hiltViewModel}"
         }
 
         const val javaxInject: String = "javax.inject:javax.inject:${Version.javaxInject}"
         const val hiltAndroid: String = "com.google.dagger:hilt-android:${Version.hiltAndroid}"
-        const val hiltViewModel: String = "androidx.hilt:hilt-lifecycle-viewmodel:${Version.hiltViewModel}"
-        const val hiltTesting: String = "com.google.dagger:hilt-android-testing:${Version.hiltAndroid}"
+        const val hiltViewModel: String =
+            "androidx.hilt:hilt-lifecycle-viewmodel:${Version.hiltViewModel}"
+        const val hiltTesting: String =
+            "com.google.dagger:hilt-android-testing:${Version.hiltAndroid}"
     }
 
     object Coroutines : Libraries {
@@ -99,8 +119,10 @@ object Dependencies {
             const val coroutines: String = "1.3.9"
         }
 
-        const val core: String = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.coroutines}"
-        const val android: String = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutines}"
+        const val core: String =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.coroutines}"
+        const val android: String =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutines}"
 
         override val components: List<String> = listOf(core, android)
     }
@@ -135,10 +157,12 @@ object Dependencies {
         const val fragmentTesting: String = "androidx.fragment:fragment-testing:$fragment"
         const val androidXTest: String = "androidx.test.ext:junit:${Version.testExt}"
         const val espresso: String = "androidx.test.espresso:espresso-core:${Version.espresso}"
-        const val espressoContrib: String = "androidx.test.espresso:espresso-contrib:${Version.espresso}"
+        const val espressoContrib: String =
+            "androidx.test.espresso:espresso-contrib:${Version.espresso}"
         const val archCoreTest: String = "android.arch.core:core-testing:${Version.archCoreTest}"
         const val truth: String = "com.google.truth:truth:${Version.truth}"
-        const val coroutinesTest: String = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Coroutines.Version.coroutines}"
+        const val coroutinesTest: String =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Coroutines.Version.coroutines}"
         const val robolectric: String = "org.robolectric:robolectric:${Version.robolectric}"
     }
 }
@@ -151,5 +175,5 @@ object ProjectLib {
     const val data: String = ":libraries:data"
     const val cache: String = ":libraries:cache"
     const val testUtils: String = ":libraries:testUtils"
-    const val shoppingList:String = ":shopping_list"
+    const val shoppingList: String = ":shopping_list"
 }
