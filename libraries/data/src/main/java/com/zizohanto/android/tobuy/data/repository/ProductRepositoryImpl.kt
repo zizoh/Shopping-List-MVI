@@ -6,7 +6,6 @@ import com.zizohanto.android.tobuy.data.mappers.ProductEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListWithProductsEntityMapper
 import com.zizohanto.android.tobuy.data.models.ProductEntity
-import com.zizohanto.android.tobuy.data.models.ProductEntity.Companion.createNewProduct
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
 import com.zizohanto.android.tobuy.domain.models.Product
@@ -37,7 +36,7 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override fun createProduct(shoppingListId: String): Flow<Product> {
-        val productEntity = createNewProduct(shoppingListId)
+        val productEntity = ProductEntity(shoppingListId = shoppingListId)
         return flowOf(mapper.mapFromEntity(productEntity))
     }
 
@@ -52,7 +51,7 @@ class ProductRepositoryImpl @Inject constructor(
         return flow {
             val productEntities: List<ProductEntity> = productCache.getProducts(shoppingListId)
             if (productEntities.isEmpty()) {
-                val productEntity: ProductEntity = createNewProduct(shoppingListId)
+                val productEntity = ProductEntity(shoppingListId = shoppingListId)
                 val listWithNewProduct: List<Product> = listOf(mapper.mapFromEntity(productEntity))
                 emit(listWithNewProduct)
             } else emit(mapper.mapFromEntityList(productEntities))

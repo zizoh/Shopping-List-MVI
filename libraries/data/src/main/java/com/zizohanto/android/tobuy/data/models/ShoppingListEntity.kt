@@ -1,30 +1,12 @@
 package com.zizohanto.android.tobuy.data.models
 
-import org.joda.time.Instant
+import com.zizohanto.android.tobuy.data.utils.DateUtils.getCurrentTime
 import java.util.*
 
 data class ShoppingListEntity(
-    val id: String,
-    val name: String,
-    val budget: Double,
-    val dateCreated: Long,
-    val dateModified: Long
-) {
-    companion object {
-        fun createNewShoppingList(): ShoppingListEntity {
-            val shoppingListId: String = UUID.randomUUID().toString()
-            return ShoppingListEntity(
-                shoppingListId,
-                "",
-                0.0,
-                getCurrentTime(),
-                getCurrentTime()
-            )
-
-        }
-
-        fun getCurrentTime(): Long {
-            return Instant.now().millis
-        }
-    }
-}
+    val id: String = UUID.randomUUID().toString(),
+    val name: String = "",
+    val budget: Double = 0.0,
+    val dateCreated: Long = getCurrentTime(),
+    val dateModified: Long = getCurrentTime()
+)

@@ -12,11 +12,14 @@ import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductEditableBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter.ProductViewHolder
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.map
+import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
 
 typealias ProductEditListener = (ProductModel) -> Unit
@@ -66,11 +69,14 @@ class ProductAdapter @Inject constructor() :
         private val binding: ItemProductEditableBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private lateinit var currentProduct: ProductModel
+
         fun bind(
             product: ProductModel,
             editListener: ProductEditListener?,
             deleteListener: ProductDeleteListener?
         ) {
+            currentProduct = product
             val textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
@@ -114,6 +120,14 @@ class ProductAdapter @Inject constructor() :
             before: Int,
             count: Int
         ) = !(s.isNullOrEmpty() && start == 0 && before == 0 && count == 0)
+
+        private val deleteProductIntent: Flow<ProductsViewIntent>
+            get() = binding.remove.clicks().map {
+                ProductsViewIntent.ProductViewIntent.DeleteProduct(currentProduct)
+            }
+
+        val intents: Flow<ProductsViewIntent>
+            get() = deleteProductIntent
     }
 
     companion object {
