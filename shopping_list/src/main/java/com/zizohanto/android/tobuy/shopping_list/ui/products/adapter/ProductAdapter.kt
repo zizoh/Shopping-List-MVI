@@ -12,29 +12,26 @@ import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductEditableBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter.ProductViewHolder
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.map
-import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
 
-typealias ProductEditListener = (ProductModel) -> Unit
+typealias ProductEditListener = (ProductModel, Int) -> Unit
 
-typealias ProductDeleteListener = (ProductModel) -> Unit
+typealias ProductDeleteListener = (ProductModel, Int) -> Unit
 
 class ProductAdapter @Inject constructor() :
     ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
 
     private var editListener: ProductEditListener? = null
 
-    val edits: Flow<ProductModel>
+    val edits: Flow<Pair<ProductModel, Int>>
         get() = callbackFlow {
-            val listener: ProductEditListener = { product ->
-                safeOffer(product)
+            val listener: ProductEditListener = { product, position ->
+                safeOffer(Pair(product, position))
                 Unit
             }
             editListener = listener
@@ -45,10 +42,10 @@ class ProductAdapter @Inject constructor() :
 
     private var deleteListener: ProductDeleteListener? = null
 
-    val deletes: Flow<ProductModel>
+    val deletes: Flow<Pair<ProductModel, Int>>
         get() = callbackFlow {
-            val listener: ProductDeleteListener = { product ->
-                safeOffer(product)
+            val listener: ProductDeleteListener = { product, position ->
+                safeOffer(Pair(product, position))
                 Unit
             }
             deleteListener = listener
@@ -62,21 +59,25 @@ class ProductAdapter @Inject constructor() :
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(getItem(holder.bindingAdapterPosition), editListener, deleteListener)
+        holder.bind(
+            getItem(holder.bindingAdapterPosition),
+            editListener,
+            deleteListener,
+            holder.bindingAdapterPosition
+        )
     }
 
     class ProductViewHolder(
         private val binding: ItemProductEditableBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private lateinit var currentProduct: ProductModel
-
         fun bind(
             product: ProductModel,
             editListener: ProductEditListener?,
-            deleteListener: ProductDeleteListener?
+            deleteListener: ProductDeleteListener?,
+            bindingAdapterPosition: Int
         ) {
-            currentProduct = product
+
             val textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
@@ -89,7 +90,8 @@ class ProductAdapter @Inject constructor() :
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (isValidTextChange(s, start, before, count)) {
                         editListener?.invoke(
-                            product.copy(name = s?.trim().toString())
+                            product.copy(name = s?.trim().toString()),
+                            bindingAdapterPosition
                         )
                     }
                 }
@@ -110,7 +112,7 @@ class ProductAdapter @Inject constructor() :
             binding.productName.setText(product.name)
 
             binding.remove.setOnClickListener {
-                deleteListener?.invoke(product)
+                deleteListener?.invoke(product, bindingAdapterPosition)
             }
         }
 
@@ -120,32 +122,16 @@ class ProductAdapter @Inject constructor() :
             before: Int,
             count: Int
         ) = !(s.isNullOrEmpty() && start == 0 && before == 0 && count == 0)
-
-        private val deleteProductIntent: Flow<ProductsViewIntent>
-            get() = binding.remove.clicks().map {
-                ProductsViewIntent.ProductViewIntent.DeleteProduct(currentProduct)
-            }
-
-        val intents: Flow<ProductsViewIntent>
-            get() = deleteProductIntent
     }
 
     companion object {
         val diffUtilCallback: DiffUtil.ItemCallback<ProductModel>
             get() = object : DiffUtil.ItemCallback<ProductModel>() {
-                override fun areItemsTheSame(
-                    oldItem: ProductModel,
-                    newItem: ProductModel
-                ): Boolean {
-                    return oldItem.id == newItem.id
-                }
+                override fun areItemsTheSame(oldItem: ProductModel, newItem: ProductModel) =
+                    oldItem.id == newItem.id
 
-                override fun areContentsTheSame(
-                    oldItem: ProductModel,
-                    newItem: ProductModel
-                ): Boolean {
-                    return oldItem == newItem
-                }
+                override fun areContentsTheSame(oldItem: ProductModel, newItem: ProductModel) =
+                    oldItem.id == newItem.id
             }
     }
 }

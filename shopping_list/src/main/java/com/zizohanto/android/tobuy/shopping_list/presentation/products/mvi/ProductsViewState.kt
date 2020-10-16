@@ -8,14 +8,6 @@ sealed class ProductsViewState : ViewState {
 
     sealed class ProductViewState : ProductsViewState() {
         data class Success(val listWithProducts: ShoppingListWithProductsModel) : ProductViewState()
-        data class ProductAdded(val listWithProducts: ShoppingListWithProductsModel) :
-            ProductViewState()
-
-        object SaveProduct : ProductViewState()
-        data class DeleteProduct(val listWithProducts: ShoppingListWithProductsModel) :
-            ProductViewState()
-
-        object SaveShoppingList : ProductViewState()
         object DeleteShoppingList : ProductViewState()
     }
 

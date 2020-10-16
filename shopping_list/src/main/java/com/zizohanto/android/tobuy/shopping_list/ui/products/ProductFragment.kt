@@ -57,7 +57,7 @@ class ProductFragment : Fragment(R.layout.fragment_products),
     }
 
     override fun render(state: ProductsViewState) {
-        binding.products.render(state)
+        binding.productsView.render(state)
     }
 
     private val loadShoppingListWithProducts =
@@ -66,9 +66,9 @@ class ProductFragment : Fragment(R.layout.fragment_products),
     override val intents: Flow<ProductsViewIntent>
         get() = merge(
             loadShoppingListWithProducts.asFlow(),
-            binding.products.saveShoppingList(args.shoppingList),
-            binding.products.createNewProduct(args.shoppingList),
-            binding.products.saveProduct(args.shoppingList),
-            binding.products.intents
+            binding.productsView.saveShoppingList(args.shoppingList),
+            binding.productsView.createNewProduct(args.shoppingList),
+            binding.productsView.saveProduct(args.shoppingList),
+            binding.productsView.intents
         )
 }
