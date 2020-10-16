@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutProductsBinding
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
@@ -20,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
 
@@ -47,21 +49,15 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
             ProductsViewState.Idle -> {
             }
             is ProductViewState.Success -> {
-                binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
+                if (!binding.shoppingListTitle.textHasChanged()) {
+                    binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
+                }
+                binding.shoppingListTitle.setChanged(false)
                 productAdapter.submitList(state.listWithProducts.products)
+
+                binding.shoppingListTitle.isVisible = true
+                binding.products.isVisible = true
                 binding.addNewProduct.isVisible = true
-            }
-            is ProductViewState.ProductAdded -> {
-                binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
-                productAdapter.submitList(state.listWithProducts.products)
-                binding.addNewProduct.isVisible = true
-            }
-            ProductViewState.SaveProduct -> {
-            }
-            is ProductViewState.DeleteProduct -> {
-                productAdapter.submitList(state.listWithProducts.products)
-            }
-            ProductViewState.SaveShoppingList -> {
             }
             ProductViewState.DeleteShoppingList -> TODO()
             is ProductsViewState.Error -> TODO()
@@ -69,14 +65,16 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     fun saveShoppingList(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
-        return binding.shoppingListTitle.textChanges.checkDistinct.map {
-            ProductViewIntent.SaveShoppingList(shoppingList.copy(name = it))
-        }
+        return binding.shoppingListTitle.textChanges.checkDistinct
+            .onEach { binding.shoppingListTitle.setChanged(true) }
+            .map { ProductViewIntent.SaveShoppingList(shoppingList.copy(name = it)) }
     }
 
     fun saveProduct(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
-        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map { product ->
-            ProductViewIntent.SaveProduct(product, shoppingList)
+        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map {
+            val product: ProductModel = it.first
+            val position: Int = it.second
+            ProductViewIntent.SaveProduct(product, position, shoppingList)
         }
     }
 
@@ -87,8 +85,10 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     private val deleteProductIntent: Flow<ProductsViewIntent>
-        get() = productAdapter.deletes.map { product ->
-            ProductViewIntent.DeleteProduct(product)
+        get() = productAdapter.deletes.map {
+            val product: ProductModel = it.first
+            val position: Int = it.second
+            ProductViewIntent.DeleteProduct(product, position)
         }
 
     override val intents: Flow<ProductsViewIntent>

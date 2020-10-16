@@ -2,8 +2,8 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
-import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.usecase.*
+import com.zizohanto.android.tobuy.domain.usecase.DeleteProduct
 import com.zizohanto.android.tobuy.domain.usecase.SaveProduct
 import com.zizohanto.android.tobuy.domain.usecase.SaveShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
@@ -22,7 +22,7 @@ class ProductViewIntentProcessor @Inject constructor(
     private val saveShoppingList: SaveShoppingList,
     private val listMapper: ShoppingListModelMapper,
     private val createProduct: CreateProduct,
-    private val deleteProduct: DeleteProductAndGetShoppingListWithProducts
+    private val deleteProduct: DeleteProduct
 ) : ProductIntentProcessor {
 
     override fun intentToResult(viewIntent: ProductsViewIntent): Flow<ProductsViewResult> {
@@ -32,7 +32,9 @@ class ProductViewIntentProcessor @Inject constructor(
                 loadShoppingListWithProducts(viewIntent.shoppingListId)
             }
             is AddNewProduct -> {
-                loadShoppingListWithNewProduct(viewIntent.shoppingListId)
+                createProduct(viewIntent.shoppingListId).map { product ->
+                    ProductViewResult.ProductAdded(product)
+                }
             }
             is ProductViewIntent.SaveProduct -> flow {
                 saveProduct(
@@ -41,12 +43,12 @@ class ProductViewIntentProcessor @Inject constructor(
                 )
 
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
-                emit(ProductViewResult.ProductSaved(product))
+                emit(ProductViewResult.ProductSaved(product, viewIntent.position))
             }
-            is DeleteProduct -> flow {
+            is ProductViewIntent.DeleteProduct -> flow {
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
-                val listWithProducts: ShoppingListWithProducts = deleteProduct(product)
-                emit(ProductViewResult.ProductDeleted(listWithProducts))
+                deleteProduct(product)
+                emit(ProductViewResult.ProductDeleted(viewIntent.position))
             }
             is ProductViewIntent.SaveShoppingList -> flow {
                 val shoppingList: ShoppingList = listMapper.mapToDomain(viewIntent.shoppingList)
@@ -58,34 +60,6 @@ class ProductViewIntentProcessor @Inject constructor(
         }
     }
 
-    private fun loadShoppingListWithNewProduct(shoppingListId: String): Flow<ProductViewResult.ProductAdded> {
-        val productFlow: Flow<Product> = createProduct(shoppingListId)
-        val listWithProductsFlow: Flow<ShoppingListWithProducts> =
-            getShoppingListWithProducts(shoppingListId)
-        return productFlow.zip(listWithProductsFlow) { product: Product, listWithProducts ->
-            ProductViewResult.ProductAdded(
-                listWithProducts.copy(
-                    shoppingList = listWithProducts.shoppingList,
-                    products = getSortedListOfProducts(listWithProducts.products, product)
-                )
-            )
-        }
-    }
-
-    private fun getSortedListOfProducts(
-        existingProducts: List<Product>,
-        product: Product
-    ): List<Product> {
-        val products: MutableList<Product> = mutableListOf()
-        products.addAll(existingProducts)
-        products.add(product)
-        return sortList(products)
-    }
-
-    private fun sortList(products: MutableList<Product>): List<Product> {
-        return products.sortedBy { it.dateAdded }
-    }
-
     private fun loadShoppingListWithProducts(
         shoppingListId: String
     ): Flow<ProductsViewResult> {
@@ -93,12 +67,16 @@ class ProductViewIntentProcessor @Inject constructor(
             .map { listWithProducts ->
                 ProductViewResult.Success(
                     listWithProducts.copy(
-                        products = sortList(listWithProducts.products.toMutableList())
+                        products = sortList(listWithProducts.products)
                     )
                 )
             }.catch { error ->
                 error.printStackTrace()
             }
+    }
+
+    private fun sortList(products: List<Product>): List<Product> {
+        return products.sortedBy { it.dateAdded }
     }
 
 }

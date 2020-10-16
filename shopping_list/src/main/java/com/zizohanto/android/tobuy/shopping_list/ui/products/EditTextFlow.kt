@@ -28,7 +28,7 @@ const val DEBOUNCE_PERIOD: Long = 300L
 
 val EditText.textChanges: Flow<String>
     get() = this.textChanges()
-        .skipInitialValue()
+        .drop(2)
         .debounce(DEBOUNCE_PERIOD)
         .map { it.toString() }
         .map { it.trim() }

@@ -6,9 +6,8 @@ import com.zizohanto.android.tobuy.data.mappers.ShoppingListEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListWithProductsEntityMapper
 import com.zizohanto.android.tobuy.data.models.ProductEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
-import com.zizohanto.android.tobuy.data.models.ShoppingListEntity.Companion.createNewShoppingList
-import com.zizohanto.android.tobuy.data.models.ShoppingListEntity.Companion.getCurrentTime
 import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
+import com.zizohanto.android.tobuy.data.utils.DateUtils.getCurrentTime
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
@@ -41,7 +40,7 @@ class ShoppingListRepositoryImpl @Inject constructor(
     }
 
     override fun createShoppingList(): Flow<ShoppingList> {
-        val shoppingListEntity: ShoppingListEntity = createNewShoppingList()
+        val shoppingListEntity = ShoppingListEntity()
         return flowOf(listMapper.mapFromEntity(shoppingListEntity))
     }
 
@@ -50,7 +49,7 @@ class ShoppingListRepositoryImpl @Inject constructor(
             val listWithProductsEntity: ShoppingListWithProductsEntity? =
                 shoppingListCache.getShoppingListWithProductsOrNull(id)
             if (listWithProductsEntity == null) {
-                val shoppingListEntity: ShoppingListEntity = createNewShoppingList().copy(id = id)
+                val shoppingListEntity = ShoppingListEntity(id = id)
                 val shoppingList: ShoppingList =
                     listMapper.mapFromEntity(shoppingListEntity)
                 val shoppingListWithProducts =
@@ -67,7 +66,7 @@ class ShoppingListRepositoryImpl @Inject constructor(
     }
 
     private fun addNewProduct(id: String): List<Product> {
-        val newProduct: ProductEntity = ProductEntity.createNewProduct(id)
+        val newProduct = ProductEntity(shoppingListId = id)
         return listOf(productMapper.mapFromEntity(newProduct))
     }
 

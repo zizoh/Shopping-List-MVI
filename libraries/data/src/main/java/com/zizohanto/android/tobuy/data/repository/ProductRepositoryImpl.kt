@@ -4,14 +4,10 @@ import com.zizohanto.android.tobuy.data.contract.ProductCache
 import com.zizohanto.android.tobuy.data.contract.ShoppingListCache
 import com.zizohanto.android.tobuy.data.mappers.ProductEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListEntityMapper
-import com.zizohanto.android.tobuy.data.mappers.ShoppingListWithProductsEntityMapper
 import com.zizohanto.android.tobuy.data.models.ProductEntity
-import com.zizohanto.android.tobuy.data.models.ProductEntity.Companion.createNewProduct
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
-import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
-import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -22,8 +18,7 @@ class ProductRepositoryImpl @Inject constructor(
     private val productCache: ProductCache,
     private val shoppingListCache: ShoppingListCache,
     private val mapper: ProductEntityMapper,
-    private val listMapper: ShoppingListEntityMapper,
-    private val listWithProductsMapper: ShoppingListWithProductsEntityMapper
+    private val listMapper: ShoppingListEntityMapper
 ) : ProductRepository {
 
     override suspend fun saveProduct(product: Product, shoppingList: ShoppingList) {
@@ -37,7 +32,7 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override fun createProduct(shoppingListId: String): Flow<Product> {
-        val productEntity = createNewProduct(shoppingListId)
+        val productEntity = ProductEntity(shoppingListId = shoppingListId)
         return flowOf(mapper.mapFromEntity(productEntity))
     }
 
@@ -52,7 +47,7 @@ class ProductRepositoryImpl @Inject constructor(
         return flow {
             val productEntities: List<ProductEntity> = productCache.getProducts(shoppingListId)
             if (productEntities.isEmpty()) {
-                val productEntity: ProductEntity = createNewProduct(shoppingListId)
+                val productEntity = ProductEntity(shoppingListId = shoppingListId)
                 val listWithNewProduct: List<Product> = listOf(mapper.mapFromEntity(productEntity))
                 emit(listWithNewProduct)
             } else emit(mapper.mapFromEntityList(productEntities))
@@ -63,11 +58,8 @@ class ProductRepositoryImpl @Inject constructor(
         productCache.deleteProduct(id)
     }
 
-    override suspend fun deleteProductAndGetShoppingListWithProducts(product: Product): ShoppingListWithProducts {
+    override suspend fun deleteProduct(product: Product) {
         productCache.deleteProduct(product.id)
-        val listWithProducts: ShoppingListWithProductsEntity =
-            shoppingListCache.getShoppingListWithProducts(product.shoppingListId)
-        return listWithProductsMapper.mapFromEntity(listWithProducts)
     }
 
     override suspend fun deleteAllProducts() {

@@ -19,19 +19,19 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
 
-typealias ProductEditListener = (ProductModel) -> Unit
+typealias ProductEditListener = (ProductModel, Int) -> Unit
 
-typealias ProductDeleteListener = (ProductModel) -> Unit
+typealias ProductDeleteListener = (ProductModel, Int) -> Unit
 
 class ProductAdapter @Inject constructor() :
     ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
 
     private var editListener: ProductEditListener? = null
 
-    val edits: Flow<ProductModel>
+    val edits: Flow<Pair<ProductModel, Int>>
         get() = callbackFlow {
-            val listener: ProductEditListener = { product ->
-                safeOffer(product)
+            val listener: ProductEditListener = { product, position ->
+                safeOffer(Pair(product, position))
                 Unit
             }
             editListener = listener
@@ -42,10 +42,10 @@ class ProductAdapter @Inject constructor() :
 
     private var deleteListener: ProductDeleteListener? = null
 
-    val deletes: Flow<ProductModel>
+    val deletes: Flow<Pair<ProductModel, Int>>
         get() = callbackFlow {
-            val listener: ProductDeleteListener = { product ->
-                safeOffer(product)
+            val listener: ProductDeleteListener = { product, position ->
+                safeOffer(Pair(product, position))
                 Unit
             }
             deleteListener = listener
@@ -59,7 +59,12 @@ class ProductAdapter @Inject constructor() :
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(getItem(holder.bindingAdapterPosition), editListener, deleteListener)
+        holder.bind(
+            getItem(holder.bindingAdapterPosition),
+            editListener,
+            deleteListener,
+            holder.bindingAdapterPosition
+        )
     }
 
     class ProductViewHolder(
@@ -69,8 +74,10 @@ class ProductAdapter @Inject constructor() :
         fun bind(
             product: ProductModel,
             editListener: ProductEditListener?,
-            deleteListener: ProductDeleteListener?
+            deleteListener: ProductDeleteListener?,
+            bindingAdapterPosition: Int
         ) {
+
             val textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
@@ -83,7 +90,8 @@ class ProductAdapter @Inject constructor() :
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (isValidTextChange(s, start, before, count)) {
                         editListener?.invoke(
-                            product.copy(name = s?.trim().toString())
+                            product.copy(name = s?.trim().toString()),
+                            bindingAdapterPosition
                         )
                     }
                 }
@@ -104,7 +112,7 @@ class ProductAdapter @Inject constructor() :
             binding.productName.setText(product.name)
 
             binding.remove.setOnClickListener {
-                deleteListener?.invoke(product)
+                deleteListener?.invoke(product, bindingAdapterPosition)
             }
         }
 
@@ -119,19 +127,11 @@ class ProductAdapter @Inject constructor() :
     companion object {
         val diffUtilCallback: DiffUtil.ItemCallback<ProductModel>
             get() = object : DiffUtil.ItemCallback<ProductModel>() {
-                override fun areItemsTheSame(
-                    oldItem: ProductModel,
-                    newItem: ProductModel
-                ): Boolean {
-                    return oldItem.id == newItem.id
-                }
+                override fun areItemsTheSame(oldItem: ProductModel, newItem: ProductModel) =
+                    oldItem.id == newItem.id
 
-                override fun areContentsTheSame(
-                    oldItem: ProductModel,
-                    newItem: ProductModel
-                ): Boolean {
-                    return oldItem == newItem
-                }
+                override fun areContentsTheSame(oldItem: ProductModel, newItem: ProductModel) =
+                    oldItem.id == newItem.id
             }
     }
 }
