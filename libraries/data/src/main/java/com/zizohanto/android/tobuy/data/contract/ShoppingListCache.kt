@@ -5,6 +5,7 @@ import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
 
 interface ShoppingListCache {
     suspend fun saveShoppingList(shoppingListEntity: ShoppingListEntity)
+    suspend fun updateShoppingList(id: String, name: String, dateModified: Long)
     suspend fun getShoppingList(id: String): ShoppingListEntity?
     suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProductsEntity?
     suspend fun getShoppingListWithProducts(id: String): ShoppingListWithProductsEntity

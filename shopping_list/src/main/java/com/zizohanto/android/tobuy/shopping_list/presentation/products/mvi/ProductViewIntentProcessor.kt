@@ -11,6 +11,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingLi
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductIntentProcessor
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent.*
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent.DeleteShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult.ProductViewResult
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject

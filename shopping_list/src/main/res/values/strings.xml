@@ -10,4 +10,7 @@
     <string name="add_product">Add product</string>
     <string name="cont_desc_remove_button">Remove button</string>
     <string name="cont_desc_select_button">Select button</string>
+    <string name="delete_shopping_list">Delete Shopping List?</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 </resources>

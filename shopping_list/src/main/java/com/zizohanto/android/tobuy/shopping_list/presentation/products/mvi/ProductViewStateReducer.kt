@@ -71,8 +71,12 @@ class ProductViewStateReducer @Inject constructor(
                             previous.listWithProducts
                         val products: List<ProductModel> = listWithProducts.products
                         val mutableList = products.toMutableList()
-                        mutableList.removeAt(result.position)
-                        ProductViewState.Success(listWithProducts.copy(products = mutableList))
+                        if (mutableList.size == 1) {
+                            ProductViewState.Success(listWithProducts.copy(products = emptyList()))
+                        } else {
+                            mutableList.removeAt(result.position)
+                            ProductViewState.Success(listWithProducts.copy(products = mutableList))
+                        }
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> TODO()

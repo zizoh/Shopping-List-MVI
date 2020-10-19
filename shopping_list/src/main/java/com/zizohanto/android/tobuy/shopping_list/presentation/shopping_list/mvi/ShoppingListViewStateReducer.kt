@@ -27,6 +27,25 @@ class ShoppingListViewStateReducer @Inject constructor(
                 val shoppingList: ShoppingListModel = listMapper.mapToModel(result.shoppingList)
                 ShoppingListViewState.NewShoppingListLoaded(ViewEvent(shoppingList))
             }
+            is ShoppingListViewResult.ShoppingListDeleted -> {
+                when (previous) {
+                    ShoppingListViewState.Idle -> ShoppingListViewState.Idle
+                    ShoppingListViewState.Loading -> ShoppingListViewState.Idle
+                    is ShoppingListViewState.NewShoppingListLoaded -> ShoppingListViewState.Idle
+                    is ShoppingListViewState.ShoppingListLoaded -> {
+                        val shoppingList: List<ShoppingListModel> = previous.shoppingLists
+                        if (shoppingList.size == 1) {
+                            ShoppingListViewState.ShoppingListEmpty
+                        } else {
+                            val mutableList = shoppingList.toMutableList()
+                            mutableList.removeAt(result.position)
+                            ShoppingListViewState.ShoppingListLoaded(mutableList)
+                        }
+                    }
+                    ShoppingListViewState.ShoppingListEmpty -> ShoppingListViewState.Idle
+                    is ShoppingListViewState.Error -> ShoppingListViewState.Idle
+                }
+            }
             ShoppingListViewResult.Empty -> ShoppingListViewState.ShoppingListEmpty
             is ShoppingListViewResult.Error -> ShoppingListViewState.Error(result.throwable.errorMessage)
         }

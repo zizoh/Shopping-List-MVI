@@ -27,7 +27,13 @@ class ShoppingListRepositoryImpl @Inject constructor(
     override suspend fun saveShoppingList(shoppingList: ShoppingList) {
         val list: ShoppingListEntity =
             listMapper.mapToEntity(shoppingList).copy(dateModified = getCurrentTime())
-        shoppingListCache.saveShoppingList(list)
+        val shoppingListEntity: ShoppingListEntity? =
+            shoppingListCache.getShoppingList(shoppingList.id)
+        if (shoppingListEntity == null) {
+            shoppingListCache.saveShoppingList(list)
+        } else {
+            shoppingListCache.updateShoppingList(list.id, list.name, list.dateModified)
+        }
     }
 
     override fun getShoppingList(id: String): Flow<ShoppingList> {
