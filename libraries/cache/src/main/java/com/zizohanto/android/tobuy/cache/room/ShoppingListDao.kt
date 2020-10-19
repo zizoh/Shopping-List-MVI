@@ -13,6 +13,9 @@ interface ShoppingListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertShoppingList(shoppingList: ShoppingListCacheModel)
 
+    @Query("UPDATE shopping_list SET name=:name, dateModified=:dateModified WHERE id=:shoppingListId")
+    suspend fun updateShoppingList(shoppingListId: String, name: String, dateModified: Long)
+
     @Query("SELECT * FROM shopping_list WHERE id=:shoppingListId")
     suspend fun getShoppingListWithId(shoppingListId: String): ShoppingListCacheModel?
 

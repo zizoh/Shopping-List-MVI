@@ -8,6 +8,7 @@ sealed class ShoppingListViewResult : ViewResult {
     object Loading : ShoppingListViewResult()
     data class NewShoppingListCreated(val shoppingList: ShoppingList) : ShoppingListViewResult()
     data class Success(val shoppingLists: List<ShoppingList>) : ShoppingListViewResult()
+    data class ShoppingListDeleted(val position: Int) : ShoppingListViewResult()
     object Empty : ShoppingListViewResult()
     data class Error(val throwable: Throwable) : ShoppingListViewResult()
 

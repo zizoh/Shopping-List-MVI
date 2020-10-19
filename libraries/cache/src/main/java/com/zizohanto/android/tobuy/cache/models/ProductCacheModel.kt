@@ -14,7 +14,8 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = ShoppingListCacheModel::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("shoppingListId")
+            childColumns = arrayOf("shoppingListId"),
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )

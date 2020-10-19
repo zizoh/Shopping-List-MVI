@@ -21,6 +21,10 @@ class ShoppingListCacheImpl @Inject constructor(
         dao.insertShoppingList(shoppingList)
     }
 
+    override suspend fun updateShoppingList(id: String, name: String, dateModified: Long) {
+        dao.updateShoppingList(id, name, dateModified)
+    }
+
     override suspend fun getShoppingList(id: String): ShoppingListEntity? {
         val shoppingList: ShoppingListCacheModel? = dao.getShoppingListWithId(id)
         return if (shoppingList == null) null

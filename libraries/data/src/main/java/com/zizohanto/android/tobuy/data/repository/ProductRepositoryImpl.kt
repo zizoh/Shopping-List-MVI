@@ -6,6 +6,7 @@ import com.zizohanto.android.tobuy.data.mappers.ProductEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListEntityMapper
 import com.zizohanto.android.tobuy.data.models.ProductEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
+import com.zizohanto.android.tobuy.data.utils.DateUtils.getCurrentTime
 import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.repository.ProductRepository
@@ -26,6 +27,12 @@ class ProductRepositoryImpl @Inject constructor(
             shoppingListCache.getShoppingList(shoppingList.id)
         if (shoppingListEntity == null) {
             shoppingListCache.saveShoppingList(listMapper.mapToEntity(shoppingList))
+        } else {
+            shoppingListCache.updateShoppingList(
+                shoppingList.id,
+                shoppingList.name,
+                getCurrentTime()
+            )
         }
         val productEntity: ProductEntity = mapper.mapToEntity(product)
         productCache.saveProduct(productEntity)
