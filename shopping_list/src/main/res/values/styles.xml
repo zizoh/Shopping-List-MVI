@@ -2,7 +2,7 @@
 <resources>
 
     <style name="MaterialButton.BaseStyle" parent="MaterialButton.BaseRounded">
-        <item name="backgroundTint">@android:color/holo_blue_dark</item>
+        <item name="backgroundTint">@color/amber_primary</item>
     </style>
 
     <style name="MaterialButton.BaseRounded" parent="Widget.MaterialComponents.Button">

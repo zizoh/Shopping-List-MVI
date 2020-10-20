@@ -13,4 +13,5 @@
     <string name="delete_shopping_list">Delete Shopping List?</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="shopping_list_frag_toolbar_title">Shopping List</string>
 </resources>
