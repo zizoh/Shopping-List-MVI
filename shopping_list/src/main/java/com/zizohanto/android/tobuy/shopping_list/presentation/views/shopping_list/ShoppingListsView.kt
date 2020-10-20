@@ -76,7 +76,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     progressBar.isVisible = false
                     shoppingLists.isVisible = false
                     emptyState.isVisible = true
-                    emptyState.setImage(context.getImage(R.drawable.ic_empty))
+                    emptyState.setImage(context.getImage(R.drawable.empty_basket))
                     emptyState.setTitle(context.getString(R.string.no_data))
                     emptyState.resetCaption()
                     emptyState.isButtonVisible = false
@@ -87,7 +87,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     shoppingLists.isVisible = false
                     progressBar.isVisible = false
                     emptyState.isVisible = true
-                    emptyState.setImage(context.getImage(R.drawable.ic_error_page_2))
+                    emptyState.setImage(context.getImage(R.drawable.error))
                     emptyState.setCaption(state.message)
                     emptyState.setTitle(context.getString(R.string.an_error_occurred))
                     emptyState.isButtonVisible = true

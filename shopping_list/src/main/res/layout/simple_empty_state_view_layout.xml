@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateView">
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/empty_state_image_width"
         android:contentDescription="@string/cont_desc_empty_state_icon"
-        android:src="@drawable/ic_error_page_2"
+        android:src="@drawable/error"
         android:visibility="gone" />
 
     <TextView
