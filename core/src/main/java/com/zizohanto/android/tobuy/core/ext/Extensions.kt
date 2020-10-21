@@ -13,3 +13,14 @@ fun <T> List<T>.replaceFirst(element: T, predicate: (T) -> Boolean): List<T> {
     }
     return items
 }
+
+fun <T> List<T>.removeFirst(predicate: (T) -> Boolean): List<T> {
+    val items: ArrayList<T> = ArrayList(this)
+    for ((index, item) in items.withIndex()) {
+        if (predicate(item)) {
+            items.removeAt(index)
+            return items
+        }
+    }
+    return items
+}

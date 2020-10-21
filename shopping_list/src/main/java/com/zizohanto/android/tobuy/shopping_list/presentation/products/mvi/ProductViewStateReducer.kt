@@ -1,5 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
+import com.zizohanto.android.tobuy.core.ext.removeFirst
 import com.zizohanto.android.tobuy.core.ext.replaceFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
@@ -69,14 +70,9 @@ class ProductViewStateReducer @Inject constructor(
                     is ProductViewState.Success -> {
                         val listWithProducts: ShoppingListWithProductsModel =
                             previous.listWithProducts
-                        val products: List<ProductModel> = listWithProducts.products
-                        val mutableList = products.toMutableList()
-                        if (mutableList.size == 1) {
-                            ProductViewState.Success(listWithProducts.copy(products = emptyList()))
-                        } else {
-                            mutableList.removeAt(result.position)
-                            ProductViewState.Success(listWithProducts.copy(products = mutableList))
-                        }
+                        val products: List<ProductModel> =
+                            listWithProducts.products.removeFirst { it.id == result.productId }
+                        ProductViewState.Success(listWithProducts.copy(products = products))
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> TODO()

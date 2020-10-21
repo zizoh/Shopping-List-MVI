@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 typealias ProductEditListener = (ProductModel) -> Unit
 
-typealias ProductDeleteListener = (ProductModel, Int) -> Unit
+typealias ProductDeleteListener = (ProductModel) -> Unit
 
 class ProductAdapter @Inject constructor() :
     ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
@@ -42,10 +42,10 @@ class ProductAdapter @Inject constructor() :
 
     private var deleteListener: ProductDeleteListener? = null
 
-    val deletes: Flow<Pair<ProductModel, Int>>
+    val deletes: Flow<ProductModel>
         get() = callbackFlow {
-            val listener: ProductDeleteListener = { product, position ->
-                safeOffer(Pair(product, position))
+            val listener: ProductDeleteListener = { product ->
+                safeOffer(product)
                 Unit
             }
             deleteListener = listener
@@ -109,7 +109,7 @@ class ProductAdapter @Inject constructor() :
             binding.productName.setText(product.name)
 
             binding.remove.setOnClickListener {
-                deleteListener?.invoke(product, bindingAdapterPosition)
+                deleteListener?.invoke(product)
             }
         }
 

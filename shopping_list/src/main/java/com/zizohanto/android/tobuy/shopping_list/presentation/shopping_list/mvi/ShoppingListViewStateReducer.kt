@@ -1,6 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi
 
 import com.zizohanto.android.tobuy.core.ext.errorMessage
+import com.zizohanto.android.tobuy.core.ext.removeFirst
 import com.zizohanto.android.tobuy.presentation.event.ViewEvent
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
@@ -38,7 +39,7 @@ class ShoppingListViewStateReducer @Inject constructor(
                             ShoppingListViewState.ShoppingListEmpty
                         } else {
                             val shoppingLists: List<ShoppingListModel> =
-                                removeShoppingListFromList(shoppingList, result.shoppingListId)
+                                shoppingList.removeFirst { it.id == result.shoppingListId }
                             ShoppingListViewState.ShoppingListLoaded(shoppingLists)
                         }
                     }
@@ -49,17 +50,5 @@ class ShoppingListViewStateReducer @Inject constructor(
             ShoppingListViewResult.Empty -> ShoppingListViewState.ShoppingListEmpty
             is ShoppingListViewResult.Error -> ShoppingListViewState.Error(result.throwable.errorMessage)
         }
-    }
-
-    private fun removeShoppingListFromList(
-        shoppingList: List<ShoppingListModel>,
-        shoppingListId: String
-    ): List<ShoppingListModel> {
-        val map: HashMap<String, ShoppingListModel> = hashMapOf()
-        shoppingList.forEach {
-            map[it.id] = it
-        }
-        map.remove(shoppingListId)
-        return map.values.toList()
     }
 }
