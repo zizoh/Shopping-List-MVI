@@ -37,9 +37,9 @@ class ShoppingListViewStateReducer @Inject constructor(
                         if (shoppingList.size == 1) {
                             ShoppingListViewState.ShoppingListEmpty
                         } else {
-                            val mutableList = shoppingList.toMutableList()
-                            mutableList.removeAt(result.position)
-                            ShoppingListViewState.ShoppingListLoaded(mutableList)
+                            val shoppingLists: List<ShoppingListModel> =
+                                removeShoppingListFromList(shoppingList, result.shoppingListId)
+                            ShoppingListViewState.ShoppingListLoaded(shoppingLists)
                         }
                     }
                     ShoppingListViewState.ShoppingListEmpty -> ShoppingListViewState.Idle
@@ -49,5 +49,17 @@ class ShoppingListViewStateReducer @Inject constructor(
             ShoppingListViewResult.Empty -> ShoppingListViewState.ShoppingListEmpty
             is ShoppingListViewResult.Error -> ShoppingListViewState.Error(result.throwable.errorMessage)
         }
+    }
+
+    private fun removeShoppingListFromList(
+        shoppingList: List<ShoppingListModel>,
+        shoppingListId: String
+    ): List<ShoppingListModel> {
+        val map: HashMap<String, ShoppingListModel> = hashMapOf()
+        shoppingList.forEach {
+            map[it.id] = it
+        }
+        map.remove(shoppingListId)
+        return map.values.toList()
     }
 }

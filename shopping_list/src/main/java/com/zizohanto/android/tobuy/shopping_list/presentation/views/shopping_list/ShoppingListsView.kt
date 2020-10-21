@@ -10,7 +10,6 @@ import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcherImpl
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
@@ -106,9 +105,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
 
     private val deleteShoppingListIntent: Flow<ShoppingListViewIntent>
         get() = shoppingListAdapter.deletes.map {
-            val shoppingList: ShoppingListModel = it.first
-            val position: Int = it.second
-            ShoppingListViewIntent.DeleteShoppingList(shoppingList.id, position)
+            ShoppingListViewIntent.DeleteShoppingList(it)
         }
 
     override val intents: Flow<ShoppingListViewIntent>

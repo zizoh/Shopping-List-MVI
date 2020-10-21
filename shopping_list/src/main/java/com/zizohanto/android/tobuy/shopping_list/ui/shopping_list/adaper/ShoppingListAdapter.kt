@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 typealias ShoppingListClickListener = (ShoppingListModel) -> Unit
 
-typealias ShoppingListDeleteListener = (ShoppingListModel, Int) -> Unit
+typealias ShoppingListDeleteListener = (String) -> Unit
 
 class ShoppingListAdapter @Inject constructor() :
     ListAdapter<ShoppingListModel, ShoppingListViewHolder>(diffUtilCallback) {
@@ -28,10 +28,10 @@ class ShoppingListAdapter @Inject constructor() :
 
     private var deleteListener: ShoppingListDeleteListener? = null
 
-    val deletes: Flow<Pair<ShoppingListModel, Int>>
+    val deletes: Flow<String>
         get() = callbackFlow {
-            val listener: ShoppingListDeleteListener = { list, position ->
-                safeOffer(Pair(list, position))
+            val listener: ShoppingListDeleteListener = { shoppingListId ->
+                safeOffer(shoppingListId)
                 Unit
             }
             deleteListener = listener
@@ -53,7 +53,7 @@ class ShoppingListAdapter @Inject constructor() :
     }
 
     override fun onBindViewHolder(holder: ShoppingListViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position))
     }
 
     class ShoppingListViewHolder(
@@ -62,7 +62,7 @@ class ShoppingListAdapter @Inject constructor() :
         private val deleteListener: ShoppingListDeleteListener?
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(listModel: ShoppingListModel, position: Int) {
+        fun bind(listModel: ShoppingListModel) {
             binding.title.text = listModel.name
             binding.root.setOnClickListener {
                 clickListener?.invoke(listModel)
@@ -73,7 +73,7 @@ class ShoppingListAdapter @Inject constructor() :
                     .setTitle(it.resources.getString(R.string.delete_shopping_list))
                     .setNegativeButton(it.resources.getString(R.string.cancel)) { _, _ -> }
                     .setPositiveButton(it.resources.getString(R.string.delete)) { _, _ ->
-                        deleteListener?.invoke(listModel, position)
+                        deleteListener?.invoke(listModel.id)
                     }
                     .show()
                 true

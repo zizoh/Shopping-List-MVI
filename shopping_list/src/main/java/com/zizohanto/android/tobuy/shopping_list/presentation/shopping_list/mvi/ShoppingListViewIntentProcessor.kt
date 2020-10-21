@@ -20,8 +20,9 @@ class ShoppingListViewIntentProcessor @Inject constructor(
             ShoppingListViewIntent.LoadShoppingLists -> loadShoppingLists()
             ShoppingListViewIntent.CreateNewShoppingList -> loadNewShoppingList()
             is ShoppingListViewIntent.DeleteShoppingList -> flow {
-                deleteShoppingList(viewIntent.shoppingListId)
-                emit(ShoppingListViewResult.ShoppingListDeleted(viewIntent.position))
+                val shoppingListId = viewIntent.shoppingListId
+                deleteShoppingList(shoppingListId)
+                emit(ShoppingListViewResult.ShoppingListDeleted(shoppingListId))
             }
         }
     }
