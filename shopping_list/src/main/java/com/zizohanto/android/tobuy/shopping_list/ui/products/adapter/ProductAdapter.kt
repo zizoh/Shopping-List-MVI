@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
 
-typealias ProductEditListener = (ProductModel, Int) -> Unit
+typealias ProductEditListener = (ProductModel) -> Unit
 
 typealias ProductDeleteListener = (ProductModel, Int) -> Unit
 
@@ -28,10 +28,10 @@ class ProductAdapter @Inject constructor() :
 
     private var editListener: ProductEditListener? = null
 
-    val edits: Flow<Pair<ProductModel, Int>>
+    val edits: Flow<ProductModel>
         get() = callbackFlow {
-            val listener: ProductEditListener = { product, position ->
-                safeOffer(Pair(product, position))
+            val listener: ProductEditListener = { product ->
+                safeOffer(product)
                 Unit
             }
             editListener = listener
@@ -89,10 +89,7 @@ class ProductAdapter @Inject constructor() :
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (isValidTextChange(s, start, before, count)) {
-                        editListener?.invoke(
-                            product.copy(name = s?.trim().toString()),
-                            bindingAdapterPosition
-                        )
+                        editListener?.invoke(product.copy(name = s?.trim().toString()))
                     }
                 }
 

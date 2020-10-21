@@ -1,5 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
+import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
@@ -34,11 +35,9 @@ class ProductViewStateReducer @Inject constructor(
                     is ProductViewState.Success -> {
                         val listWithProducts: ShoppingListWithProductsModel =
                             previous.listWithProducts
-                        val products: List<ProductModel> = listWithProducts.products
-                        val mutableList = products.toMutableList()
-                        val product: ProductModel = productMapper.mapToModel(result.product)
-                        mutableList[result.position] = product
-                        ProductViewState.Success(listWithProducts.copy(products = mutableList))
+                        val products: List<ProductModel> =
+                            updateSavedProduct(listWithProducts.products, result.product)
+                        ProductViewState.Success(listWithProducts.copy(products = products))
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> ProductsViewState.Idle
@@ -101,6 +100,22 @@ class ProductViewStateReducer @Inject constructor(
             }
             is Error -> TODO()
         }
+    }
+
+    private fun updateSavedProduct(
+        previousProducts: List<ProductModel>,
+        savedProduct: Product
+    ): List<ProductModel> {
+        val products: MutableList<ProductModel> = previousProducts.toMutableList()
+        run loop@{
+            previousProducts.forEachIndexed { index, productModel ->
+                if (productModel.id == savedProduct.id) {
+                    products[index] = productMapper.mapToModel(savedProduct)
+                    return@loop
+                }
+            }
+        }
+        return products
     }
 
 }

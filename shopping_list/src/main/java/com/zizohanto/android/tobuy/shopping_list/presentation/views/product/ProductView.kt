@@ -71,10 +71,8 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     fun saveProduct(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
-        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map {
-            val product: ProductModel = it.first
-            val position: Int = it.second
-            ProductViewIntent.SaveProduct(product, position, shoppingList)
+        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map { product ->
+            ProductViewIntent.SaveProduct(product, shoppingList)
         }
     }
 

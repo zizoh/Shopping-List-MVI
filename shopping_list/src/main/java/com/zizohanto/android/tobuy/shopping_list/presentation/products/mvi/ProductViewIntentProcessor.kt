@@ -44,7 +44,7 @@ class ProductViewIntentProcessor @Inject constructor(
                 )
 
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
-                emit(ProductViewResult.ProductSaved(product, viewIntent.position))
+                emit(ProductViewResult.ProductSaved(product))
             }
             is ProductViewIntent.DeleteProduct -> flow {
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
