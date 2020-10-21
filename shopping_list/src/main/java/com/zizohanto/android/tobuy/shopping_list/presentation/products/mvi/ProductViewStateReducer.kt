@@ -1,6 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
-import com.zizohanto.android.tobuy.domain.models.Product
+import com.zizohanto.android.tobuy.core.ext.replaceFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
@@ -35,8 +35,9 @@ class ProductViewStateReducer @Inject constructor(
                     is ProductViewState.Success -> {
                         val listWithProducts: ShoppingListWithProductsModel =
                             previous.listWithProducts
+                        val savedProduct: ProductModel = productMapper.mapToModel(result.product)
                         val products: List<ProductModel> =
-                            updateSavedProduct(listWithProducts.products, result.product)
+                            listWithProducts.products.replaceFirst(savedProduct) { it.id == savedProduct.id }
                         ProductViewState.Success(listWithProducts.copy(products = products))
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
@@ -100,22 +101,6 @@ class ProductViewStateReducer @Inject constructor(
             }
             is Error -> TODO()
         }
-    }
-
-    private fun updateSavedProduct(
-        previousProducts: List<ProductModel>,
-        savedProduct: Product
-    ): List<ProductModel> {
-        val products: MutableList<ProductModel> = previousProducts.toMutableList()
-        run loop@{
-            previousProducts.forEachIndexed { index, productModel ->
-                if (productModel.id == savedProduct.id) {
-                    products[index] = productMapper.mapToModel(savedProduct)
-                    return@loop
-                }
-            }
-        }
-        return products
     }
 
 }
