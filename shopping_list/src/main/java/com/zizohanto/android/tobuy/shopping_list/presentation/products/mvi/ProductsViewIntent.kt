@@ -12,15 +12,10 @@ sealed class ProductsViewIntent : ViewIntent {
         data class AddNewProduct(val shoppingListId: String) : ProductViewIntent()
         data class SaveProduct(
             val product: ProductModel,
-            val position: Int,
             val shoppingList: ShoppingListModel
         ) : ProductsViewIntent()
 
-        data class DeleteProduct(
-            val product: ProductModel,
-            val position: Int
-        ) : ProductsViewIntent()
-
+        data class DeleteProduct(val productId: String) : ProductsViewIntent()
         data class SaveShoppingList(val shoppingList: ShoppingListModel) : ProductsViewIntent()
         data class DeleteShoppingList(val shoppingListId: String) : ProductsViewIntent()
     }

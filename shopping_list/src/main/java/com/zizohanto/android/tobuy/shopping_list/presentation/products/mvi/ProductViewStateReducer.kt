@@ -1,5 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
+import com.zizohanto.android.tobuy.core.ext.removeFirst
+import com.zizohanto.android.tobuy.core.ext.replaceFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
@@ -34,11 +36,10 @@ class ProductViewStateReducer @Inject constructor(
                     is ProductViewState.Success -> {
                         val listWithProducts: ShoppingListWithProductsModel =
                             previous.listWithProducts
-                        val products: List<ProductModel> = listWithProducts.products
-                        val mutableList = products.toMutableList()
-                        val product: ProductModel = productMapper.mapToModel(result.product)
-                        mutableList[result.position] = product
-                        ProductViewState.Success(listWithProducts.copy(products = mutableList))
+                        val savedProduct: ProductModel = productMapper.mapToModel(result.product)
+                        val products: List<ProductModel> =
+                            listWithProducts.products.replaceFirst(savedProduct) { it.id == savedProduct.id }
+                        ProductViewState.Success(listWithProducts.copy(products = products))
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> ProductsViewState.Idle
@@ -69,14 +70,9 @@ class ProductViewStateReducer @Inject constructor(
                     is ProductViewState.Success -> {
                         val listWithProducts: ShoppingListWithProductsModel =
                             previous.listWithProducts
-                        val products: List<ProductModel> = listWithProducts.products
-                        val mutableList = products.toMutableList()
-                        if (mutableList.size == 1) {
-                            ProductViewState.Success(listWithProducts.copy(products = emptyList()))
-                        } else {
-                            mutableList.removeAt(result.position)
-                            ProductViewState.Success(listWithProducts.copy(products = mutableList))
-                        }
+                        val products: List<ProductModel> =
+                            listWithProducts.products.removeFirst { it.id == result.productId }
+                        ProductViewState.Success(listWithProducts.copy(products = products))
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> TODO()

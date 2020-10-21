@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutProductsBinding
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
@@ -71,10 +70,8 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     fun saveProduct(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
-        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map {
-            val product: ProductModel = it.first
-            val position: Int = it.second
-            ProductViewIntent.SaveProduct(product, position, shoppingList)
+        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map { product ->
+            ProductViewIntent.SaveProduct(product, shoppingList)
         }
     }
 
@@ -85,10 +82,8 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     private val deleteProductIntent: Flow<ProductsViewIntent>
-        get() = productAdapter.deletes.map {
-            val product: ProductModel = it.first
-            val position: Int = it.second
-            ProductViewIntent.DeleteProduct(product, position)
+        get() = productAdapter.deletes.map { product ->
+            ProductViewIntent.DeleteProduct(product.id)
         }
 
     override val intents: Flow<ProductsViewIntent>

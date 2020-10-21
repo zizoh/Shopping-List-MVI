@@ -44,12 +44,12 @@ class ProductViewIntentProcessor @Inject constructor(
                 )
 
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
-                emit(ProductViewResult.ProductSaved(product, viewIntent.position))
+                emit(ProductViewResult.ProductSaved(product))
             }
             is ProductViewIntent.DeleteProduct -> flow {
-                val product: Product = productMapper.mapToDomain(viewIntent.product)
-                deleteProduct(product)
-                emit(ProductViewResult.ProductDeleted(viewIntent.position))
+                val productId: String = viewIntent.productId
+                deleteProduct(productId)
+                emit(ProductViewResult.ProductDeleted(productId))
             }
             is ProductViewIntent.SaveShoppingList -> flow {
                 val shoppingList: ShoppingList = listMapper.mapToDomain(viewIntent.shoppingList)

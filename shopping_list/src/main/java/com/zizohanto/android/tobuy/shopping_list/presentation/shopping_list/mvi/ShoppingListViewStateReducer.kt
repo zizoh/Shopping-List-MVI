@@ -1,6 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi
 
 import com.zizohanto.android.tobuy.core.ext.errorMessage
+import com.zizohanto.android.tobuy.core.ext.removeFirst
 import com.zizohanto.android.tobuy.presentation.event.ViewEvent
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
@@ -37,9 +38,9 @@ class ShoppingListViewStateReducer @Inject constructor(
                         if (shoppingList.size == 1) {
                             ShoppingListViewState.ShoppingListEmpty
                         } else {
-                            val mutableList = shoppingList.toMutableList()
-                            mutableList.removeAt(result.position)
-                            ShoppingListViewState.ShoppingListLoaded(mutableList)
+                            val shoppingLists: List<ShoppingListModel> =
+                                shoppingList.removeFirst { it.id == result.shoppingListId }
+                            ShoppingListViewState.ShoppingListLoaded(shoppingLists)
                         }
                     }
                     ShoppingListViewState.ShoppingListEmpty -> ShoppingListViewState.Idle

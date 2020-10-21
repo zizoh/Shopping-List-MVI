@@ -65,10 +65,6 @@ class ProductRepositoryImpl @Inject constructor(
         productCache.deleteProduct(id)
     }
 
-    override suspend fun deleteProduct(product: Product) {
-        productCache.deleteProduct(product.id)
-    }
-
     override suspend fun deleteAllProducts() {
         productCache.deleteAllProducts()
     }
