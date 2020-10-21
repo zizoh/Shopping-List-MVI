@@ -29,8 +29,8 @@ class ProductRepositoryImpl @Inject constructor(
             shoppingListCache.saveShoppingList(listMapper.mapToEntity(shoppingList))
         } else {
             shoppingListCache.updateShoppingList(
-                shoppingList.id,
-                shoppingList.name,
+                shoppingListEntity.id,
+                shoppingListEntity.name,
                 getCurrentTime()
             )
         }
