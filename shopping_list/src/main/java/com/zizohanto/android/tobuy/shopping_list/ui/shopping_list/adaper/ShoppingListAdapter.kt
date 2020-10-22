@@ -1,5 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,6 +11,7 @@ import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter.ShoppingListViewHolder
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +24,7 @@ typealias ShoppingListClickListener = (ShoppingListModel) -> Unit
 typealias ShoppingListDeleteListener = (String) -> Unit
 
 class ShoppingListAdapter @Inject constructor() :
-    ListAdapter<ShoppingListModel, ShoppingListViewHolder>(diffUtilCallback) {
+    ListAdapter<ShoppingListWithProductsModel, ShoppingListViewHolder>(diffUtilCallback) {
 
     var clickListener: ShoppingListClickListener? = null
 
@@ -62,18 +64,21 @@ class ShoppingListAdapter @Inject constructor() :
         private val deleteListener: ShoppingListDeleteListener?
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(listModel: ShoppingListModel) {
-            binding.title.text = listModel.name
-            binding.root.setOnClickListener {
-                clickListener?.invoke(listModel)
+        fun bind(listWithProducts: ShoppingListWithProductsModel) {
+            binding.title.text = listWithProducts.shoppingList.name
+            val clickListener: (v: View) -> Unit = {
+                clickListener?.invoke(listWithProducts.shoppingList)
             }
+            binding.rvProducts.adapter =
+                SimpleProductAdapter(listWithProducts.products, clickListener)
+            binding.root.setOnClickListener(clickListener)
 
             binding.root.setOnLongClickListener {
                 MaterialAlertDialogBuilder(it.context)
                     .setTitle(it.resources.getString(R.string.delete_shopping_list))
                     .setNegativeButton(it.resources.getString(R.string.cancel)) { _, _ -> }
                     .setPositiveButton(it.resources.getString(R.string.delete)) { _, _ ->
-                        deleteListener?.invoke(listModel.id)
+                        deleteListener?.invoke(listWithProducts.shoppingList.id)
                     }
                     .show()
                 true
@@ -82,20 +87,20 @@ class ShoppingListAdapter @Inject constructor() :
     }
 
     companion object {
-        val diffUtilCallback: DiffUtil.ItemCallback<ShoppingListModel>
-            get() = object : DiffUtil.ItemCallback<ShoppingListModel>() {
+        val diffUtilCallback: DiffUtil.ItemCallback<ShoppingListWithProductsModel>
+            get() = object : DiffUtil.ItemCallback<ShoppingListWithProductsModel>() {
                 override fun areItemsTheSame(
-                    oldItem: ShoppingListModel,
-                    newItem: ShoppingListModel
+                    oldItem: ShoppingListWithProductsModel,
+                    newItem: ShoppingListWithProductsModel
                 ): Boolean {
-                    return oldItem.id == newItem.id
+                    return oldItem.shoppingList.id == newItem.shoppingList.id
                 }
 
                 override fun areContentsTheSame(
-                    oldItem: ShoppingListModel,
-                    newItem: ShoppingListModel
+                    oldItem: ShoppingListWithProductsModel,
+                    newItem: ShoppingListWithProductsModel
                 ): Boolean {
-                    return oldItem == newItem
+                    return oldItem.shoppingList == newItem.shoppingList
                 }
             }
     }

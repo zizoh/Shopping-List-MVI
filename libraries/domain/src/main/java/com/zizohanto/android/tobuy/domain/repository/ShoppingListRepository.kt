@@ -9,7 +9,7 @@ interface ShoppingListRepository {
     fun getShoppingList(id: String): Flow<ShoppingList>
     fun createShoppingList(): Flow<ShoppingList>
     fun getShoppingListWithProducts(id: String): Flow<ShoppingListWithProducts>
-    fun getAllShoppingLists(): Flow<List<ShoppingList>>
+    fun getAllShoppingLists(): Flow<List<ShoppingListWithProducts>>
     suspend fun deleteShoppingList(id: String)
     suspend fun deleteAllShoppingLists()
 }

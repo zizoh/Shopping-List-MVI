@@ -67,7 +67,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     emptyState.isVisible = false
                     shoppingLists.isVisible = true
                 }
-                shoppingListAdapter.submitList(state.shoppingLists)
+                shoppingListAdapter.submitList(state.listWithProducts)
             }
             ShoppingListViewState.ShoppingListEmpty -> {
                 shoppingListAdapter.reset()

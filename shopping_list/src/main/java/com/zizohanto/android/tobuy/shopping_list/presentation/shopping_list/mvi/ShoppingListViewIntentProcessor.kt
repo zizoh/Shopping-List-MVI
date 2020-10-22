@@ -1,6 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi
 
-import com.zizohanto.android.tobuy.domain.models.ShoppingList
+import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.domain.usecase.CreateShoppingList
 import com.zizohanto.android.tobuy.domain.usecase.DeleteShoppingList
 import com.zizohanto.android.tobuy.domain.usecase.GetShoppingLists
@@ -47,8 +47,8 @@ class ShoppingListViewIntentProcessor @Inject constructor(
         }
     }
 
-    private fun sortList(shoppingList: List<ShoppingList>): List<ShoppingList> {
-        return shoppingList.toMutableList().sortedByDescending { it.dateModified }
+    private fun sortList(listWithProducts: List<ShoppingListWithProducts>): List<ShoppingListWithProducts> {
+        return listWithProducts.toMutableList().sortedByDescending { it.shoppingList.dateModified }
     }
 
 }
