@@ -76,11 +76,11 @@ class ShoppingListRepositoryImpl @Inject constructor(
         return listOf(productMapper.mapFromEntity(newProduct))
     }
 
-    override fun getAllShoppingLists(): Flow<List<ShoppingList>> {
+    override fun getAllShoppingLists(): Flow<List<ShoppingListWithProducts>> {
         return flow {
-            val shoppingListsEntities: List<ShoppingListEntity> =
+            val shoppingListsEntities: List<ShoppingListWithProductsEntity> =
                 shoppingListCache.getAllShoppingLists()
-            emit(shoppingListsEntities.map(listMapper::mapFromEntity))
+            emit(shoppingListsEntities.map(listWithProductsMapper::mapFromEntity))
         }
     }
 

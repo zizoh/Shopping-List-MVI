@@ -3,6 +3,7 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi
 import com.zizohanto.android.tobuy.presentation.event.ViewEvent
 import com.zizohanto.android.tobuy.presentation.mvi.ViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 
 sealed class ShoppingListViewState : ViewState {
     object Idle : ShoppingListViewState()
@@ -12,7 +13,7 @@ sealed class ShoppingListViewState : ViewState {
     ) : ShoppingListViewState()
 
     data class ShoppingListLoaded(
-        val shoppingLists: List<ShoppingListModel>
+        val listWithProducts: List<ShoppingListWithProductsModel>
     ) : ShoppingListViewState()
 
     object ShoppingListEmpty : ShoppingListViewState()

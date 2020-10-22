@@ -62,8 +62,7 @@ class ProductAdapter @Inject constructor() :
         holder.bind(
             getItem(holder.bindingAdapterPosition),
             editListener,
-            deleteListener,
-            holder.bindingAdapterPosition
+            deleteListener
         )
     }
 
@@ -74,8 +73,7 @@ class ProductAdapter @Inject constructor() :
         fun bind(
             product: ProductModel,
             editListener: ProductEditListener?,
-            deleteListener: ProductDeleteListener?,
-            bindingAdapterPosition: Int
+            deleteListener: ProductDeleteListener?
         ) {
 
             val textWatcher = object : TextWatcher {

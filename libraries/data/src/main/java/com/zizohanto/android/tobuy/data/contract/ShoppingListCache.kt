@@ -9,7 +9,7 @@ interface ShoppingListCache {
     suspend fun getShoppingList(id: String): ShoppingListEntity?
     suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProductsEntity?
     suspend fun getShoppingListWithProducts(id: String): ShoppingListWithProductsEntity
-    suspend fun getAllShoppingLists(): List<ShoppingListEntity>
+    suspend fun getAllShoppingLists(): List<ShoppingListWithProductsEntity>
     suspend fun deleteShoppingList(id: String)
     suspend fun deleteAllShoppingLists()
 }
