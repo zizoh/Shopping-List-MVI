@@ -79,8 +79,7 @@ class ShoppingListAdapter @Inject constructor() :
                     .setNegativeButton(it.resources.getString(R.string.cancel)) { _, _ -> }
                     .setPositiveButton(it.resources.getString(R.string.delete)) { _, _ ->
                         deleteListener?.invoke(listWithProducts.shoppingList.id)
-                    }
-                    .show()
+                    }.show()
                 true
             }
         }
@@ -100,7 +99,8 @@ class ShoppingListAdapter @Inject constructor() :
                     oldItem: ShoppingListWithProductsModel,
                     newItem: ShoppingListWithProductsModel
                 ): Boolean {
-                    return oldItem.shoppingList == newItem.shoppingList
+                    return oldItem.products.size == newItem.products.size &&
+                            oldItem.shoppingList == newItem.shoppingList
                 }
             }
     }

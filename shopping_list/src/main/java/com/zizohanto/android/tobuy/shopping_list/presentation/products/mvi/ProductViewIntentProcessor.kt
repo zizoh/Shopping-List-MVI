@@ -38,12 +38,8 @@ class ProductViewIntentProcessor @Inject constructor(
                 }
             }
             is ProductViewIntent.SaveProduct -> flow {
-                saveProduct(
-                    productMapper.mapToDomain(viewIntent.product),
-                    listMapper.mapToDomain(viewIntent.shoppingList)
-                )
-
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
+                saveProduct(product, listMapper.mapToDomain(viewIntent.shoppingList))
                 emit(ProductViewResult.ProductSaved(product))
             }
             is ProductViewIntent.DeleteProduct -> flow {
@@ -65,19 +61,7 @@ class ProductViewIntentProcessor @Inject constructor(
         shoppingListId: String
     ): Flow<ProductsViewResult> {
         return getShoppingListWithProducts(shoppingListId)
-            .map { listWithProducts ->
-                ProductViewResult.Success(
-                    listWithProducts.copy(
-                        products = sortList(listWithProducts.products)
-                    )
-                )
-            }.catch { error ->
-                error.printStackTrace()
-            }
+            .map(ProductViewResult::Success)
+            .catch { error -> error.printStackTrace() }
     }
-
-    private fun sortList(products: List<Product>): List<Product> {
-        return products.sortedBy { it.dateAdded }
-    }
-
 }
