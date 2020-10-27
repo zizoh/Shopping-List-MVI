@@ -9,13 +9,13 @@ class ProductEntityMapper @Inject constructor() : EntityMapper<ProductEntity, Pr
 
     override fun mapFromEntity(entity: ProductEntity): Product {
         return entity.run {
-            Product(id, shoppingListId, name, price, dateAdded)
+            Product(id, shoppingListId, name, price, position)
         }
     }
 
     override fun mapToEntity(domain: Product): ProductEntity {
         return domain.run {
-            ProductEntity(id, shoppingListId, name, price, dateAdded)
+            ProductEntity(id, shoppingListId, name, price, position)
         }
     }
 }

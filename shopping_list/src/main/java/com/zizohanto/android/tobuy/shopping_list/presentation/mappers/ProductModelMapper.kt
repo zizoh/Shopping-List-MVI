@@ -14,7 +14,7 @@ class ProductModelMapper @Inject constructor() : ModelMapper<ProductModel, Produ
                 shoppingListId,
                 name,
                 price,
-                dateAdded
+                position
             )
         }
     }
@@ -26,7 +26,7 @@ class ProductModelMapper @Inject constructor() : ModelMapper<ProductModel, Produ
                 shoppingListId,
                 name,
                 price,
-                dateAdded
+                position
             )
         }
     }

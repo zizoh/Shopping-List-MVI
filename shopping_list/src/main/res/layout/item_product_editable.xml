@@ -23,10 +23,11 @@
         android:layout_marginEnd="8dp"
         android:background="@android:color/transparent"
         android:hint="@string/product"
-        android:inputType="none"
+        android:imeOptions="actionDone"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:textColor="@color/black"
+        android:inputType="text"
         app:layout_constraintEnd_toStartOf="@id/remove"
         app:layout_constraintStart_toEndOf="@id/checkbox"
         app:layout_constraintTop_toTopOf="@id/checkbox" />

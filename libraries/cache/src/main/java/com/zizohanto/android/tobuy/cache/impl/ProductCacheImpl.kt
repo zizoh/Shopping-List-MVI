@@ -13,8 +13,50 @@ class ProductCacheImpl @Inject constructor(
 ) : ProductCache {
 
     override suspend fun saveProduct(productEntity: ProductEntity) {
-        val cacheModel: ProductCacheModel = mapper.mapToModel(productEntity)
-        dao.insertProduct(cacheModel)
+        val newProduct: ProductCacheModel = mapper.mapToModel(productEntity)
+        val cachedProduct: ProductCacheModel? =
+            dao.getProductAtPosition(
+                newProduct.position,
+                newProduct.shoppingListId
+            )
+        when {
+            cachedProduct == null -> dao.insertProduct(newProduct)
+            dao.productExists(newProduct.id) -> dao.updateProduct(newProduct)
+            else -> updateProductsPosition(newProduct)
+        }
+
+    }
+
+    private suspend fun updateProductsPosition(newProduct: ProductCacheModel) {
+        val allProductsForId: List<ProductCacheModel> =
+            dao.getProducts(newProduct.shoppingListId)
+        var pos: Int = newProduct.position
+        val newList: MutableList<ProductCacheModel> = allProductsForId.map { model ->
+            if (pos == model.position) {
+                model.copy(position = ++pos)
+            } else model
+        }.toMutableList()
+        newList.add(newProduct)
+        dao.insertProduct(newList)
+    }
+
+    override suspend fun makeNewProduct(shoppingListId: String): ProductEntity {
+        val position: Int? = dao.getLastPosition(shoppingListId)
+        return if (position != null) {
+            mapper.mapToEntity(
+                ProductCacheModel(
+                    shoppingListId = shoppingListId,
+                    position = position + 1
+                )
+            )
+        } else {
+            mapper.mapToEntity(
+                ProductCacheModel(
+                    shoppingListId = shoppingListId,
+                    position = 0
+                )
+            )
+        }
     }
 
     override suspend fun getProduct(id: String): ProductEntity {
@@ -34,4 +76,14 @@ class ProductCacheImpl @Inject constructor(
     override suspend fun deleteAllProducts() {
         dao.deleteAllProducts()
     }
+
+    override suspend fun makeNewProductAtPosition(
+        shoppingListId: String,
+        position: Int
+    ): ProductEntity = mapper.mapToEntity(
+        ProductCacheModel(
+            shoppingListId = shoppingListId,
+            position = position
+        )
+    )
 }

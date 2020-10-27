@@ -68,6 +68,7 @@ class ProductFragment : Fragment(R.layout.fragment_products),
             loadShoppingListWithProducts.asFlow(),
             binding.productsView.saveShoppingList(args.shoppingList),
             binding.productsView.createNewProduct(args.shoppingList),
+            binding.productsView.addNewProductAtPosition(args.shoppingList),
             binding.productsView.saveProduct(args.shoppingList),
             binding.productsView.intents
         )

@@ -96,6 +96,20 @@ class ProductViewStateReducer @Inject constructor(
                 ProductViewState.DeleteShoppingList
             }
             is Error -> TODO()
+            is ProductViewResult.ProductAddedAtPosition -> when (previous) {
+                ProductsViewState.Idle -> ProductsViewState.Idle
+                is ProductViewState.Success -> {
+                    val product: ProductModel = productMapper.mapToModel(result.product)
+                    val updatedList: MutableList<ProductModel> =
+                        previous.listWithProducts.products.toMutableList()
+                            .apply { add(result.index, product) }
+                    ProductViewState.Success(previous.listWithProducts.copy(products = updatedList))
+                }
+                ProductViewState.DeleteShoppingList -> TODO()
+
+                is ProductsViewState.Error -> TODO()
+
+            }
         }
     }
 

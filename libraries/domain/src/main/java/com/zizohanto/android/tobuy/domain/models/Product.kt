@@ -5,5 +5,5 @@ data class Product(
     val shoppingListId: String,
     val name: String,
     val price: Double,
-    val dateAdded: Long
+    val position: Int
 )
