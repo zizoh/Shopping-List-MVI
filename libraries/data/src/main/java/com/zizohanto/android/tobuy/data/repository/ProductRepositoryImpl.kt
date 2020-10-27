@@ -12,7 +12,6 @@ import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
@@ -39,8 +38,10 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override fun createProduct(shoppingListId: String): Flow<Product> {
-        val productEntity = ProductEntity(shoppingListId = shoppingListId)
-        return flowOf(mapper.mapFromEntity(productEntity))
+        return flow {
+            val productEntity: ProductEntity = productCache.makeNewProduct(shoppingListId)
+            emit(mapper.mapFromEntity(productEntity))
+        }
     }
 
     override fun getProduct(id: String): Flow<Product> {
@@ -54,7 +55,7 @@ class ProductRepositoryImpl @Inject constructor(
         return flow {
             val productEntities: List<ProductEntity> = productCache.getProducts(shoppingListId)
             if (productEntities.isEmpty()) {
-                val productEntity = ProductEntity(shoppingListId = shoppingListId)
+                val productEntity: ProductEntity = productCache.makeNewProduct(shoppingListId)
                 val listWithNewProduct: List<Product> = listOf(mapper.mapFromEntity(productEntity))
                 emit(listWithNewProduct)
             } else emit(mapper.mapFromEntityList(productEntities))
@@ -67,6 +68,14 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllProducts() {
         productCache.deleteAllProducts()
+    }
+
+    override fun createProductAtPosition(shoppingListId: String, position: Int): Flow<Product> {
+        return flow {
+            val productEntity: ProductEntity =
+                productCache.makeNewProductAtPosition(shoppingListId, position)
+            emit(mapper.mapFromEntity(productEntity))
+        }
     }
 
 }

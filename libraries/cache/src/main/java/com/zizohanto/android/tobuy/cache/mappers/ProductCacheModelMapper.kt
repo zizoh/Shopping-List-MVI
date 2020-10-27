@@ -10,13 +10,13 @@ class ProductCacheModelMapper @Inject constructor() :
 
     override fun mapToModel(entity: ProductEntity): ProductCacheModel {
         return entity.run {
-            ProductCacheModel(id, shoppingListId, name, price, dateAdded)
+            ProductCacheModel(id, shoppingListId, name, price, position)
         }
     }
 
     override fun mapToEntity(model: ProductCacheModel): ProductEntity {
         return model.run {
-            ProductEntity(id, shoppingListId, name, price, dateAdded)
+            ProductEntity(id, shoppingListId, name, price, position)
         }
     }
 }

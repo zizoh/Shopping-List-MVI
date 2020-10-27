@@ -16,13 +16,13 @@ class ShoppingListWithProductsCacheModelMapper @Inject constructor(
         val shoppingList: ShoppingListCacheModel =
             shoppingListMapper.mapToModel(entity.shoppingListEntity)
         val products: List<ProductCacheModel> =
-            productsMapper.mapToModelList(entity.productEntities).sortedBy { it.dateAdded }
+            productsMapper.mapToModelList(entity.productEntities).sortedBy { it.position }
         return ShoppingListWithProductsCacheModel(shoppingList, products)
     }
 
     override fun mapToEntity(model: ShoppingListWithProductsCacheModel): ShoppingListWithProductsEntity {
         val shoppingList = shoppingListMapper.mapToEntity(model.shoppingList)
-        val products = productsMapper.mapToEntityList(model.products).sortedBy { it.dateAdded }
+        val products = productsMapper.mapToEntityList(model.products).sortedBy { it.position }
         return ShoppingListWithProductsEntity(shoppingList, products)
     }
 }

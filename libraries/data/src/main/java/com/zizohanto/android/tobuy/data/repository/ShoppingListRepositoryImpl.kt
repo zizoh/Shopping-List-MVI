@@ -1,10 +1,10 @@
 package com.zizohanto.android.tobuy.data.repository
 
+import com.zizohanto.android.tobuy.data.contract.ProductCache
 import com.zizohanto.android.tobuy.data.contract.ShoppingListCache
 import com.zizohanto.android.tobuy.data.mappers.ProductEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListEntityMapper
 import com.zizohanto.android.tobuy.data.mappers.ShoppingListWithProductsEntityMapper
-import com.zizohanto.android.tobuy.data.models.ProductEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
 import com.zizohanto.android.tobuy.data.utils.DateUtils.getCurrentTime
@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 class ShoppingListRepositoryImpl @Inject constructor(
     private val shoppingListCache: ShoppingListCache,
+    private val productCache: ProductCache,
     private val listMapper: ShoppingListEntityMapper,
     private val listWithProductsMapper: ShoppingListWithProductsEntityMapper,
     private val productMapper: ProductEntityMapper
@@ -71,10 +72,8 @@ class ShoppingListRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun addNewProduct(id: String): List<Product> {
-        val newProduct = ProductEntity(shoppingListId = id)
-        return listOf(productMapper.mapFromEntity(newProduct))
-    }
+    private suspend fun addNewProduct(id: String): List<Product> =
+        listOf(productMapper.mapFromEntity(productCache.makeNewProduct(id)))
 
     override fun getAllShoppingLists(): Flow<List<ShoppingListWithProducts>> {
         return flow {

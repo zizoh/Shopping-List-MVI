@@ -3,6 +3,7 @@ package com.zizohanto.android.tobuy.shopping_list.ui.products.adapter
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,13 +21,14 @@ import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
 
 typealias ProductEditListener = (ProductModel) -> Unit
-
 typealias ProductDeleteListener = (ProductModel) -> Unit
+typealias AddNewProductListener = (Int, Int) -> Unit
 
 class ProductAdapter @Inject constructor() :
     ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
 
     private var editListener: ProductEditListener? = null
+    var addNewProductListener: AddNewProductListener? = null
 
     val edits: Flow<ProductModel>
         get() = callbackFlow {
@@ -62,7 +64,8 @@ class ProductAdapter @Inject constructor() :
         holder.bind(
             getItem(holder.bindingAdapterPosition),
             editListener,
-            deleteListener
+            deleteListener,
+            addNewProductListener
         )
     }
 
@@ -73,7 +76,8 @@ class ProductAdapter @Inject constructor() :
         fun bind(
             product: ProductModel,
             editListener: ProductEditListener?,
-            deleteListener: ProductDeleteListener?
+            deleteListener: ProductDeleteListener?,
+            addNewProductListener: AddNewProductListener?
         ) {
 
             val textWatcher = object : TextWatcher {
@@ -108,6 +112,13 @@ class ProductAdapter @Inject constructor() :
 
             binding.remove.setOnClickListener {
                 deleteListener?.invoke(product)
+            }
+
+            binding.productName.setOnEditorActionListener { _, action, _ ->
+                if (action == EditorInfo.IME_ACTION_DONE) {
+                    addNewProductListener?.invoke(product.position, absoluteAdapterPosition)
+                    true
+                } else false
             }
         }
 

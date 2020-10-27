@@ -23,6 +23,7 @@ class ProductViewIntentProcessor @Inject constructor(
     private val saveShoppingList: SaveShoppingList,
     private val listMapper: ShoppingListModelMapper,
     private val createProduct: CreateProduct,
+    private val createProductAtPosition: CreateProductAtPosition,
     private val deleteProduct: DeleteProduct
 ) : ProductIntentProcessor {
 
@@ -54,6 +55,11 @@ class ProductViewIntentProcessor @Inject constructor(
                 emit(ProductViewResult.ShoppingListSaved(shoppingList))
             }
             is DeleteShoppingList -> flowOf(ProductViewResult.ShoppingListDeleted)
+            is AddNewProductAtPosition -> createProductAtPosition(
+                Pair(viewIntent.shoppingListId, viewIntent.position + 1)
+            ).map { product ->
+                ProductViewResult.ProductAddedAtPosition(product, viewIntent.index + 1)
+            }
         }
     }
 
