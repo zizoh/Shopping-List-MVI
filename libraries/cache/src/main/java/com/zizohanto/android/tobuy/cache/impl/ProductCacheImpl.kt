@@ -37,7 +37,7 @@ class ProductCacheImpl @Inject constructor(
             } else model
         }.toMutableList()
         newList.add(newProduct)
-        dao.insertProduct(newList)
+        dao.insertProducts(newList)
     }
 
     override suspend fun makeNewProduct(shoppingListId: String): ProductEntity {

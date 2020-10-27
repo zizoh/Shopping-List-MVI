@@ -13,7 +13,7 @@ interface ProductDao {
     suspend fun updateProduct(product: ProductCacheModel)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProduct(product: List<ProductCacheModel>)
+    suspend fun insertProducts(product: List<ProductCacheModel>)
 
     @Query("SELECT * FROM product WHERE id=:productId")
     suspend fun getProductWithId(productId: String): ProductCacheModel

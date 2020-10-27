@@ -2,21 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Artic" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/MvRx" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Pokedex" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Starwarssearch" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/android-paging" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/android-showcase" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/clean-architecture-components-boilerplate" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/design_patterns/Design-Patterns-In-Kotlin" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/flighty" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/interactive-ink-examples-android" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/iosched" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/kotlin-coroutines" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/plugin-app" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/tivi" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/tobuy" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/unit-testing-in-android-course" vcs="Git" />
   </component>
 </project>
