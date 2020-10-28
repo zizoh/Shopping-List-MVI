@@ -54,7 +54,7 @@ class ProductViewHolder(
 
         binding.productName.setOnEditorActionListener { _, action, _ ->
             if (action == EditorInfo.IME_ACTION_DONE) {
-                addNewProductListener?.invoke(product.position, absoluteAdapterPosition)
+                addNewProductListener?.invoke(product.position, absoluteAdapterPosition - 1)
                 true
             } else false
         }

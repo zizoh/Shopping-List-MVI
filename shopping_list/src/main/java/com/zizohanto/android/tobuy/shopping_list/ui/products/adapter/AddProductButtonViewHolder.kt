@@ -12,7 +12,7 @@ class AddProductButtonViewHolder(
         addNewProductListener: AddNewProductListener?
     ) {
         binding.addNewProduct.setOnClickListener {
-            addNewProductListener?.invoke(lastItemPosition, absoluteAdapterPosition)
+            addNewProductListener?.invoke(lastItemPosition, absoluteAdapterPosition - 2)
         }
     }
 }

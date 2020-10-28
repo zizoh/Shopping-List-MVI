@@ -10,7 +10,6 @@ import com.zizohanto.android.tobuy.core.ext.inflate
 import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListBinding
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter.ShoppingListViewHolder
 import kotlinx.coroutines.channels.awaitClose
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
 
-typealias ShoppingListClickListener = (ShoppingListModel) -> Unit
+typealias ShoppingListClickListener = (String) -> Unit
 
 typealias ShoppingListDeleteListener = (String) -> Unit
 
@@ -67,7 +66,7 @@ class ShoppingListAdapter @Inject constructor() :
         fun bind(listWithProducts: ShoppingListWithProductsModel) {
             binding.title.text = listWithProducts.shoppingList.name
             val clickListener: (v: View) -> Unit = {
-                clickListener?.invoke(listWithProducts.shoppingList)
+                clickListener?.invoke(listWithProducts.shoppingList.id)
             }
             binding.rvProducts.adapter =
                 SimpleProductAdapter(listWithProducts.products, clickListener)

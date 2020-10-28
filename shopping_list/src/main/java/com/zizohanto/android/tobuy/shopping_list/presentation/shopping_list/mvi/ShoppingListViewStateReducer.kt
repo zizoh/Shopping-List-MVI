@@ -29,7 +29,7 @@ class ShoppingListViewStateReducer @Inject constructor(
             }
             is ShoppingListViewResult.NewShoppingListCreated -> {
                 val shoppingList: ShoppingListModel = listMapper.mapToModel(result.shoppingList)
-                ShoppingListViewState.NewShoppingListLoaded(ViewEvent(shoppingList))
+                ShoppingListViewState.NewShoppingListLoaded(ViewEvent(shoppingList.id))
             }
             is ShoppingListViewResult.ShoppingListDeleted -> {
                 when (previous) {
