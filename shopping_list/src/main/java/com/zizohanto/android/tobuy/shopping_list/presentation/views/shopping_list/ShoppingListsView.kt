@@ -9,7 +9,7 @@ import com.zizohanto.android.tobuy.core.ext.getImage
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
-import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcherImpl
+import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
@@ -29,7 +29,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
     lateinit var shoppingListAdapter: ShoppingListAdapter
 
     @Inject
-    lateinit var navigator: NavigationDispatcherImpl
+    lateinit var navigator: NavigationDispatcher
 
     private var binding: LayoutShoppingListBinding
 
@@ -93,7 +93,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                 }
             }
             is ShoppingListViewState.NewShoppingListLoaded -> {
-                state.shoppingList.consume(navigator::openShoppingListDetail)
+                state.openProductScreen.consume(navigator::openShoppingListDetail)
             }
         }
     }

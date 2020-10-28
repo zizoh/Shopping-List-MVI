@@ -3,12 +3,10 @@ package com.zizohanto.android.tobuy.data.repository
 import com.zizohanto.android.tobuy.data.contract.ProductCache
 import com.zizohanto.android.tobuy.data.contract.ShoppingListCache
 import com.zizohanto.android.tobuy.data.mappers.ProductEntityMapper
-import com.zizohanto.android.tobuy.data.mappers.ShoppingListEntityMapper
 import com.zizohanto.android.tobuy.data.models.ProductEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
 import com.zizohanto.android.tobuy.data.utils.DateUtils.getCurrentTime
 import com.zizohanto.android.tobuy.domain.models.Product
-import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,15 +15,14 @@ import javax.inject.Inject
 class ProductRepositoryImpl @Inject constructor(
     private val productCache: ProductCache,
     private val shoppingListCache: ShoppingListCache,
-    private val mapper: ProductEntityMapper,
-    private val listMapper: ShoppingListEntityMapper
+    private val mapper: ProductEntityMapper
 ) : ProductRepository {
 
-    override suspend fun saveProduct(product: Product, shoppingList: ShoppingList) {
+    override suspend fun saveProduct(product: Product, shoppingListId: String) {
         val shoppingListEntity: ShoppingListEntity? =
-            shoppingListCache.getShoppingList(shoppingList.id)
+            shoppingListCache.getShoppingList(shoppingListId)
         if (shoppingListEntity == null) {
-            shoppingListCache.saveShoppingList(listMapper.mapToEntity(shoppingList))
+            shoppingListCache.saveShoppingList(ShoppingListEntity(id = shoppingListId))
         } else {
             shoppingListCache.updateShoppingList(
                 shoppingListEntity.id,

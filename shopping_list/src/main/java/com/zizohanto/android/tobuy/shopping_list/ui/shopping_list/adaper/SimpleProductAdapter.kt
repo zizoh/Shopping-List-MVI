@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zizohanto.android.tobuy.core.ext.inflate
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductBinding
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ProductModel
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter.Companion.diffUtilCallback
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.SimpleProductAdapter.SimpleProductViewHolder
 import javax.inject.Inject
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class SimpleProductAdapter @Inject constructor(
     products: List<ProductModel>,
     private val clickListener: (v: View) -> Unit
-) : ListAdapter<ProductModel, SimpleProductViewHolder>(diffUtilCallback) {
+) : ListAdapter<ProductsViewItem, SimpleProductViewHolder>(diffUtilCallback) {
 
     init {
         submitList(products)
@@ -30,7 +31,7 @@ class SimpleProductAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: SimpleProductViewHolder, position: Int) {
         holder.bind(
-            getItem(holder.bindingAdapterPosition)
+            getItem(holder.bindingAdapterPosition) as ProductModel
         )
     }
 

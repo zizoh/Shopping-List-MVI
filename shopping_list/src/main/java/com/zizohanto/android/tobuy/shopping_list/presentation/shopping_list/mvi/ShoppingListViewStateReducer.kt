@@ -5,7 +5,7 @@ import com.zizohanto.android.tobuy.core.ext.removeFirst
 import com.zizohanto.android.tobuy.presentation.event.ViewEvent
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListStateReducer
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class ShoppingListViewStateReducer @Inject constructor(
             }
             is ShoppingListViewResult.NewShoppingListCreated -> {
                 val shoppingList: ShoppingListModel = listMapper.mapToModel(result.shoppingList)
-                ShoppingListViewState.NewShoppingListLoaded(ViewEvent(shoppingList))
+                ShoppingListViewState.NewShoppingListLoaded(ViewEvent(shoppingList.id))
             }
             is ShoppingListViewResult.ShoppingListDeleted -> {
                 when (previous) {

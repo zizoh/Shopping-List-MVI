@@ -5,8 +5,8 @@ import com.zizohanto.android.tobuy.core.ext.replaceFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ProductModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductStateReducer
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult.*
@@ -43,24 +43,6 @@ class ProductViewStateReducer @Inject constructor(
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> ProductsViewState.Idle
-
-                }
-            }
-            is ProductViewResult.ProductAdded -> {
-                when (previous) {
-                    ProductsViewState.Idle -> ProductsViewState.Idle
-
-                    is ProductViewState.Success -> {
-                        val listWithProducts: ShoppingListWithProductsModel =
-                            previous.listWithProducts
-                        val mutableList = listWithProducts.products.toMutableList()
-                        val product: ProductModel = productMapper.mapToModel(result.product)
-                        mutableList.add(product)
-                        ProductViewState.Success(listWithProducts.copy(products = mutableList))
-                    }
-                    ProductViewState.DeleteShoppingList -> TODO()
-
-                    is ProductsViewState.Error -> TODO()
 
                 }
             }

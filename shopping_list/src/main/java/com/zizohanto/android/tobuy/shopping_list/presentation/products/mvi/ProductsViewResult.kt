@@ -12,7 +12,6 @@ sealed class ProductsViewResult : ViewResult {
             val listWithProducts: ShoppingListWithProducts
         ) : ProductViewResult()
 
-        data class ProductAdded(val product: Product) : ProductViewResult()
         data class ProductAddedAtPosition(val product: Product, val index: Int) :
             ProductViewResult()
 
