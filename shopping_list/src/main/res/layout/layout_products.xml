@@ -1,66 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/products"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.zizohanto.android.tobuy.shopping_list.presentation.views.product.ProductView">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="40dp">
-
-        <com.zizohanto.android.tobuy.shopping_list.presentation.views.product.CustomEditText
-            android:id="@+id/shopping_list_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/transparent"
-            android:hint="@string/title"
-            android:inputType="none"
-            android:textColor="@color/black"
-            android:textIsSelectable="true"
-            android:textSize="20sp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/products"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shopping_list_title"
-            tools:itemCount="5"
-            tools:listitem="@layout/item_product_editable"
-            tools:visibility="visible" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/add_new_product"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/white"
-            android:text="@string/add_product"
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:visibility="gone"
-            app:icon="@drawable/ic_baseline_add_24"
-            app:iconTint="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/products"
-            app:rippleColor="@color/amber_light" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical"
+    android:paddingBottom="40dp"
+    android:visibility="invisible"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:context="com.zizohanto.android.tobuy.shopping_list.presentation.views.product.ProductView"
+    tools:itemCount="5"
+    tools:listitem="@layout/item_product_editable"
+    tools:visibility="visible" />

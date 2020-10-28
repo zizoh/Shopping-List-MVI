@@ -11,7 +11,6 @@ import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.FragmentProductsBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts
@@ -40,8 +39,7 @@ class ProductFragment : Fragment(R.layout.fragment_products),
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            val shoppingList: ShoppingListModel = args.shoppingList
-            loadShoppingListWithProducts.offer(LoadShoppingListWithProducts(shoppingList.id))
+            loadShoppingListWithProducts.offer(LoadShoppingListWithProducts(args.shoppingListId))
         }
     }
 
@@ -66,10 +64,9 @@ class ProductFragment : Fragment(R.layout.fragment_products),
     override val intents: Flow<ProductsViewIntent>
         get() = merge(
             loadShoppingListWithProducts.asFlow(),
-            binding.productsView.saveShoppingList(args.shoppingList),
-            binding.productsView.createNewProduct(args.shoppingList),
-            binding.productsView.addNewProductAtPosition(args.shoppingList),
-            binding.productsView.saveProduct(args.shoppingList),
+            binding.productsView.saveShoppingList(),
+            binding.productsView.addNewProductAtPosition(args.shoppingListId),
+            binding.productsView.saveProduct(args.shoppingListId),
             binding.productsView.intents
         )
 }

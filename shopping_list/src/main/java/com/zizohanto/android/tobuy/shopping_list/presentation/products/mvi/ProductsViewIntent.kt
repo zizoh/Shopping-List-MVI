@@ -1,8 +1,8 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
 import com.zizohanto.android.tobuy.presentation.mvi.ViewIntent
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ProductModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 
 sealed class ProductsViewIntent : ViewIntent {
     object Idle : ProductsViewIntent()
@@ -14,12 +14,11 @@ sealed class ProductsViewIntent : ViewIntent {
             val shoppingListId: String,
             val position: Int,
             val index: Int
-        ) :
-            ProductViewIntent()
+        ) : ProductViewIntent()
 
         data class SaveProduct(
             val product: ProductModel,
-            val shoppingList: ShoppingListModel
+            val shoppingListId: String
         ) : ProductsViewIntent()
 
         data class DeleteProduct(val productId: String) : ProductsViewIntent()

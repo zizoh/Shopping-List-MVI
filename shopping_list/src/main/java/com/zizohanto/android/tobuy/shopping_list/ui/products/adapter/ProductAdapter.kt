@@ -1,19 +1,17 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.products.adapter
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zizohanto.android.tobuy.core.ext.inflate
 import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
+import com.zizohanto.android.tobuy.shopping_list.databinding.ItemAddProductButtonBinding
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductEditableBinding
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductModel
-import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter.ProductViewHolder
+import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListTitleBinding
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -23,22 +21,24 @@ import javax.inject.Inject
 typealias ProductEditListener = (ProductModel) -> Unit
 typealias ProductDeleteListener = (ProductModel) -> Unit
 typealias AddNewProductListener = (Int, Int) -> Unit
+typealias ShoppingListEditListener = (ShoppingListModel) -> Unit
 
 class ProductAdapter @Inject constructor() :
-    ListAdapter<ProductModel, ProductViewHolder>(diffUtilCallback) {
+    ListAdapter<ProductsViewItem, RecyclerView.ViewHolder>(diffUtilCallback) {
 
-    private var editListener: ProductEditListener? = null
+    private var productEditListener: ProductEditListener? = null
     var addNewProductListener: AddNewProductListener? = null
+    private var shoppingListEditListener: ShoppingListEditListener? = null
 
-    val edits: Flow<ProductModel>
+    val productEdits: Flow<ProductModel>
         get() = callbackFlow {
             val listener: ProductEditListener = { product ->
                 safeOffer(product)
                 Unit
             }
-            editListener = listener
+            productEditListener = listener
             awaitClose {
-                editListener = null
+                productEditListener = null
             }
         }.conflate()
 
@@ -56,88 +56,115 @@ class ProductAdapter @Inject constructor() :
             }
         }.conflate()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        return ProductViewHolder(ItemProductEditableBinding.bind(parent.inflate(R.layout.item_product_editable)))
+    val shoppingListEdits: Flow<ShoppingListModel>
+        get() = callbackFlow {
+            val listener: ShoppingListEditListener = { shoppingList ->
+                safeOffer(shoppingList)
+                Unit
+            }
+            shoppingListEditListener = listener
+            awaitClose {
+                shoppingListEditListener = null
+            }
+        }.conflate()
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is ShoppingListModel -> R.layout.item_shopping_list_title
+            is ProductModel -> R.layout.item_product_editable
+            is ButtonItem -> R.layout.item_add_product_button
+            else -> throw IllegalArgumentException("Unknown view type at position: $position")
+        }
     }
 
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(
-            getItem(holder.bindingAdapterPosition),
-            editListener,
-            deleteListener,
-            addNewProductListener
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.item_shopping_list_title -> ShoppingListTitleViewHolder(
+                ItemShoppingListTitleBinding.bind(
+                    parent.inflate(R.layout.item_shopping_list_title)
+                )
+            )
+            R.layout.item_product_editable -> ProductViewHolder(
+                ItemProductEditableBinding.bind(
+                    parent.inflate(R.layout.item_product_editable)
+                )
+            )
+            R.layout.item_add_product_button -> AddProductButtonViewHolder(
+                ItemAddProductButtonBinding.bind(
+                    parent.inflate(R.layout.item_add_product_button)
+                )
+            )
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
     }
 
-    class ProductViewHolder(
-        private val binding: ItemProductEditableBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(
-            product: ProductModel,
-            editListener: ProductEditListener?,
-            deleteListener: ProductDeleteListener?,
-            addNewProductListener: AddNewProductListener?
-        ) {
-
-            val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (isValidTextChange(s, start, before, count)) {
-                        editListener?.invoke(product.copy(name = s?.trim().toString()))
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is ShoppingListTitleViewHolder -> {
+                holder.bind(
+                    getItem(holder.bindingAdapterPosition) as ShoppingListModel,
+                    shoppingListEditListener
+                )
             }
-
-            binding.productName.setOnFocusChangeListener { _, hasFocus ->
-                binding.remove.isVisible = hasFocus
-                if (hasFocus) {
-                    binding.productName.addTextChangedListener(textWatcher)
-                } else {
-                    binding.productName.removeTextChangedListener(textWatcher)
-                }
+            is ProductViewHolder -> {
+                holder.bind(
+                    getItem(holder.bindingAdapterPosition) as ProductModel,
+                    productEditListener,
+                    deleteListener,
+                    addNewProductListener
+                )
             }
-
-            binding.productName.setText(product.name)
-
-            binding.remove.setOnClickListener {
-                deleteListener?.invoke(product)
-            }
-
-            binding.productName.setOnEditorActionListener { _, action, _ ->
-                if (action == EditorInfo.IME_ACTION_DONE) {
-                    addNewProductListener?.invoke(product.position, absoluteAdapterPosition)
-                    true
-                } else false
+            is AddProductButtonViewHolder -> {
+                holder.bind(
+                    itemCount,
+                    addNewProductListener
+                )
             }
         }
-
-        private fun isValidTextChange(
-            s: CharSequence?,
-            start: Int,
-            before: Int,
-            count: Int
-        ) = !(s.isNullOrEmpty() && start == 0 && before == 0 && count == 0)
     }
 
     companion object {
-        val diffUtilCallback: DiffUtil.ItemCallback<ProductModel>
-            get() = object : DiffUtil.ItemCallback<ProductModel>() {
-                override fun areItemsTheSame(oldItem: ProductModel, newItem: ProductModel) =
-                    oldItem.id == newItem.id
+        val diffUtilCallback: DiffUtil.ItemCallback<ProductsViewItem>
+            get() = object : DiffUtil.ItemCallback<ProductsViewItem>() {
+                override fun areItemsTheSame(
+                    oldItem: ProductsViewItem,
+                    newItem: ProductsViewItem
+                ): Boolean {
+                    return areTheSame(oldItem, newItem)
+                }
 
-                override fun areContentsTheSame(oldItem: ProductModel, newItem: ProductModel) =
-                    oldItem.id == newItem.id
+                override fun areContentsTheSame(
+                    oldItem: ProductsViewItem,
+                    newItem: ProductsViewItem
+                ): Boolean {
+                    return areTheSame(oldItem, newItem)
+                }
             }
+
+        private fun areTheSame(
+            oldItem: ProductsViewItem,
+            newItem: ProductsViewItem
+        ): Boolean {
+            return when (oldItem) {
+                is ShoppingListModel -> {
+                    when (newItem) {
+                        is ShoppingListModel -> oldItem.id == newItem.id
+                        else -> false
+                    }
+                }
+                is ProductModel -> {
+                    when (newItem) {
+                        is ProductModel -> oldItem.id == newItem.id
+                        else -> false
+                    }
+                }
+                ButtonItem -> {
+                    when (newItem) {
+                        is ButtonItem -> oldItem == newItem
+                        else -> false
+                    }
+                }
+            }
+        }
     }
 }

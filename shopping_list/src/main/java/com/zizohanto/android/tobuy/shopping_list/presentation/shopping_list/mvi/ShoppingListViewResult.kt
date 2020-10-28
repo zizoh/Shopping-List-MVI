@@ -8,8 +8,9 @@ sealed class ShoppingListViewResult : ViewResult {
     object Idle : ShoppingListViewResult()
     object Loading : ShoppingListViewResult()
     data class NewShoppingListCreated(val shoppingList: ShoppingList) : ShoppingListViewResult()
-    data class Success(val listWithProducts: List<ShoppingListWithProducts>) :
-        ShoppingListViewResult()
+    data class Success(
+        val listWithProducts: List<ShoppingListWithProducts>
+    ) : ShoppingListViewResult()
 
     data class ShoppingListDeleted(val shoppingListId: String) : ShoppingListViewResult()
     object Empty : ShoppingListViewResult()

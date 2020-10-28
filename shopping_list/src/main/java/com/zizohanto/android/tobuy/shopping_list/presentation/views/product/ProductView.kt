@@ -8,19 +8,19 @@ import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutProductsBinding
-import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.products.DEBOUNCE_PERIOD
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter
-import com.zizohanto.android.tobuy.shopping_list.ui.products.checkDistinct
-import com.zizohanto.android.tobuy.shopping_list.ui.products.textChanges
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
-import reactivecircus.flowbinding.android.view.clicks
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,48 +54,41 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
             ProductsViewState.Idle -> {
             }
             is ProductViewState.Success -> {
-                if (!binding.shoppingListTitle.textHasChanged()) {
-                    binding.shoppingListTitle.setText(state.listWithProducts.shoppingList.name)
-                }
-                binding.shoppingListTitle.setChanged(false)
-                productAdapter.submitList(state.listWithProducts.products)
-
-                binding.shoppingListTitle.isVisible = true
                 binding.products.isVisible = true
-                binding.addNewProduct.isVisible = true
+                val viewItems: MutableList<ProductsViewItem> =
+                    mutableListOf<ProductsViewItem>().apply {
+                        add(state.listWithProducts.shoppingList)
+                        addAll(state.listWithProducts.products)
+                        add(ProductsViewItem.ButtonItem)
+                    }
+                productAdapter.submitList(viewItems)
             }
             ProductViewState.DeleteShoppingList -> TODO()
             is ProductsViewState.Error -> TODO()
         }
     }
 
-    fun saveShoppingList(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
-        return binding.shoppingListTitle.textChanges.checkDistinct
-            .onEach { binding.shoppingListTitle.setChanged(true) }
-            .map { ProductViewIntent.SaveShoppingList(shoppingList.copy(name = it)) }
-    }
-
-    fun saveProduct(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
-        return productAdapter.edits.debounce(DEBOUNCE_PERIOD).map { product ->
-            ProductViewIntent.SaveProduct(product, shoppingList)
+    fun saveShoppingList(): Flow<ProductsViewIntent> {
+        return productAdapter.shoppingListEdits.debounce(DEBOUNCE_PERIOD).map { shoppingList ->
+            ProductViewIntent.SaveShoppingList(shoppingList.copy(name = shoppingList.name))
         }
     }
 
-    fun createNewProduct(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
-        return binding.addNewProduct.clicks().map {
-            ProductViewIntent.AddNewProduct(shoppingList.id)
+    fun saveProduct(shoppingListId: String): Flow<ProductsViewIntent> {
+        return productAdapter.productEdits.debounce(DEBOUNCE_PERIOD).map { product ->
+            ProductViewIntent.SaveProduct(product, shoppingListId)
         }
     }
 
-    fun addNewProductAtPosition(shoppingList: ShoppingListModel): Flow<ProductsViewIntent> {
+    fun addNewProductAtPosition(shoppingListId: String): Flow<ProductsViewIntent> {
         return addNewProductIntent.asFlow().map { (pos, index) ->
-            ProductViewIntent.AddNewProductAtPosition(shoppingList.id, pos, index)
+            ProductViewIntent.AddNewProductAtPosition(shoppingListId, pos, index)
         }
     }
 
     private val deleteProductIntent: Flow<ProductsViewIntent>
-        get() = productAdapter.deletes.map { product ->
-            ProductViewIntent.DeleteProduct(product.id)
+        get() = productAdapter.deletes.map { (id) ->
+            ProductViewIntent.DeleteProduct(id)
         }
 
     override val intents: Flow<ProductsViewIntent>
