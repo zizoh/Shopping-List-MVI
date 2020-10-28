@@ -39,6 +39,4 @@ class ShoppingListTitleViewHolder(
 
         binding.shoppingListTitle.setText(shoppingList.name)
     }
-
 }
-

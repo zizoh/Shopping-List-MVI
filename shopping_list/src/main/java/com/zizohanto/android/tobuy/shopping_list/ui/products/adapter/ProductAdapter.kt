@@ -116,7 +116,7 @@ class ProductAdapter @Inject constructor() :
             }
             is AddProductButtonViewHolder -> {
                 holder.bind(
-                    itemCount,
+                    { getItem(holder.bindingAdapterPosition - 1) },
                     addNewProductListener
                 )
             }
@@ -158,12 +158,7 @@ class ProductAdapter @Inject constructor() :
                         else -> false
                     }
                 }
-                ButtonItem -> {
-                    when (newItem) {
-                        is ButtonItem -> oldItem == newItem
-                        else -> false
-                    }
-                }
+                ButtonItem -> true
             }
         }
     }
