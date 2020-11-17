@@ -36,7 +36,9 @@ class ProductViewHolder(
 
         binding.productName.setOnEditorActionListener { _, action, _ ->
             if (action == EditorInfo.IME_ACTION_DONE) {
-                listener?.onAddNewProduct(product.position)
+                if (product.name.isNotEmpty()) {
+                    listener?.onAddNewProduct(product.position)
+                }
                 true
             } else false
         }
