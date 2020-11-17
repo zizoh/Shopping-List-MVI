@@ -52,7 +52,15 @@ class ProductAdapter @Inject constructor() :
 
                 override fun onAddNewProduct(position: Int) {
                     val shoppingListId: String = getShoppingListId()
-                    safeOffer(ProductViewIntent.AddNewProductAtPosition(shoppingListId, position))
+                    val lastProduct: ProductModel = getItem(itemCount - 2) as ProductModel
+                    if (lastProduct.name.isNotEmpty()) {
+                        safeOffer(
+                            ProductViewIntent.AddNewProductAtPosition(
+                                shoppingListId,
+                                position
+                            )
+                        )
+                    }
                 }
 
                 override fun onShoppingListEdit(shoppingList: ShoppingListModel) {
