@@ -12,61 +12,64 @@ import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductEditable
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListTitleBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.*
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent.ProductViewIntent
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
 
-typealias ProductEditListener = (ProductModel) -> Unit
-typealias ProductDeleteListener = (ProductModel) -> Unit
-typealias AddNewProductListener = (Int, Int) -> Unit
-typealias ShoppingListEditListener = (ShoppingListModel) -> Unit
+interface ProductViewListener {
+    fun onProductEdit(product: ProductModel)
+    fun onProductDelete(product: ProductModel)
+    fun onAddNewProduct(position: Int)
+    fun onShoppingListEdit(shoppingList: ShoppingListModel)
+}
 
 class ProductAdapter @Inject constructor() :
     ListAdapter<ProductsViewItem, RecyclerView.ViewHolder>(diffUtilCallback) {
 
-    private var productEditListener: ProductEditListener? = null
-    var addNewProductListener: AddNewProductListener? = null
-    private var shoppingListEditListener: ShoppingListEditListener? = null
+    lateinit var coroutineScope: CoroutineScope
+    private var productViewListener: ProductViewListener? = null
 
-    val productEdits: Flow<ProductModel>
+    val intents: Flow<ProductsViewIntent>
         get() = callbackFlow {
-            val listener: ProductEditListener = { product ->
-                safeOffer(product)
-                Unit
-            }
-            productEditListener = listener
-            awaitClose {
-                productEditListener = null
-            }
-        }.conflate()
+            val listener: ProductViewListener = object : ProductViewListener {
+                override fun onProductEdit(product: ProductModel) {
+                    val shoppingListId: String = getShoppingListId()
+                    safeOffer(
+                        ProductViewIntent.SaveProduct(
+                            product,
+                            shoppingListId
+                        )
+                    )
+                }
 
-    private var deleteListener: ProductDeleteListener? = null
+                override fun onProductDelete(product: ProductModel) {
+                    safeOffer(ProductViewIntent.DeleteProduct(product))
+                }
 
-    val deletes: Flow<ProductModel>
-        get() = callbackFlow {
-            val listener: ProductDeleteListener = { product ->
-                safeOffer(product)
-                Unit
-            }
-            deleteListener = listener
-            awaitClose {
-                deleteListener = null
-            }
-        }.conflate()
+                override fun onAddNewProduct(position: Int) {
+                    val shoppingListId: String = getShoppingListId()
+                    safeOffer(ProductViewIntent.AddNewProductAtPosition(shoppingListId, position))
+                }
 
-    val shoppingListEdits: Flow<ShoppingListModel>
-        get() = callbackFlow {
-            val listener: ShoppingListEditListener = { shoppingList ->
-                safeOffer(shoppingList)
-                Unit
+                override fun onShoppingListEdit(shoppingList: ShoppingListModel) {
+                    safeOffer(
+                        ProductViewIntent.SaveShoppingList(
+                            shoppingList.copy(name = shoppingList.name)
+                        )
+                    )
+                }
+
+                private fun getShoppingListId() = (getItem(0) as ShoppingListModel).id
             }
-            shoppingListEditListener = listener
+            productViewListener = listener
             awaitClose {
-                shoppingListEditListener = null
+                productViewListener = null
             }
-        }.conflate()
+        }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -82,7 +85,7 @@ class ProductAdapter @Inject constructor() :
             R.layout.item_shopping_list_title -> ShoppingListTitleViewHolder(
                 ItemShoppingListTitleBinding.bind(
                     parent.inflate(R.layout.item_shopping_list_title)
-                )
+                ),
             )
             R.layout.item_product_editable -> ProductViewHolder(
                 ItemProductEditableBinding.bind(
@@ -103,22 +106,19 @@ class ProductAdapter @Inject constructor() :
             is ShoppingListTitleViewHolder -> {
                 holder.bind(
                     getItem(holder.bindingAdapterPosition) as ShoppingListModel,
-                    shoppingListEditListener
+                    productViewListener,
+                    coroutineScope
                 )
             }
             is ProductViewHolder -> {
                 holder.bind(
                     getItem(holder.bindingAdapterPosition) as ProductModel,
-                    productEditListener,
-                    deleteListener,
-                    addNewProductListener
+                    productViewListener,
+                    coroutineScope
                 )
             }
             is AddProductButtonViewHolder -> {
-                holder.bind(
-                    { getItem(holder.bindingAdapterPosition - 1) },
-                    addNewProductListener
-                )
+                holder.bind(itemCount - 3, productViewListener)
             }
         }
     }

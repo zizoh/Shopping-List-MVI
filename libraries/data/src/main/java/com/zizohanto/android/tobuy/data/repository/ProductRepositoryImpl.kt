@@ -59,15 +59,19 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteProduct(id: String) {
-        productCache.deleteProduct(id)
+    override suspend fun deleteProduct(product: Product) {
+        val productEntity: ProductEntity = mapper.mapToEntity(product)
+        productCache.deleteProduct(productEntity)
     }
 
     override suspend fun deleteAllProducts() {
         productCache.deleteAllProducts()
     }
 
-    override fun createProductAtPosition(shoppingListId: String, position: Int): Flow<Product> {
+    override fun createProductAtPosition(
+        shoppingListId: String,
+        position: Int
+    ): Flow<Product> {
         return flow {
             val productEntity: ProductEntity =
                 productCache.makeNewProductAtPosition(shoppingListId, position)

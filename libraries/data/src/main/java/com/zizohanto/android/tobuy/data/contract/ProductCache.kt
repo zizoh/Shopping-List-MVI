@@ -7,7 +7,10 @@ interface ProductCache {
     suspend fun makeNewProduct(shoppingListId: String): ProductEntity
     suspend fun getProduct(id: String): ProductEntity
     suspend fun getProducts(id: String): List<ProductEntity>
-    suspend fun deleteProduct(id: String)
+    suspend fun deleteProduct(productEntity: ProductEntity)
     suspend fun deleteAllProducts()
-    suspend fun makeNewProductAtPosition(shoppingListId: String, position: Int): ProductEntity
+    suspend fun makeNewProductAtPosition(
+        shoppingListId: String,
+        position: Int
+    ): ProductEntity
 }

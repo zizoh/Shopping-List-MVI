@@ -84,11 +84,10 @@ class ProductViewStateReducer @Inject constructor(
                     val product: ProductModel = productMapper.mapToModel(result.product)
                     val updatedList: MutableList<ProductModel> =
                         previous.listWithProducts.products.toMutableList()
-                            .apply { add(result.index, product) }
+                            .apply { add(product.position, product) }
                     ProductViewState.Success(previous.listWithProducts.copy(products = updatedList))
                 }
                 ProductViewState.DeleteShoppingList -> TODO()
-
                 is ProductsViewState.Error -> TODO()
 
             }

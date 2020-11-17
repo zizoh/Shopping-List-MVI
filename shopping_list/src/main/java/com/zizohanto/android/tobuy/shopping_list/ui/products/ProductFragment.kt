@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import com.zizohanto.android.tobuy.core.ext.observe
 import com.zizohanto.android.tobuy.core.view_binding.viewBinding
@@ -51,6 +52,7 @@ class ProductFragment : Fragment(R.layout.fragment_products),
             navigationDispatcher.goBack()
         }
 
+        binding.productsView.setCoroutineScope(viewModel.viewModelScope)
         viewModel.processIntent(intents)
     }
 
@@ -64,9 +66,6 @@ class ProductFragment : Fragment(R.layout.fragment_products),
     override val intents: Flow<ProductsViewIntent>
         get() = merge(
             loadShoppingListWithProducts.asFlow(),
-            binding.productsView.saveShoppingList(),
-            binding.productsView.addNewProductAtPosition(args.shoppingListId),
-            binding.productsView.saveProduct(args.shoppingListId),
             binding.productsView.intents
         )
 }

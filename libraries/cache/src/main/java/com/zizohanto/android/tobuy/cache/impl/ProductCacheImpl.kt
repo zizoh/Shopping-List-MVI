@@ -69,8 +69,20 @@ class ProductCacheImpl @Inject constructor(
         return mapper.mapToEntityList(cacheModels)
     }
 
-    override suspend fun deleteProduct(id: String) {
-        dao.deleteProduct(id)
+    override suspend fun deleteProduct(productEntity: ProductEntity) {
+        dao.deleteProduct(productEntity.id)
+        val allProductsForId: List<ProductCacheModel> =
+            dao.getProducts(productEntity.shoppingListId)
+        val position: Int = productEntity.position
+        val newList: MutableList<ProductCacheModel> = allProductsForId.map { model ->
+            when (model.position) {
+                in position..allProductsForId.size -> {
+                    model.copy(position = model.position - 1)
+                }
+                else -> model
+            }
+        }.toMutableList()
+        dao.insertProducts(newList)
     }
 
     override suspend fun deleteAllProducts() {
@@ -80,10 +92,23 @@ class ProductCacheImpl @Inject constructor(
     override suspend fun makeNewProductAtPosition(
         shoppingListId: String,
         position: Int
-    ): ProductEntity = mapper.mapToEntity(
-        ProductCacheModel(
+    ): ProductEntity {
+        val product = ProductCacheModel(
             shoppingListId = shoppingListId,
             position = position
         )
-    )
+        val allProductsForId: List<ProductCacheModel> =
+            dao.getProducts(shoppingListId)
+        val newList: MutableList<ProductCacheModel> = allProductsForId.map { model ->
+            when (model.position) {
+                in position..allProductsForId.size -> {
+                    model.copy(position = model.position + 1)
+                }
+                else -> model
+            }
+        }.toMutableList()
+        newList.add(product)
+        dao.insertProducts(newList)
+        return mapper.mapToEntity(product)
+    }
 }
