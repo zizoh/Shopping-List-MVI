@@ -8,7 +8,10 @@ interface ProductRepository {
     fun createProduct(shoppingListId: String): Flow<Product>
     fun getProduct(id: String): Flow<Product>
     fun getProducts(shoppingListId: String): Flow<List<Product>>
-    suspend fun deleteProduct(id: String)
+    suspend fun deleteProduct(product: Product)
     suspend fun deleteAllProducts()
-    fun createProductAtPosition(shoppingListId: String, position: Int): Flow<Product>
+    fun createProductAtPosition(
+        shoppingListId: String,
+        position: Int
+    ): Flow<Product>
 }

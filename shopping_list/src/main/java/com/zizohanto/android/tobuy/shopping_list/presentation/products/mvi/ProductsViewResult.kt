@@ -12,9 +12,7 @@ sealed class ProductsViewResult : ViewResult {
             val listWithProducts: ShoppingListWithProducts
         ) : ProductViewResult()
 
-        data class ProductAddedAtPosition(val product: Product, val index: Int) :
-            ProductViewResult()
-
+        data class ProductAddedAtPosition(val product: Product) : ProductViewResult()
         data class ProductSaved(val product: Product) : ProductViewResult()
         data class ProductDeleted(val productId: String) : ProductViewResult()
         data class ShoppingListSaved(val shoppingList: ShoppingList) : ProductViewResult()

@@ -38,9 +38,9 @@ class ProductViewIntentProcessor @Inject constructor(
                 emit(ProductViewResult.ProductSaved(product))
             }
             is ProductViewIntent.DeleteProduct -> flow {
-                val productId: String = viewIntent.productId
-                deleteProduct(productId)
-                emit(ProductViewResult.ProductDeleted(productId))
+                val product: Product = productMapper.mapToDomain(viewIntent.product)
+                deleteProduct(product)
+                emit(ProductViewResult.ProductDeleted(product.id))
             }
             is ProductViewIntent.SaveShoppingList -> flow {
                 val shoppingList: ShoppingList = listMapper.mapToDomain(viewIntent.shoppingList)
@@ -52,7 +52,7 @@ class ProductViewIntentProcessor @Inject constructor(
             is AddNewProductAtPosition -> createProduct(
                 Pair(viewIntent.shoppingListId, viewIntent.position + 1)
             ).map { product ->
-                ProductViewResult.ProductAddedAtPosition(product, viewIntent.index + 1)
+                ProductViewResult.ProductAddedAtPosition(product)
             }
         }
     }
