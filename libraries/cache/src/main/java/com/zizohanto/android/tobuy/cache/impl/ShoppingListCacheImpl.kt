@@ -38,12 +38,6 @@ class ShoppingListCacheImpl @Inject constructor(
         else listWithProductsMapper.mapToEntity(listWithProducts)
     }
 
-    override suspend fun getShoppingListWithProducts(id: String): ShoppingListWithProductsEntity {
-        val listWithProducts: ShoppingListWithProductsCacheModel =
-            dao.getShoppingListWithProducts(id)
-        return listWithProductsMapper.mapToEntity(listWithProducts)
-    }
-
     override suspend fun getAllShoppingLists(): List<ShoppingListWithProductsEntity> {
         val models: List<ShoppingListWithProductsCacheModel> = dao.getShoppingLists()
         return listWithProductsMapper.mapToEntityList(models)

@@ -41,13 +41,6 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getProduct(id: String): Flow<Product> {
-        return flow {
-            val productEntity: ProductEntity = productCache.getProduct(id)
-            emit(mapper.mapFromEntity(productEntity))
-        }
-    }
-
     override fun getProducts(shoppingListId: String): Flow<List<Product>> {
         return flow {
             val productEntities: List<ProductEntity> = productCache.getProducts(shoppingListId)

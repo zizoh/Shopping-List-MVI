@@ -51,6 +51,7 @@ dependencies {
 
     testImplementation(Test.runner)
     testImplementation(Test.androidXTest)
+    testImplementation(Test.androidXTestCore)
     testImplementation(Test.robolectric)
 
     kapt(Cache.AnnotationProcessor.room)
