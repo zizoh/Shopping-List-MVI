@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface ProductRepository {
     suspend fun saveProduct(product: Product, shoppingListId: String)
     fun createProduct(shoppingListId: String): Flow<Product>
-    fun getProduct(id: String): Flow<Product>
     fun getProducts(shoppingListId: String): Flow<List<Product>>
     suspend fun deleteProduct(product: Product)
     suspend fun deleteAllProducts()

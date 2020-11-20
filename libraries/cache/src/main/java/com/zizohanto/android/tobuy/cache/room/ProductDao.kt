@@ -16,7 +16,7 @@ interface ProductDao {
     suspend fun insertProducts(product: List<ProductCacheModel>)
 
     @Query("SELECT * FROM product WHERE id=:productId")
-    suspend fun getProductWithId(productId: String): ProductCacheModel
+    suspend fun getProductWithId(productId: String): ProductCacheModel?
 
     @Query("SELECT * FROM product WHERE shoppingListId=:shoppingListId ORDER BY position")
     suspend fun getProducts(shoppingListId: String): List<ProductCacheModel>

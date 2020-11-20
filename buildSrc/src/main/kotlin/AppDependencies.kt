@@ -145,6 +145,7 @@ object Dependencies {
             const val runner: String = "1.3.0"
             const val rules: String = "1.3.0"
             const val testExt: String = "1.1.2"
+            const val testCore: String = "1.3.0"
             const val espresso: String = "3.3.0"
             const val truth: String = "1.0.1"
             const val robolectric: String = "4.4"
@@ -156,6 +157,7 @@ object Dependencies {
         const val rules: String = "androidx.test:rules:${Version.rules}"
         const val fragmentTesting: String = "androidx.fragment:fragment-testing:$fragment"
         const val androidXTest: String = "androidx.test.ext:junit:${Version.testExt}"
+        const val androidXTestCore: String = "androidx.test:core:${Version.testCore}"
         const val espresso: String = "androidx.test.espresso:espresso-core:${Version.espresso}"
         const val espressoContrib: String =
             "androidx.test.espresso:espresso-contrib:${Version.espresso}"
