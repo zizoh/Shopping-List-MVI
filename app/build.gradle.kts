@@ -18,11 +18,11 @@ plugins {
 }
 
 android {
+    namespace = Config.Android.applicationId
     defaultConfig {
         applicationId = Config.Android.applicationId
-        minSdkVersion(Config.Version.minSdkVersion)
-        compileSdkVersion(Config.Version.compileSdkVersion)
-        targetSdkVersion(Config.Version.targetSdkVersion)
+        minSdk = Config.Version.minSdkVersion
+        compileSdk = Config.Version.compileSdkVersion
         versionCode = Config.Version.versionCode
         versionName = Config.Version.versionName
         multiDexEnabled = Config.isMultiDexEnabled
@@ -30,12 +30,12 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildTypes {
@@ -46,17 +46,19 @@ android {
         }
     }
 
-    packagingOptions {
-        exclude("META-INF/DEPENDENCIES")
-        exclude("META-INF/LICENSE")
-        exclude("META-INF/LICENSE.txt")
-        exclude("META-INF/license.txt")
-        exclude("META-INF/NOTICE")
-        exclude("META-INF/NOTICE.txt")
-        exclude("META-INF/notice.txt")
-        exclude("META-INF/AL2.0")
-        exclude("META-INF/LGPL2.1")
-        exclude("META-INF/*.kotlin_module")
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/AL2.0"
+            excludes += "META-INF/LGPL2.1"
+            excludes += "META-INF/*.kotlin_module"
+        }
     }
 }
 
@@ -72,7 +74,6 @@ dependencies {
 
     implementAll(View.components)
     implementation(DI.hiltAndroid)
-    implementation(DI.hiltViewModel)
     implementation(Others.jodaTime)
 
     AndroidX.run {

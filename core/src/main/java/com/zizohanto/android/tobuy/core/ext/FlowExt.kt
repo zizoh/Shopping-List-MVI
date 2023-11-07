@@ -18,7 +18,7 @@ inline fun <reified R> Flow<R>.observe(
 }
 
 fun <E> SendChannel<E>.safeOffer(value: E): Boolean = !isClosedForSend && try {
-    offer(value)
+    trySend(value).isSuccess
 } catch (e: CancellationException) {
     false
 }

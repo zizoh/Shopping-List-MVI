@@ -45,7 +45,7 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
     override fun onResume() {
         super.onResume()
 
-        loadShoppingLists.offer(LoadShoppingLists)
+        loadShoppingLists.trySend(LoadShoppingLists)
     }
 
     override fun render(state: ShoppingListViewState) {

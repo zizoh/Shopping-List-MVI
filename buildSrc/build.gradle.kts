@@ -7,22 +7,21 @@ plugins {
 
 repositories {
     google()
-    jcenter()
     mavenCentral()
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    languageVersion = Plugin.Version.kotlin
-}
+//val compileKotlin: KotlinCompile by tasks
+//compileKotlin.kotlinOptions {
+//    languageVersion = Plugin.Version.kotlin
+//}
 
 object Plugin {
     object Version {
-        const val kotlin: String = "1.4.0"
-        const val androidGradle: String = "4.0.1"
-        const val navigation: String = "2.3.0"
-        const val daggerHiltAndroid: String = "2.28-alpha"
+        const val kotlin: String = "1.9.20"
+        const val androidGradle: String = "8.1.2"
+        const val navigation: String = "2.7.5"
+        const val daggerHiltAndroid: String = "2.48.1"
         const val spotless: String = "4.0.1"
     }
 

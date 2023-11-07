@@ -40,7 +40,7 @@ class ProductFragment : Fragment(R.layout.fragment_products),
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            loadShoppingListWithProducts.offer(LoadShoppingListWithProducts(args.shoppingListId))
+            loadShoppingListWithProducts.trySend(LoadShoppingListWithProducts(args.shoppingListId))
         }
     }
 
