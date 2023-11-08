@@ -61,6 +61,8 @@ object Dependencies {
             const val constraintLayout: String = "2.0.1"
             const val fragment: String = "1.3.0-alpha08"
             const val recyclerView: String = "1.2.0-alpha05"
+            const val kotlinCompilerExtensionVersion = "1.5.4"
+            const val composeBom = "2023.10.01"
         }
 
         const val appCompat: String = "androidx.appcompat:appcompat:${Version.appCompat}"
@@ -72,6 +74,14 @@ object Dependencies {
             "androidx.constraintlayout:constraintlayout:${Version.constraintLayout}"
         const val recyclerView: String =
             "androidx.recyclerview:recyclerview:${Version.recyclerView}"
+        const val composeBom: String = "androidx.compose:compose-bom:${Version.composeBom}"
+        const val composeRuntime = "androidx.compose.runtime:runtime"
+        const val composeUi = "androidx.compose.ui:ui"
+        const val composeUiTooling = "androidx.compose.ui:ui-tooling"
+        const val composeUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
+        const val composeFoundation = "androidx.compose.foundation:foundation"
+        const val composeFoundationLayout = "androidx.compose.foundation:foundation-layout"
+        const val composeMaterial = "androidx.compose.material:material"
         override val components: List<String> = listOf(appCompat, fragment)
     }
 

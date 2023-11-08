@@ -34,14 +34,23 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = View.Version.kotlinCompilerExtensionVersion
+    }
+
     buildTypes {
         named(BuildType.DEBUG) {
             isMinifyEnabled = BuildTypeDebug.isMinifyEnabled
         }
     }
+
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
+    val composeBom = platform(Dependencies.View.composeBom)
     implementation(project(core))
     implementation(project(presentation))
     implementation(project(domain))
@@ -56,10 +65,18 @@ dependencies {
         implementation(constraintLayout)
         implementation(recyclerView)
         implementation(shimmerLayout)
+        implementation(composeRuntime)
+        implementation(composeUi)
+        implementation(composeUiTooling)
+        implementation(composeUiToolingPreview)
+        implementation(composeFoundation)
+        implementation(composeFoundationLayout)
+        implementation(composeMaterial)
     }
 
     implementation(FlowBinding.android)
     implementation(DI.hiltAndroid)
+    implementation(composeBom)
     implementAll(AndroidX.components)
     implementAll(Coroutines.components)
 
