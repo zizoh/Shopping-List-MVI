@@ -6,15 +6,25 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,9 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
+import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutProductsBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
@@ -181,4 +194,49 @@ fun RowProductPreview() {
         ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1),
         null
     )
+}
+
+@Composable
+fun AddProductButton(
+    lastProductPosition: Int,
+    listener: ProductViewListener?
+) {
+    Button(
+        onClick = {
+            listener?.onAddNewProduct(lastProductPosition)
+        },
+        modifier = Modifier
+            .padding(start = 8.dp, top = 16.dp)
+            .wrapContentWidth(Alignment.Start)
+            .background(color = Color.White),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.White,
+            contentColor = Color.Black
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .wrapContentHeight()
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = null,
+                tint = Color.Black,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = stringResource(id = R.string.add_product),
+                color = Color.Black,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ComposeButtonPreview() {
+    AddProductButton(1, null)
 }
