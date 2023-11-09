@@ -126,8 +126,7 @@ class ProductAdapter @Inject constructor() :
             is ProductViewHolder -> {
                 holder.bind(
                     getItem(holder.bindingAdapterPosition) as ProductModel,
-                    productViewListener,
-                    coroutineScope
+                    productViewListener
                 )
             }
             is AddProductButtonViewHolder -> {

@@ -4,15 +4,26 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.isVisible
@@ -104,6 +115,70 @@ fun ShoppingListTitle(
 fun ShoppingListTitlePreview() {
     ShoppingListTitle(
         ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L),
+        null
+    )
+}
+
+@Composable
+fun RowProduct(
+    product: ProductsViewItem.ProductModel,
+    listener: ProductViewListener?
+) {
+    var productName by rememberSaveable { mutableStateOf(product.name) }
+    var isRemoveButtonVisible by rememberSaveable { mutableStateOf(true) }
+    Row(
+        modifier = Modifier
+            .background(color = MaterialTheme.colors.background),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            false,
+            {}
+        )
+        TextField(
+            value = productName,
+            textStyle = MaterialTheme.typography.body1,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.Black,
+                backgroundColor = Color.Transparent
+            ),
+            onValueChange = {
+                val name = it.trim()
+                productName = name
+                listener?.onProductEdit(product.copy(name = productName))
+            },
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    if (product.name.isNotEmpty()) {
+                        listener?.onAddNewProduct(product.position)
+                    }
+                },
+            ),
+            modifier = Modifier
+                .onFocusChanged { focusState ->
+                    isRemoveButtonVisible = focusState.hasFocus
+                }
+        )
+        if (isRemoveButtonVisible) {
+            IconButton(
+                onClick = {
+                    listener?.onProductDelete(product)
+                },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = "Remove"
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun RowProductPreview() {
+    RowProduct(
+        ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1),
         null
     )
 }
