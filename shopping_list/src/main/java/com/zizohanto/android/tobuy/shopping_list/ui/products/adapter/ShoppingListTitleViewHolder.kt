@@ -1,14 +1,9 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.products.adapter
 
+import androidx.compose.material.MaterialTheme
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListTitleBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
-import com.zizohanto.android.tobuy.shopping_list.ui.products.DEBOUNCE_PERIOD
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import reactivecircus.flowbinding.android.widget.textChanges
+import com.zizohanto.android.tobuy.shopping_list.presentation.views.product.ShoppingListTitle
 
 class ShoppingListTitleViewHolder(
     private val binding: ItemShoppingListTitleBinding
@@ -16,16 +11,12 @@ class ShoppingListTitleViewHolder(
 
     fun bind(
         shoppingList: ShoppingListModel,
-        listener: ProductViewListener?,
-        scope: CoroutineScope
+        listener: ProductViewListener?
     ) {
-        binding.shoppingListTitle.setText(shoppingList.name)
-        binding.shoppingListTitle
-            .textChanges()
-            .debounce(DEBOUNCE_PERIOD)
-            .drop(1)
-            .map {
-                listener?.onShoppingListEdit(shoppingList.copy(name = it.trim().toString()))
-            }.launchIn(scope)
+        binding.shoppingListTitle.setContent {
+            MaterialTheme {
+                ShoppingListTitle(shoppingList, listener)
+            }
+        }
     }
 }
