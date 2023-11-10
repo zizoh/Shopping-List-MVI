@@ -5,6 +5,7 @@ import com.zizohanto.android.tobuy.core.ext.replaceFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ProductModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
@@ -28,7 +29,10 @@ class ProductViewStateReducer @Inject constructor(
             is ProductViewResult.Success -> {
                 val listWithProducts: ShoppingListWithProductsModel =
                     listWithProductsMapper.mapToModel(result.listWithProducts)
-                ProductViewState.Success(listWithProducts)
+                ProductViewState.Success(
+                    listWithProducts,
+                    getSuccessViewItems(listWithProducts.shoppingList, listWithProducts.products)
+                )
             }
             is ProductViewResult.ProductSaved -> {
                 when (previous) {
@@ -39,7 +43,10 @@ class ProductViewStateReducer @Inject constructor(
                         val savedProduct: ProductModel = productMapper.mapToModel(result.product)
                         val products: List<ProductModel> =
                             listWithProducts.products.replaceFirst(savedProduct) { it.id == savedProduct.id }
-                        ProductViewState.Success(listWithProducts.copy(products = products))
+                        ProductViewState.Success(
+                            listWithProducts.copy(products = products),
+                            getSuccessViewItems(listWithProducts.shoppingList, products)
+                        )
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> ProductsViewState.Idle
@@ -54,7 +61,10 @@ class ProductViewStateReducer @Inject constructor(
                             previous.listWithProducts
                         val products: List<ProductModel> =
                             listWithProducts.products.removeFirst { it.id == result.productId }
-                        ProductViewState.Success(listWithProducts.copy(products = products))
+                        ProductViewState.Success(
+                            listWithProducts.copy(products = products),
+                            getSuccessViewItems(listWithProducts.shoppingList, products)
+                        )
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> TODO()
@@ -68,7 +78,12 @@ class ProductViewStateReducer @Inject constructor(
                             shoppingListModelMapper.mapToModel(result.shoppingList)
                         val listWithProducts: ShoppingListWithProductsModel =
                             previous.listWithProducts.copy(shoppingList = shoppingListModel)
-                        ProductViewState.Success(listWithProducts)
+                        with(listWithProducts) {
+                            ProductViewState.Success(
+                                this,
+                                getSuccessViewItems(this.shoppingList, this.products)
+                            )
+                        }
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> ProductsViewState.Idle
@@ -89,12 +104,29 @@ class ProductViewStateReducer @Inject constructor(
                     } else {
                         currentList.apply { add(product.position, product) }
                     }
-                    ProductViewState.Success(previous.listWithProducts.copy(products = currentList))
+                    ProductViewState.Success(
+                        previous.listWithProducts.copy(products = currentList),
+                        getSuccessViewItems(
+                            previous.listWithProducts.shoppingList,
+                            currentList
+                        )
+                    )
                 }
                 ProductViewState.DeleteShoppingList -> TODO()
                 is ProductsViewState.Error -> TODO()
 
             }
+        }
+    }
+
+    private fun getSuccessViewItems(
+        shoppingList: ShoppingListModel,
+        products: List<ProductModel>
+    ): List<ProductsViewItem> {
+        return buildList {
+            add(shoppingList)
+            addAll(products)
+            add(ProductsViewItem.ButtonItem)
         }
     }
 

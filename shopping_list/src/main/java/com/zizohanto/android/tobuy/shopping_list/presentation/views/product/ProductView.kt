@@ -76,15 +76,11 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
             ProductsViewState.Idle -> {
             }
             is ProductViewState.Success -> {
-                binding.products.isVisible = true
-                val viewItems: MutableList<ProductsViewItem> =
-                    mutableListOf<ProductsViewItem>().apply {
-                        add(state.listWithProducts.shoppingList)
-                        addAll(state.listWithProducts.products)
-                        add(ProductsViewItem.ButtonItem)
-                    }
-                productAdapter.submitList(viewItems)
-                productAdapter.notifyItemChanged(viewItems.size)
+                with(state) {
+                    binding.products.isVisible = shouldShowProducts
+                    productAdapter.submitList(viewItems)
+                    productAdapter.notifyItemChanged(viewItems.size)
+                }
             }
             ProductViewState.DeleteShoppingList -> TODO()
             is ProductsViewState.Error -> TODO()
