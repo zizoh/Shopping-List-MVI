@@ -1,6 +1,5 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.products.adapter
 
-import androidx.compose.material.MaterialTheme
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListTitleBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.views.product.ShoppingListTitle
@@ -14,9 +13,7 @@ class ShoppingListTitleViewHolder(
         listener: ProductViewListener?
     ) {
         binding.shoppingListTitle.setContent {
-            MaterialTheme {
-                ShoppingListTitle(shoppingList, listener)
-            }
+            ShoppingListTitle(shoppingList, listener)
         }
     }
 }

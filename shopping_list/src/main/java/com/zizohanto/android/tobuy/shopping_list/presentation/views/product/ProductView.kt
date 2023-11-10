@@ -4,14 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -19,7 +16,6 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -36,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
@@ -106,29 +101,18 @@ fun ShoppingListTitle(
     listener: ProductViewListener?
 ) {
     var shoppingListTitle by rememberSaveable { mutableStateOf(shoppingList.name) }
-    Surface {
-        TextField(
-            value = shoppingListTitle,
-            textStyle = MaterialTheme.typography.subtitle2,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.Black,
-                backgroundColor = Color.Transparent
-            ),
-            onValueChange = {
-                val title = it.trim()
-                shoppingListTitle = title
-                listener?.onShoppingListEdit(shoppingList.copy(name = shoppingListTitle))
-            }
-        )
-    }
-}
-
-@Preview
-@Composable
-fun ShoppingListTitlePreview() {
-    ShoppingListTitle(
-        ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L),
-        null
+    TextField(
+        value = shoppingListTitle,
+        textStyle = MaterialTheme.typography.subtitle2,
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.Black,
+            backgroundColor = Color.Transparent
+        ),
+        onValueChange = {
+            val title = it.trim()
+            shoppingListTitle = title
+            listener?.onShoppingListEdit(shoppingList.copy(name = shoppingListTitle))
+        }
     )
 }
 
@@ -140,8 +124,6 @@ fun RowProduct(
     var productName by rememberSaveable { mutableStateOf(product.name) }
     var isRemoveButtonVisible by rememberSaveable { mutableStateOf(true) }
     Row(
-        modifier = Modifier
-            .background(color = MaterialTheme.colors.background),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(
@@ -180,35 +162,24 @@ fun RowProduct(
             ) {
                 Icon(
                     imageVector = Icons.Default.Clear,
-                    contentDescription = "Remove"
+                    contentDescription = stringResource(R.string.cont_desc_remove_button)
                 )
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun RowProductPreview() {
-    RowProduct(
-        ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1),
-        null
-    )
-}
-
 @Composable
 fun AddProductButton(
     lastProductPosition: Int,
-    listener: ProductViewListener?
+    listener: ProductViewListener?,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = {
             listener?.onAddNewProduct(lastProductPosition)
         },
-        modifier = Modifier
-            .padding(start = 8.dp, top = 16.dp)
-            .wrapContentWidth(Alignment.Start)
-            .background(color = Color.White),
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White,
             contentColor = Color.Black
@@ -226,17 +197,11 @@ fun AddProductButton(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(id = R.string.add_product),
+                text = stringResource(R.string.add_product),
                 color = Color.Black,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun ComposeButtonPreview() {
-    AddProductButton(1, null)
 }
