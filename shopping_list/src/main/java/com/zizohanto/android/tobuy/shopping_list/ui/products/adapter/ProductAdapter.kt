@@ -37,13 +37,7 @@ class ProductAdapter @Inject constructor() :
         get() = callbackFlow {
             val listener: ProductViewListener = object : ProductViewListener {
                 override fun onProductEdit(product: ProductModel) {
-                    val shoppingListId: String = getShoppingListId()
-                    safeOffer(
-                        ProductViewIntent.SaveProduct(
-                            product,
-                            shoppingListId
-                        )
-                    )
+                    safeOffer(ProductViewIntent.SaveProduct(product))
                 }
 
                 override fun onProductDelete(product: ProductModel) {
