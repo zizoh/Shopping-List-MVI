@@ -126,7 +126,7 @@ class ProductViewStateReducer @Inject constructor(
         return buildList {
             add(shoppingList)
             addAll(products)
-            add(ProductsViewItem.ButtonItem(shoppingList.id))
+            add(ProductsViewItem.ButtonItem(shoppingList.id, products.size))
         }
     }
 

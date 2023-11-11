@@ -103,8 +103,13 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
                     safeOffer(ProductsViewIntent.ProductViewIntent.DeleteProduct(product))
                 }
 
-                override fun onAddNewProduct(shoppingListId: String, position: Int) {
-                    safeOffer(ProductsViewIntent.ProductViewIntent.AddNewProductAtPosition(shoppingListId, position))
+                override fun onAddNewProduct(shoppingListId: String, newProductPosition: Int) {
+                    safeOffer(
+                        ProductsViewIntent.ProductViewIntent.AddNewProductAtPosition(
+                            shoppingListId,
+                            newProductPosition
+                        )
+                    )
                 }
 
                 override fun onShoppingListEdit(shoppingList: ProductsViewItem.ShoppingListModel) {
@@ -200,13 +205,13 @@ fun RowProduct(
 @Composable
 fun AddProductButton(
     shoppingListId: String,
-    lastProductPosition: Int,
+    newProductPosition: Int,
     listener: ProductViewListener?,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = {
-            listener?.onAddNewProduct(shoppingListId, lastProductPosition)
+            listener?.onAddNewProduct(shoppingListId, newProductPosition)
         },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(

@@ -11,6 +11,6 @@ interface ProductRepository {
     suspend fun deleteAllProducts()
     fun createProductAtPosition(
         shoppingListId: String,
-        position: Int
+        newProductPosition: Int
     ): Flow<Product>
 }

@@ -18,7 +18,7 @@ class CreateProduct @Inject constructor(
         get() = postExecutionThread.io
 
     override fun execute(params: Pair<String, Int>?): Flow<Product> {
-        val (id: String, position: Int) = requireParams(params)
-        return repository.createProductAtPosition(id, position)
+        val (id: String, newProductPosition: Int) = requireParams(params)
+        return repository.createProductAtPosition(id, newProductPosition)
     }
 }

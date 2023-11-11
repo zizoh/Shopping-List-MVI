@@ -86,19 +86,18 @@ class ProductCacheImpl @Inject constructor(
 
     override suspend fun makeNewProductAtPosition(
         shoppingListId: String,
-        position: Int
+        newProductPosition: Int
     ): ProductEntity? {
         val allProductsForId: List<ProductCacheModel> =
             dao.getProducts(shoppingListId)
         return if (allProductsForId.isEmpty() || lastProductIsNotEmpty(allProductsForId.lastOrNull())) {
-            val lastProductPosition = position + 1
             val product = ProductCacheModel(
                 shoppingListId = shoppingListId,
-                position = lastProductPosition
+                position = newProductPosition
             )
             val newList: MutableList<ProductCacheModel> = allProductsForId.map { model ->
                 when (model.position) {
-                    in lastProductPosition..allProductsForId.size -> {
+                    in newProductPosition..allProductsForId.size -> {
                         model.copy(position = model.position + 1)
                     }
                     else -> model

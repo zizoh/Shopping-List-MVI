@@ -16,7 +16,7 @@ import javax.inject.Inject
 interface ProductViewListener {
     fun onProductEdit(product: ProductModel)
     fun onProductDelete(product: ProductModel)
-    fun onAddNewProduct(shoppingListId: String, position: Int)
+    fun onAddNewProduct(shoppingListId: String, newProductPosition: Int)
     fun onShoppingListEdit(shoppingList: ShoppingListModel)
 }
 
@@ -56,22 +56,17 @@ class ProductAdapter @Inject constructor() :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(holder.bindingAdapterPosition)
         when (holder) {
             is ShoppingListTitleViewHolder -> {
-                holder.bind(
-                    getItem(holder.bindingAdapterPosition) as ShoppingListModel,
-                    productViewListener
-                )
+                holder.bind(item as ShoppingListModel, productViewListener)
             }
             is ProductViewHolder -> {
-                holder.bind(
-                    getItem(holder.bindingAdapterPosition) as ProductModel,
-                    productViewListener
-                )
+                holder.bind(item as ProductModel, productViewListener)
             }
             is AddProductButtonViewHolder -> {
-                val button = getItem(holder.bindingAdapterPosition) as ButtonItem
-                holder.bind(button.shoppingListId, itemCount - 3, productViewListener)
+                val button = item as ButtonItem
+                holder.bind(button.shoppingListId, button.newProductPosition, productViewListener)
             }
         }
     }
