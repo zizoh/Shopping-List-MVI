@@ -3,6 +3,9 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.views.product
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -12,7 +15,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -50,17 +52,29 @@ fun ProductsView(
 ) {
     val state by viewModel.viewState.collectAsState(initial = ProductsViewState.Idle)
     (state as? ProductViewState.Success)?.let {
-        Column(modifier = modifier) {
+        Column(
+            modifier = modifier
+        ) {
             val listWithProducts = it.listWithProducts
             val shoppingList = listWithProducts.shoppingList
             val products = listWithProducts.products
-            ShoppingListTitle(shoppingList, listener)
+            ShoppingListTitle(
+                shoppingList,
+                listener,
+                modifier = Modifier.fillMaxWidth()
+            )
             LazyColumn {
                 items(products) {
                     RowProduct(it, listener)
                 }
             }
-            AddProductButton(shoppingList.id, products.size, listener)
+            Spacer(modifier = Modifier.height(16.dp))
+            AddProductButton(
+                shoppingList.id,
+                products.size,
+                listener,
+                modifier = Modifier.padding(start = 16.dp)
+            )
         }
     }
 }
@@ -68,7 +82,8 @@ fun ProductsView(
 @Composable
 fun ShoppingListTitle(
     shoppingList: ProductsViewItem.ShoppingListModel,
-    listener: ProductViewListener?
+    listener: ProductViewListener?,
+    modifier: Modifier = Modifier
 ) {
     var shoppingListTitle by rememberSaveable { mutableStateOf(shoppingList.name) }
     TextField(
@@ -78,6 +93,7 @@ fun ShoppingListTitle(
             textColor = Color.Black,
             backgroundColor = Color.Transparent
         ),
+        modifier = modifier,
         onValueChange = {
             val title = it.trim()
             shoppingListTitle = title
@@ -93,13 +109,7 @@ fun RowProduct(
 ) {
     var productName by rememberSaveable { mutableStateOf(product.name) }
     var isRemoveButtonVisible by rememberSaveable { mutableStateOf(true) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            false,
-            {}
-        )
+    Row(modifier = Modifier.fillMaxWidth()) {
         TextField(
             value = productName,
             textStyle = MaterialTheme.typography.body1,
@@ -121,21 +131,20 @@ fun RowProduct(
                 },
             ),
             modifier = Modifier
+                .fillMaxWidth(0.9f)
                 .onFocusChanged { focusState ->
                     isRemoveButtonVisible = focusState.hasFocus
                 }
         )
-        if (isRemoveButtonVisible) {
-            IconButton(
-                onClick = {
-                    listener?.onProductDelete(product)
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Clear,
-                    contentDescription = stringResource(R.string.cont_desc_remove_button)
-                )
-            }
+        IconButton(
+            onClick = {
+                listener?.onProductDelete(product)
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = stringResource(R.string.cont_desc_remove_button)
+            )
         }
     }
 }
