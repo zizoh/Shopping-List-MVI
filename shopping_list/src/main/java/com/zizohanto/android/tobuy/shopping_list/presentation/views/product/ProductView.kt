@@ -1,14 +1,13 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.views.product
 
-import android.content.Context
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.widget.LinearLayout
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -24,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,96 +35,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.core.view.isVisible
-import com.zizohanto.android.tobuy.core.ext.safeOffer
-import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
-import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutProductsBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
-import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter
-import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductViewListener
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import javax.inject.Inject
+import com.zizohanto.android.tobuy.shopping_list.ui.products.ProductViewListener
 
-@AndroidEntryPoint
-class ProductView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet) :
-    LinearLayout(context, attributeSet),
-    MVIView<ProductsViewIntent, ProductsViewState> {
-
-    @Inject
-    lateinit var productAdapter: ProductAdapter
-
-    private var binding: LayoutProductsBinding
-
-    private var productViewListener: ProductViewListener? = null
-
-    init {
-        isSaveEnabled = true
-        val inflater: LayoutInflater = context
-            .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-        binding = LayoutProductsBinding.inflate(inflater, this, true)
-        binding.products.adapter = productAdapter
-    }
-
-    override fun render(state: ProductsViewState) {
-        when (state) {
-            ProductsViewState.Idle -> {
-            }
-            is ProductViewState.Success -> {
-                with(state) {
-                    binding.products.isVisible = shouldShowProducts
-                    with(productAdapter) {
-                        productViewListener = this@ProductView.productViewListener
-                        submitList(viewItems)
-                        notifyItemChanged(viewItems.size)
-                    }
+@Composable
+fun ProductsView(
+    viewModel: ProductViewModel,
+    listener: ProductViewListener?,
+    modifier: Modifier = Modifier
+) {
+    val state by viewModel.viewState.collectAsState(initial = ProductsViewState.Idle)
+    (state as? ProductViewState.Success)?.let {
+        Column(modifier = modifier) {
+            val listWithProducts = it.listWithProducts
+            val shoppingList = listWithProducts.shoppingList
+            val products = listWithProducts.products
+            ShoppingListTitle(shoppingList, listener)
+            LazyColumn {
+                items(products) {
+                    RowProduct(it, listener)
                 }
             }
-            ProductViewState.DeleteShoppingList -> TODO()
-            is ProductsViewState.Error -> TODO()
+            AddProductButton(shoppingList.id, products.size, listener)
         }
     }
-
-    override val intents: Flow<ProductsViewIntent>
-        get() = callbackFlow {
-            val listener: ProductViewListener = object : ProductViewListener {
-                override fun onProductEdit(product: ProductsViewItem.ProductModel) {
-                    safeOffer(ProductsViewIntent.ProductViewIntent.SaveProduct(product))
-                }
-
-                override fun onProductDelete(product: ProductsViewItem.ProductModel) {
-                    safeOffer(ProductsViewIntent.ProductViewIntent.DeleteProduct(product))
-                }
-
-                override fun onAddNewProduct(shoppingListId: String, newProductPosition: Int) {
-                    safeOffer(
-                        ProductsViewIntent.ProductViewIntent.AddNewProductAtPosition(
-                            shoppingListId,
-                            newProductPosition
-                        )
-                    )
-                }
-
-                override fun onShoppingListEdit(shoppingList: ProductsViewItem.ShoppingListModel) {
-                    safeOffer(
-                        ProductsViewIntent.ProductViewIntent.SaveShoppingList(
-                            shoppingList.copy(name = shoppingList.name)
-                        )
-                    )
-                }
-            }
-            productViewListener = listener
-            awaitClose {
-                productViewListener = null
-            }
-        }
 }
 
 @Composable

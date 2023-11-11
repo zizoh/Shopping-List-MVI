@@ -16,9 +16,4 @@ sealed class ProductsViewItem {
         val price: Double,
         val position: Int
     ) : ProductsViewItem()
-
-    data class ButtonItem(
-        val shoppingListId: String,
-        val newProductPosition: Int
-    ) : ProductsViewItem()
 }
