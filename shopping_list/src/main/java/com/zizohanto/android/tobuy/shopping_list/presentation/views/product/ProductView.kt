@@ -141,7 +141,7 @@ fun RowProduct(
             keyboardActions = KeyboardActions(
                 onDone = {
                     if (product.name.isNotEmpty()) {
-                        listener?.onAddNewProduct(product.position)
+                        listener?.onAddNewProduct(product.shoppingListId, product.position)
                     }
                 },
             ),
@@ -167,13 +167,14 @@ fun RowProduct(
 
 @Composable
 fun AddProductButton(
+    shoppingListId: String,
     lastProductPosition: Int,
     listener: ProductViewListener?,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = {
-            listener?.onAddNewProduct(lastProductPosition)
+            listener?.onAddNewProduct(shoppingListId, lastProductPosition)
         },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(

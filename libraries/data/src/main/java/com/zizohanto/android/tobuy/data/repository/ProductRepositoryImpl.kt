@@ -66,9 +66,9 @@ class ProductRepositoryImpl @Inject constructor(
         position: Int
     ): Flow<Product> {
         return flow {
-            val productEntity: ProductEntity =
-                productCache.makeNewProductAtPosition(shoppingListId, position)
-            emit(mapper.mapFromEntity(productEntity))
+            productCache.makeNewProductAtPosition(shoppingListId, position)?.let { productEntity ->
+                emit(mapper.mapFromEntity(productEntity))
+            }
         }
     }
 

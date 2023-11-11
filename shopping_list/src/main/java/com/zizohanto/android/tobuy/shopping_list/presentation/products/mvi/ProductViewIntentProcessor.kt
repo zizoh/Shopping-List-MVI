@@ -50,7 +50,7 @@ class ProductViewIntentProcessor @Inject constructor(
             }
             is DeleteShoppingList -> flowOf(ProductViewResult.ShoppingListDeleted)
             is AddNewProductAtPosition -> createProduct(
-                Pair(viewIntent.shoppingListId, viewIntent.position + 1)
+                Pair(viewIntent.shoppingListId, viewIntent.position)
             ).map { product ->
                 ProductViewResult.ProductAddedAtPosition(product)
             }

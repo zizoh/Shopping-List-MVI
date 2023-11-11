@@ -13,9 +13,10 @@ class AddProductButtonViewHolder(
     private val binding: ItemAddProductButtonBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(lastProductPosition: Int, listener: ProductViewListener?) {
+    fun bind(shoppingListId: String, lastProductPosition: Int, listener: ProductViewListener?) {
         binding.addNewProduct.setContent {
             AddProductButton(
+                shoppingListId,
                 lastProductPosition,
                 listener,
                 modifier = Modifier

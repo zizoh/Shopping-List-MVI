@@ -23,7 +23,7 @@ import javax.inject.Inject
 interface ProductViewListener {
     fun onProductEdit(product: ProductModel)
     fun onProductDelete(product: ProductModel)
-    fun onAddNewProduct(position: Int)
+    fun onAddNewProduct(shoppingListId: String, position: Int)
     fun onShoppingListEdit(shoppingList: ShoppingListModel)
 }
 
@@ -44,23 +44,8 @@ class ProductAdapter @Inject constructor() :
                     safeOffer(ProductViewIntent.DeleteProduct(product))
                 }
 
-                override fun onAddNewProduct(position: Int) {
-                    val shoppingListId: String = getShoppingListId()
-                    val item: ProductsViewItem = getItem(itemCount - 2)
-                    if (noProducts() || productAtPositionIsEmpty(item)) {
-                        safeOffer(
-                            ProductViewIntent.AddNewProductAtPosition(
-                                shoppingListId,
-                                position
-                            )
-                        )
-                    }
-                }
-
-                private fun noProducts() = itemCount == 2
-
-                private fun productAtPositionIsEmpty(item: ProductsViewItem): Boolean {
-                    return item is ProductModel && item.name.isNotEmpty()
+                override fun onAddNewProduct(shoppingListId: String, position: Int) {
+                    safeOffer(ProductViewIntent.AddNewProductAtPosition(shoppingListId, position))
                 }
 
                 override fun onShoppingListEdit(shoppingList: ShoppingListModel) {
@@ -70,8 +55,6 @@ class ProductAdapter @Inject constructor() :
                         )
                     )
                 }
-
-                private fun getShoppingListId() = (getItem(0) as ShoppingListModel).id
             }
             productViewListener = listener
             awaitClose {
@@ -124,7 +107,8 @@ class ProductAdapter @Inject constructor() :
                 )
             }
             is AddProductButtonViewHolder -> {
-                holder.bind(itemCount - 3, productViewListener)
+                val button = getItem(holder.bindingAdapterPosition) as ButtonItem
+                holder.bind(button.shoppingListId, itemCount - 3, productViewListener)
             }
         }
     }
@@ -164,7 +148,7 @@ class ProductAdapter @Inject constructor() :
                         else -> false
                     }
                 }
-                ButtonItem -> true
+                is ButtonItem -> true
             }
         }
     }
