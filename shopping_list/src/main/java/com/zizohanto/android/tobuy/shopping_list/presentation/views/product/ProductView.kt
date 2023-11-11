@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
+import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutProductsBinding
@@ -46,8 +47,9 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.Produ
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductAdapter
 import com.zizohanto.android.tobuy.shopping_list.ui.products.adapter.ProductViewListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -60,6 +62,8 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
     private var binding: LayoutProductsBinding
 
+    private var productViewListener: ProductViewListener? = null
+
     init {
         isSaveEnabled = true
         val inflater: LayoutInflater = context
@@ -69,10 +73,6 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
         binding.products.adapter = productAdapter
     }
 
-    fun setCoroutineScope(scope: CoroutineScope) {
-        productAdapter.coroutineScope = scope
-    }
-
     override fun render(state: ProductsViewState) {
         when (state) {
             ProductsViewState.Idle -> {
@@ -80,8 +80,11 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
             is ProductViewState.Success -> {
                 with(state) {
                     binding.products.isVisible = shouldShowProducts
-                    productAdapter.submitList(viewItems)
-                    productAdapter.notifyItemChanged(viewItems.size)
+                    with(productAdapter) {
+                        productViewListener = this@ProductView.productViewListener
+                        submitList(viewItems)
+                        notifyItemChanged(viewItems.size)
+                    }
                 }
             }
             ProductViewState.DeleteShoppingList -> TODO()
@@ -90,7 +93,33 @@ class ProductView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     override val intents: Flow<ProductsViewIntent>
-        get() = productAdapter.intents
+        get() = callbackFlow {
+            val listener: ProductViewListener = object : ProductViewListener {
+                override fun onProductEdit(product: ProductsViewItem.ProductModel) {
+                    safeOffer(ProductsViewIntent.ProductViewIntent.SaveProduct(product))
+                }
+
+                override fun onProductDelete(product: ProductsViewItem.ProductModel) {
+                    safeOffer(ProductsViewIntent.ProductViewIntent.DeleteProduct(product))
+                }
+
+                override fun onAddNewProduct(shoppingListId: String, position: Int) {
+                    safeOffer(ProductsViewIntent.ProductViewIntent.AddNewProductAtPosition(shoppingListId, position))
+                }
+
+                override fun onShoppingListEdit(shoppingList: ProductsViewItem.ShoppingListModel) {
+                    safeOffer(
+                        ProductsViewIntent.ProductViewIntent.SaveShoppingList(
+                            shoppingList.copy(name = shoppingList.name)
+                        )
+                    )
+                }
+            }
+            productViewListener = listener
+            awaitClose {
+                productViewListener = null
+            }
+        }
 }
 
 @Composable

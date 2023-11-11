@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import com.zizohanto.android.tobuy.core.ext.observe
 import com.zizohanto.android.tobuy.core.view_binding.viewBinding
@@ -51,8 +50,6 @@ class ProductFragment : Fragment(R.layout.fragment_products),
         binding.toolbar.setNavigationOnClickListener {
             navigationDispatcher.goBack()
         }
-
-        binding.productsView.setCoroutineScope(viewModel.viewModelScope)
         viewModel.processIntent(intents)
     }
 
