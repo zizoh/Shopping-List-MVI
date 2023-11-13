@@ -42,12 +42,10 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsVie
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
-import com.zizohanto.android.tobuy.shopping_list.ui.products.ProductViewListener
 
 @Composable
 fun ProductsView(
     viewModel: ProductViewModel,
-    listener: ProductViewListener?,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.viewState.collectAsState(initial = ProductsViewState.Idle)
@@ -60,19 +58,19 @@ fun ProductsView(
             val products = listWithProducts.products
             ShoppingListTitle(
                 shoppingList,
-                listener,
+                viewModel,
                 modifier = Modifier.fillMaxWidth()
             )
             LazyColumn {
                 items(products) {
-                    RowProduct(it, listener)
+                    RowProduct(it, viewModel)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
             AddProductButton(
                 shoppingList.id,
                 products.size,
-                listener,
+                viewModel,
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
@@ -82,7 +80,7 @@ fun ProductsView(
 @Composable
 fun ShoppingListTitle(
     shoppingList: ProductsViewItem.ShoppingListModel,
-    listener: ProductViewListener?,
+    viewModel: ProductViewModel,
     modifier: Modifier = Modifier
 ) {
     var shoppingListTitle by rememberSaveable { mutableStateOf(shoppingList.name) }
@@ -97,7 +95,7 @@ fun ShoppingListTitle(
         onValueChange = {
             val title = it.trim()
             shoppingListTitle = title
-            listener?.onShoppingListEdit(shoppingList.copy(name = shoppingListTitle))
+            viewModel.updateShoppingList(shoppingList.copy(name = shoppingListTitle))
         }
     )
 }
@@ -105,7 +103,7 @@ fun ShoppingListTitle(
 @Composable
 fun RowProduct(
     product: ProductsViewItem.ProductModel,
-    listener: ProductViewListener?
+    viewModel: ProductViewModel
 ) {
     var productName by rememberSaveable { mutableStateOf(product.name) }
     var isRemoveButtonVisible by rememberSaveable { mutableStateOf(true) }
@@ -120,13 +118,13 @@ fun RowProduct(
             onValueChange = {
                 val name = it.trim()
                 productName = name
-                listener?.onProductEdit(product.copy(name = productName))
+                viewModel.updateProduct(product.copy(name = productName))
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
                 onDone = {
                     if (product.name.isNotEmpty()) {
-                        listener?.onAddNewProduct(product.shoppingListId, product.position)
+                        viewModel.addNewProduct(product.shoppingListId, product.position)
                     }
                 },
             ),
@@ -138,7 +136,7 @@ fun RowProduct(
         )
         IconButton(
             onClick = {
-                listener?.onProductDelete(product)
+                viewModel.deleteProduct(product)
             },
         ) {
             Icon(
@@ -153,12 +151,12 @@ fun RowProduct(
 fun AddProductButton(
     shoppingListId: String,
     newProductPosition: Int,
-    listener: ProductViewListener?,
+    viewModel: ProductViewModel,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = {
-            listener?.onAddNewProduct(shoppingListId, newProductPosition)
+            viewModel.addNewProduct(shoppingListId, newProductPosition)
         },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
