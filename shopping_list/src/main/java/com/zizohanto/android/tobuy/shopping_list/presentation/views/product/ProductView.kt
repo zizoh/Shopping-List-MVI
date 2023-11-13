@@ -134,15 +134,17 @@ fun RowProduct(
                     isRemoveButtonVisible = focusState.hasFocus
                 }
         )
-        IconButton(
-            onClick = {
-                viewModel.deleteProduct(product)
-            },
-        ) {
-            Icon(
-                imageVector = Icons.Default.Clear,
-                contentDescription = stringResource(R.string.cont_desc_remove_button)
-            )
+        if (isRemoveButtonVisible) {
+            IconButton(
+                onClick = {
+                    viewModel.deleteProduct(product)
+                },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = stringResource(R.string.cont_desc_remove_button)
+                )
+            }
         }
     }
 }
