@@ -12,38 +12,45 @@ import ProjectLib.testUtils
 plugins {
     androidLibrary
     kotlin(kotlinAndroid)
-    kotlin(kotlinAndroidExtension)
     kotlin(kotlinKapt)
     safeArgs
     daggerHilt
 }
 
 android {
+    namespace = "com.zizohanto.android.tobuy.shopping_list"
     defaultConfig {
-        compileSdkVersion(Config.Version.compileSdkVersion)
-        minSdkVersion(Config.Version.minSdkVersion)
-        targetSdkVersion(Config.Version.targetSdkVersion)
+        compileSdk = Config.Version.compileSdkVersion
+        minSdk = Config.Version.minSdkVersion
         testInstrumentationRunner = Config.Android.testInstrumentationRunner
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = View.Version.kotlinCompilerExtensionVersion
     }
 
     buildTypes {
         named(BuildType.DEBUG) {
             isMinifyEnabled = BuildTypeDebug.isMinifyEnabled
-            versionNameSuffix = BuildTypeDebug.versionNameSuffix
         }
+    }
+
+    buildFeatures {
+        compose = true
     }
 }
 
 dependencies {
+    val composeBom = platform(Dependencies.View.composeBom)
     implementation(project(core))
     implementation(project(presentation))
     implementation(project(domain))
@@ -58,11 +65,18 @@ dependencies {
         implementation(constraintLayout)
         implementation(recyclerView)
         implementation(shimmerLayout)
+        implementation(composeRuntime)
+        implementation(composeUi)
+        implementation(composeUiTooling)
+        implementation(composeUiToolingPreview)
+        implementation(composeFoundation)
+        implementation(composeFoundationLayout)
+        implementation(composeMaterial)
     }
 
     implementation(FlowBinding.android)
     implementation(DI.hiltAndroid)
-    implementation(DI.hiltViewModel)
+    implementation(composeBom)
     implementAll(AndroidX.components)
     implementAll(Coroutines.components)
 

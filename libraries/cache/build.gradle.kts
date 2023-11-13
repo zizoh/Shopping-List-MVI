@@ -12,32 +12,30 @@ plugins {
 }
 
 android {
+    namespace = "com.zizohanto.android.tobuy.cache"
     defaultConfig {
-        minSdkVersion(Config.Version.minSdkVersion)
-        compileSdkVersion(Config.Version.compileSdkVersion)
-        targetSdkVersion(Config.Version.targetSdkVersion)
+        minSdk = Config.Version.minSdkVersion
+        compileSdk = Config.Version.compileSdkVersion
 
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments.plusAssign(Pair("room.incremental", "true"))
             }
         }
-        buildConfigField("int", "databaseVersion", 1.toString())
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildTypes {
         named(BuildType.DEBUG) {
             isMinifyEnabled = BuildTypeDebug.isMinifyEnabled
-            versionNameSuffix = BuildTypeDebug.versionNameSuffix
         }
     }
 }

@@ -1,15 +1,13 @@
 import Dependencies.View.Version.fragment
 
 const val kotlinAndroid: String = "android"
-const val kotlinAndroidExtension: String = "android.extensions"
 const val kotlinKapt: String = "kapt"
 const val ktLintVersion: String = "0.36.0"
 
 object Config {
     object Version {
         const val minSdkVersion: Int = 21
-        const val compileSdkVersion: Int = 29
-        const val targetSdkVersion: Int = 29
+        const val compileSdkVersion: Int = 34
         const val versionName: String = "1.0"
         const val versionCode: Int = 1
     }
@@ -29,11 +27,11 @@ interface Libraries {
 object Dependencies {
     object AndroidX : Libraries {
         object Version {
-            const val coreKtx: String = "1.5.0-alpha02"
-            const val navigation: String = "2.3.0"
+            const val coreKtx: String = "1.12.0"
+            const val navigation: String = "2.7.5"
             const val multidex: String = "2.0.1"
-            const val lifeCycle: String = "2.3.0-alpha07"
-            const val activity: String = "1.2.0-alpha08"
+            const val lifeCycle: String = "2.6.2"
+            const val activity: String = "1.8.0"
         }
 
         const val coreKtx: String = "androidx.core:core-ktx:${Version.coreKtx}"
@@ -63,6 +61,8 @@ object Dependencies {
             const val constraintLayout: String = "2.0.1"
             const val fragment: String = "1.3.0-alpha08"
             const val recyclerView: String = "1.2.0-alpha05"
+            const val kotlinCompilerExtensionVersion = "1.5.4"
+            const val composeBom = "2023.10.01"
         }
 
         const val appCompat: String = "androidx.appcompat:appcompat:${Version.appCompat}"
@@ -74,6 +74,14 @@ object Dependencies {
             "androidx.constraintlayout:constraintlayout:${Version.constraintLayout}"
         const val recyclerView: String =
             "androidx.recyclerview:recyclerview:${Version.recyclerView}"
+        const val composeBom: String = "androidx.compose:compose-bom:${Version.composeBom}"
+        const val composeRuntime = "androidx.compose.runtime:runtime"
+        const val composeUi = "androidx.compose.ui:ui"
+        const val composeUiTooling = "androidx.compose.ui:ui-tooling"
+        const val composeUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
+        const val composeFoundation = "androidx.compose.foundation:foundation"
+        const val composeFoundationLayout = "androidx.compose.foundation:foundation-layout"
+        const val composeMaterial = "androidx.compose.material:material"
         override val components: List<String> = listOf(appCompat, fragment)
     }
 
@@ -96,7 +104,7 @@ object Dependencies {
     object DI {
         object Version {
             const val javaxInject: String = "1"
-            const val hiltAndroid: String = "2.28.3-alpha"
+            const val hiltAndroid: String = "2.48.1"
             const val hiltViewModel: String = "1.0.0-alpha02"
         }
 
@@ -108,8 +116,6 @@ object Dependencies {
 
         const val javaxInject: String = "javax.inject:javax.inject:${Version.javaxInject}"
         const val hiltAndroid: String = "com.google.dagger:hilt-android:${Version.hiltAndroid}"
-        const val hiltViewModel: String =
-            "androidx.hilt:hilt-lifecycle-viewmodel:${Version.hiltViewModel}"
         const val hiltTesting: String =
             "com.google.dagger:hilt-android-testing:${Version.hiltAndroid}"
     }
@@ -129,7 +135,7 @@ object Dependencies {
 
     object Cache {
         object Version {
-            const val room: String = "2.3.0-alpha02"
+            const val room: String = "2.6.0"
         }
 
         object AnnotationProcessor {

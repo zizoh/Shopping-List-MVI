@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.zizohanto.android.tobuy.cache.BuildConfig
 import com.zizohanto.android.tobuy.cache.models.ProductCacheModel
 import com.zizohanto.android.tobuy.cache.models.ShoppingListCacheModel
 
@@ -13,7 +12,7 @@ import com.zizohanto.android.tobuy.cache.models.ShoppingListCacheModel
         ProductCacheModel::class,
         ShoppingListCacheModel::class
     ],
-    version = BuildConfig.databaseVersion,
+    version = 1,
     exportSchema = false
 )
 abstract class ShoppingListDatabase : RoomDatabase() {

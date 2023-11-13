@@ -19,8 +19,8 @@ This app was built in an attempt to explore the `Model-View-Intent`(MVI) archite
 
 ## Prerequisite
 To build this project, you require:
-- Android Studio 4.2 canary 4 or higher
-- Gradle 6.5
+- Android Studio Giraffe or higher
+- Gradle 8.1.2
 
 ## Libraries
 - [Viewmodel](https://developer.android.com/topic/libraries/architecture/viewmodel)

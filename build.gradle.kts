@@ -7,12 +7,12 @@ buildscript {
 allprojects {
     repositories.applyDefault()
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
 subprojects {
-    applySpotless
+//    applySpotless
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions.freeCompilerArgs +=
                 "-Xuse-experimental=" +
