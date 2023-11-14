@@ -45,11 +45,13 @@ object Dependencies {
             "androidx.lifecycle:lifecycle-common-java8:${Version.lifeCycle}"
         const val viewModel: String =
             "androidx.lifecycle:lifecycle-viewmodel-ktx:${Version.lifeCycle}"
+        const val viewModelCompose: String =
+            "androidx.lifecycle:lifecycle-viewmodel-compose:${Version.lifeCycle}"
 
         override val components: List<String>
             get() = listOf(
                 coreKtx, navigationFragmentKtx, navigationUiKtx, multiDex, activity,
-                lifeCycleCommon, viewModel
+                lifeCycleCommon, viewModel, viewModelCompose
             )
     }
 

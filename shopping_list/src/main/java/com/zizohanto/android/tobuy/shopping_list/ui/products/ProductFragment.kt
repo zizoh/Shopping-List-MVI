@@ -36,11 +36,8 @@ class ProductFragment : Fragment(R.layout.fragment_products) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.toolbar.setNavigationOnClickListener {
-            navigationDispatcher.goBack()
-        }
         binding.productsView.setContent {
-            ProductsView(viewModel)
+            ProductsView(viewModel = viewModel) { navigationDispatcher.goBack() }
         }
     }
 }

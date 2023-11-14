@@ -18,11 +18,14 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -37,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
@@ -45,34 +49,51 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.Produ
 
 @Composable
 fun ProductsView(
-    viewModel: ProductViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProductViewModel = viewModel(),
+    onBackPressed: () -> Unit = {}
 ) {
     val state by viewModel.viewState.collectAsState(initial = ProductsViewState.Idle)
-    (state as? ProductViewState.Success)?.let {
-        Column(
-            modifier = modifier
-        ) {
-            val listWithProducts = it.listWithProducts
-            val shoppingList = listWithProducts.shoppingList
-            val products = listWithProducts.products
-            ShoppingListTitle(
-                shoppingList,
-                viewModel,
-                modifier = Modifier.fillMaxWidth()
-            )
-            LazyColumn {
-                items(products) {
-                    RowProduct(it, viewModel)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Top bar back button"
+                        )
+                    }
                 }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            AddProductButton(
-                shoppingList.id,
-                products.size,
-                viewModel,
-                modifier = Modifier.padding(start = 16.dp)
             )
+        }
+    ) { innerPadding ->
+        (state as? ProductViewState.Success)?.let {
+            Column(
+                modifier = modifier.padding(innerPadding)
+            ) {
+                val listWithProducts = it.listWithProducts
+                val shoppingList = listWithProducts.shoppingList
+                val products = listWithProducts.products
+                ShoppingListTitle(
+                    shoppingList,
+                    viewModel,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                LazyColumn {
+                    items(products) {
+                        RowProduct(it, viewModel)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                AddProductButton(
+                    shoppingList.id,
+                    products.size,
+                    viewModel,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
         }
     }
 }
