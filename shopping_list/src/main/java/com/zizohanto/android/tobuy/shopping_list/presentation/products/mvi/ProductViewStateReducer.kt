@@ -28,7 +28,7 @@ class ProductViewStateReducer @Inject constructor(
             is ProductViewResult.Success -> {
                 val listWithProducts: ShoppingListWithProductsModel =
                     listWithProductsMapper.mapToModel(result.listWithProducts)
-                ProductViewState.Success(listWithProducts)
+                ProductViewState.Success(listWithProducts,)
             }
             is ProductViewResult.ProductSaved -> {
                 when (previous) {
@@ -39,7 +39,7 @@ class ProductViewStateReducer @Inject constructor(
                         val savedProduct: ProductModel = productMapper.mapToModel(result.product)
                         val products: List<ProductModel> =
                             listWithProducts.products.replaceFirst(savedProduct) { it.id == savedProduct.id }
-                        ProductViewState.Success(listWithProducts.copy(products = products))
+                        ProductViewState.Success(listWithProducts.copy(products = products),)
                     }
                     ProductViewState.DeleteShoppingList -> TODO()
                     is ProductsViewState.Error -> ProductsViewState.Idle
@@ -89,7 +89,9 @@ class ProductViewStateReducer @Inject constructor(
                     } else {
                         currentList.apply { add(product.position, product) }
                     }
-                    ProductViewState.Success(previous.listWithProducts.copy(products = currentList))
+                    ProductViewState.Success(
+                        previous.listWithProducts.copy(products = currentList),
+                    )
                 }
                 ProductViewState.DeleteShoppingList -> TODO()
                 is ProductsViewState.Error -> TODO()
@@ -97,5 +99,4 @@ class ProductViewStateReducer @Inject constructor(
             }
         }
     }
-
 }

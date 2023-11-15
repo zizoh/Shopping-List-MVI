@@ -10,6 +10,6 @@ interface ProductCache {
     suspend fun deleteAllProducts()
     suspend fun makeNewProductAtPosition(
         shoppingListId: String,
-        position: Int
-    ): ProductEntity
+        newProductPosition: Int
+    ): ProductEntity?
 }

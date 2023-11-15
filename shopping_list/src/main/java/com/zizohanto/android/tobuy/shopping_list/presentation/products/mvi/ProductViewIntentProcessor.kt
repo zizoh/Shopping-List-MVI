@@ -34,7 +34,7 @@ class ProductViewIntentProcessor @Inject constructor(
             }
             is ProductViewIntent.SaveProduct -> flow {
                 val product: Product = productMapper.mapToDomain(viewIntent.product)
-                saveProduct(product, viewIntent.shoppingListId)
+                saveProduct(product, product.shoppingListId)
                 emit(ProductViewResult.ProductSaved(product))
             }
             is ProductViewIntent.DeleteProduct -> flow {
@@ -50,7 +50,7 @@ class ProductViewIntentProcessor @Inject constructor(
             }
             is DeleteShoppingList -> flowOf(ProductViewResult.ShoppingListDeleted)
             is AddNewProductAtPosition -> createProduct(
-                Pair(viewIntent.shoppingListId, viewIntent.position + 1)
+                Pair(viewIntent.shoppingListId, viewIntent.newProductPosition)
             ).map { product ->
                 ProductViewResult.ProductAddedAtPosition(product)
             }
