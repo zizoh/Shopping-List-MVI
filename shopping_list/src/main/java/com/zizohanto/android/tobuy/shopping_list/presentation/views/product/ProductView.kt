@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -58,11 +60,13 @@ fun ProductsView(
         topBar = {
             TopAppBar(
                 title = {},
+                backgroundColor = colorResource(R.color.amber_primary),
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Top bar back button"
+                            contentDescription = "Top bar back button",
+                            tint = colorResource(R.color.black)
                         )
                     }
                 }
@@ -110,9 +114,12 @@ fun ShoppingListTitle(
         textStyle = MaterialTheme.typography.subtitle2,
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.Black,
-            backgroundColor = Color.Transparent
+            backgroundColor = Color.Transparent,
+            focusedIndicatorColor = colorResource(R.color.amber_light),
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = colorResource(R.color.amber_light)
         ),
-        modifier = modifier,
+        modifier = modifier.requiredHeight(42.dp),
         onValueChange = {
             val title = it.trim()
             shoppingListTitle = title
@@ -134,7 +141,10 @@ fun RowProduct(
             textStyle = MaterialTheme.typography.body1,
             colors = TextFieldDefaults.textFieldColors(
                 textColor = Color.Black,
-                backgroundColor = Color.Transparent
+                backgroundColor = Color.Transparent,
+                focusedIndicatorColor = colorResource(R.color.amber_light),
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = colorResource(R.color.amber_light)
             ),
             onValueChange = {
                 val name = it.trim()
