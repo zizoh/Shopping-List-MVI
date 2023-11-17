@@ -1,18 +1,16 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper
 
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.zizohanto.android.tobuy.core.ext.inflate
 import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list.ProductItem
+import com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list.ShoppingListItem
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter.ShoppingListViewHolder
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -66,29 +64,17 @@ class ShoppingListAdapter @Inject constructor() :
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listWithProducts: ShoppingListWithProductsModel) {
-            binding.title.text = listWithProducts.shoppingList.name
-            binding.products.setContent {
+            binding.root.setContent {
                 MaterialTheme {
-                    // todo use lazy column
-                    Column {
-                        listWithProducts.products.forEach { product ->
-                            ProductItem(product.name)
+                    ShoppingListItem(
+                        listWithProducts,
+                        {
+                            clickListener?.invoke(it)
+                        }, {
+                            deleteListener?.invoke(it)
                         }
-                    }
+                    )
                 }
-            }
-            binding.root.setOnClickListener {
-                clickListener?.invoke(listWithProducts.shoppingList.id)
-            }
-
-            binding.root.setOnLongClickListener {
-                MaterialAlertDialogBuilder(it.context)
-                    .setTitle(it.resources.getString(R.string.delete_shopping_list))
-                    .setNegativeButton(it.resources.getString(R.string.cancel)) { _, _ -> }
-                    .setPositiveButton(it.resources.getString(R.string.delete)) { _, _ ->
-                        deleteListener?.invoke(listWithProducts.shoppingList.id)
-                    }.show()
-                true
             }
         }
     }
