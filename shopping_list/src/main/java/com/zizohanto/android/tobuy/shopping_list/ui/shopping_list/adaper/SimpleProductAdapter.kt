@@ -2,6 +2,7 @@ package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.MaterialTheme
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemProductBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ProductModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list.ProductItem
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.SimpleProductAdapter.SimpleProductViewHolder
 import javax.inject.Inject
 
@@ -44,7 +46,11 @@ class SimpleProductAdapter @Inject constructor(
         }
 
         fun bind(product: ProductModel) {
-            binding.product.text = product.name
+            binding.product.setContent {
+                MaterialTheme {
+                    ProductItem(product.name)
+                }
+            }
         }
     }
 

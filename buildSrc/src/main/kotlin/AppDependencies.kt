@@ -61,6 +61,7 @@ object Dependencies {
             const val shimmerLayout: String = "0.5.0"
             const val appCompat: String = "1.3.0-alpha02"
             const val constraintLayout: String = "2.0.1"
+            const val constraintLayoutCompose: String = "1.0.1"
             const val fragment: String = "1.3.0-alpha08"
             const val recyclerView: String = "1.2.0-alpha05"
             const val kotlinCompilerExtensionVersion = "1.5.4"
@@ -74,6 +75,8 @@ object Dependencies {
         const val shimmerLayout: String = "com.facebook.shimmer:shimmer:${Version.shimmerLayout}"
         const val constraintLayout: String =
             "androidx.constraintlayout:constraintlayout:${Version.constraintLayout}"
+        const val constraintLayoutCompose: String =
+            "androidx.constraintlayout:constraintlayout-compose:${Version.constraintLayoutCompose}"
         const val recyclerView: String =
             "androidx.recyclerview:recyclerview:${Version.recyclerView}"
         const val composeBom: String = "androidx.compose:compose-bom:${Version.composeBom}"
