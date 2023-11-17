@@ -1,6 +1,8 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper
 
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.MaterialTheme
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +12,7 @@ import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list.ProductItem
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter.ShoppingListViewHolder
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -64,7 +67,16 @@ class ShoppingListAdapter @Inject constructor() :
 
         fun bind(listWithProducts: ShoppingListWithProductsModel) {
             binding.title.text = listWithProducts.shoppingList.name
-            binding.rvProducts.adapter = SimpleProductAdapter(listWithProducts.products)
+            binding.products.setContent {
+                MaterialTheme {
+                    // todo use lazy column
+                    Column {
+                        listWithProducts.products.forEach { product ->
+                            ProductItem(product.name)
+                        }
+                    }
+                }
+            }
             binding.root.setOnClickListener {
                 clickListener?.invoke(listWithProducts.shoppingList.id)
             }
