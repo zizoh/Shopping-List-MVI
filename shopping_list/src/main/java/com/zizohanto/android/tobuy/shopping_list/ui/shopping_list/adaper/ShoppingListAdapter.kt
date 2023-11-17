@@ -1,6 +1,5 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -65,12 +64,10 @@ class ShoppingListAdapter @Inject constructor() :
 
         fun bind(listWithProducts: ShoppingListWithProductsModel) {
             binding.title.text = listWithProducts.shoppingList.name
-            val clickListener: (v: View) -> Unit = {
+            binding.rvProducts.adapter = SimpleProductAdapter(listWithProducts.products)
+            binding.root.setOnClickListener {
                 clickListener?.invoke(listWithProducts.shoppingList.id)
             }
-            binding.rvProducts.adapter =
-                SimpleProductAdapter(listWithProducts.products, clickListener)
-            binding.root.setOnClickListener(clickListener)
 
             binding.root.setOnLongClickListener {
                 MaterialAlertDialogBuilder(it.context)

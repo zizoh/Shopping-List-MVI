@@ -1,6 +1,5 @@
 package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.MaterialTheme
 import androidx.recyclerview.widget.DiffUtil
@@ -16,8 +15,7 @@ import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.SimpleP
 import javax.inject.Inject
 
 class SimpleProductAdapter @Inject constructor(
-    products: List<ProductModel>,
-    private val clickListener: (v: View) -> Unit
+    products: List<ProductModel>
 ) : ListAdapter<ProductsViewItem, SimpleProductViewHolder>(diffUtilCallback) {
 
     init {
@@ -26,8 +24,7 @@ class SimpleProductAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleProductViewHolder {
         return SimpleProductViewHolder(
-            ItemProductBinding.bind(parent.inflate(R.layout.item_product)),
-            clickListener
+            ItemProductBinding.bind(parent.inflate(R.layout.item_product))
         )
     }
 
@@ -38,12 +35,8 @@ class SimpleProductAdapter @Inject constructor(
     }
 
     class SimpleProductViewHolder(
-        private val binding: ItemProductBinding,
-        clickListener: (v: View) -> Unit
+        private val binding: ItemProductBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        init {
-            binding.root.setOnClickListener(clickListener)
-        }
 
         fun bind(product: ProductModel) {
             binding.product.setContent {
