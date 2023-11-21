@@ -40,7 +40,6 @@ import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.core.ext.getImage
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
-import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
@@ -54,9 +53,6 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
 
     @Inject
     lateinit var shoppingListAdapter: ShoppingListAdapter
-
-    @Inject
-    lateinit var navigator: NavigationDispatcher
 
     private var binding: LayoutShoppingListBinding
 
@@ -129,7 +125,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                 }
             }
             is ShoppingListViewState.NewShoppingListLoaded -> {
-                state.openProductScreen.consume(navigator::openShoppingListDetail)
+                state.openProductScreen.consume(listCLick::invoke)
             }
         }
     }
