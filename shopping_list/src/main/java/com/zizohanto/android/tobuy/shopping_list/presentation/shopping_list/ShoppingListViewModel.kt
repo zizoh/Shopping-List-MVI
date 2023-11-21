@@ -29,15 +29,19 @@ class ShoppingListViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    fun processIntent(intent: ShoppingListViewIntent) {
+        processIntent(flowOf(intent))
+    }
+
     fun onListDeleted(shoppingListId: String) {
-        processIntent(flowOf(ShoppingListViewIntent.DeleteShoppingList(shoppingListId)))
+        processIntent(ShoppingListViewIntent.DeleteShoppingList(shoppingListId))
     }
 
     fun onCreateShoppingList() {
-        processIntent(flowOf(ShoppingListViewIntent.CreateNewShoppingList))
+        processIntent(ShoppingListViewIntent.CreateNewShoppingList)
     }
 
     fun onRetry() {
-        processIntent(flowOf(ShoppingListViewIntent.LoadShoppingLists))
+        processIntent(ShoppingListViewIntent.LoadShoppingLists)
     }
 }

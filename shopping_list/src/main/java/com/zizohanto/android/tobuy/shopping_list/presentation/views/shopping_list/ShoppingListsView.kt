@@ -38,24 +38,19 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.view.isVisible
 import com.zizohanto.android.tobuy.core.ext.getImage
-import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet) :
-    LinearLayout(context, attributeSet),
-    MVIView<ShoppingListViewIntent, ShoppingListViewState> {
+    LinearLayout(context, attributeSet) {
 
     @Inject
     lateinit var shoppingListAdapter: ShoppingListAdapter
@@ -64,12 +59,6 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
     lateinit var navigator: NavigationDispatcher
 
     private var binding: LayoutShoppingListBinding
-
-    private var clickListener: (String) -> Unit = {}
-
-    private var deleteListener: (String) -> Unit = {}
-
-    private var retryListener: () -> Unit = {}
 
     init {
         isSaveEnabled = true
@@ -89,16 +78,9 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         create: () -> Unit,
         retry: () -> Unit
     ) {
-        clickListener = listCLick
-        deleteListener = listDelete
-        retryListener = retry
-        render(state)
         binding.addShoppingList.setOnClickListener {
             create.invoke()
         }
-    }
-
-    override fun render(state: ShoppingListViewState) {
         when (state) {
             ShoppingListViewState.Idle -> {
             }
@@ -116,8 +98,8 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                 }
                 shoppingListAdapter.submitList(
                     state.listWithProducts,
-                    clickListener,
-                    deleteListener
+                    listCLick,
+                    listDelete
                 )
             }
             ShoppingListViewState.ShoppingListEmpty -> {
@@ -142,7 +124,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     emptyState.setTitle(context.getString(R.string.an_error_occurred))
                     emptyState.isButtonVisible = true
                     binding.emptyState.setOnClickListener {
-                        retryListener.invoke()
+                        retry.invoke()
                     }
                 }
             }
@@ -151,8 +133,6 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
             }
         }
     }
-
-    override val intents: Flow<ShoppingListViewIntent> = flowOf()
 }
 
 @Composable
