@@ -9,6 +9,7 @@ import com.zizohanto.android.tobuy.core.view_binding.viewBinding
 import com.zizohanto.android.tobuy.presentation.mvi.MVIView
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.FragmentShoppingListBinding
+import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent.LoadShoppingLists
@@ -18,10 +19,14 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.merge
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
     MVIView<ShoppingListViewIntent, ShoppingListViewState> {
+
+    @Inject
+    lateinit var navigator: NavigationDispatcher
 
     private val viewModel: ShoppingListViewModel by viewModels()
 
@@ -53,7 +58,7 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
             binding.shoppingList.render(
                 state,
                 { shoppingListId ->
-                    onListClicked(shoppingListId)
+                    navigator.openShoppingListDetail(shoppingListId)
                 },
                 { shoppingListId ->
                     onListDeleted(shoppingListId)
