@@ -241,7 +241,6 @@ fun ShoppingListItem(
             .border(1.dp, colorResource(R.color.amber_light), shape = RoundedCornerShape(8.dp))
     ) {
         ShoppingListTitle(shoppingList.name)
-        // Todo: use lazy column
         Column {
             listWithProducts.products.forEach {
                 ProductItem(it.name)
