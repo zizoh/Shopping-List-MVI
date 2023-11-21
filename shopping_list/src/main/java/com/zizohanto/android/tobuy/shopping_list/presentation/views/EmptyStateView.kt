@@ -3,7 +3,6 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
@@ -25,10 +24,11 @@ fun EmptyStateView(
     caption: String,
     imageResId: Int,
     shouldShowButton: Boolean,
+    modifier: Modifier = Modifier,
     retryClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -66,7 +66,7 @@ fun EmptyStateView(
 @Composable
 fun EmptyStateViewPreview() {
     EmptyStateView(
-        "An error occured",
+        "An error occurred",
         "You don’t have any data right now",
         imageResId = R.drawable.error,
         shouldShowButton = true
