@@ -70,6 +70,8 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
 
     private var deleteListener: (String) -> Unit = {}
 
+    private var retryListener: () -> Unit = {}
+
     init {
         isSaveEnabled = true
         val inflater: LayoutInflater = context
@@ -81,18 +83,15 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         }
     }
 
-    fun retryIntent(): Flow<ShoppingListViewIntent> =
-        binding.emptyState.clicks.map {
-            ShoppingListViewIntent.LoadShoppingLists
-        }
-
     fun render(
         state: ShoppingListViewState,
         listCLick: (String) -> Unit,
-        listDelete: (String) -> Unit
+        listDelete: (String) -> Unit,
+        retry: () -> Unit
     ) {
         clickListener = listCLick
         deleteListener = listDelete
+        retryListener = retry
         render(state)
     }
 
@@ -139,6 +138,9 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     emptyState.setCaption(state.message)
                     emptyState.setTitle(context.getString(R.string.an_error_occurred))
                     emptyState.isButtonVisible = true
+                    binding.emptyState.setOnClickListener {
+                        retryListener.invoke()
+                    }
                 }
             }
             is ShoppingListViewState.NewShoppingListLoaded -> {

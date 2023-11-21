@@ -37,8 +37,7 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
     override val intents: Flow<ShoppingListViewIntent>
         get() = merge(
             loadShoppingLists.asFlow(),
-            binding.shoppingList.intents,
-            binding.shoppingList.retryIntent()
+            binding.shoppingList.intents
         )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,11 +56,14 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
         with(viewModel) {
             binding.shoppingList.render(
                 state,
-                { shoppingListId ->
+                listCLick = { shoppingListId ->
                     navigator.openShoppingListDetail(shoppingListId)
                 },
-                { shoppingListId ->
+                listDelete = { shoppingListId ->
                     onListDeleted(shoppingListId)
+                },
+                retry = {
+                    retry()
                 }
             )
         }

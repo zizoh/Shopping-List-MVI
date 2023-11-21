@@ -32,4 +32,8 @@ class ShoppingListViewModel @Inject constructor(
     fun onListDeleted(shoppingListId: String) {
         processIntent(flowOf(ShoppingListViewIntent.DeleteShoppingList(shoppingListId)))
     }
+
+    fun retry() {
+        processIntent(flowOf(ShoppingListViewIntent.LoadShoppingLists))
+    }
 }
