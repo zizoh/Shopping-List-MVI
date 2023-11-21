@@ -42,12 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.view.isVisible
-import com.zizohanto.android.tobuy.core.ext.getImage
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
+import com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -80,13 +80,11 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
             ShoppingListViewState.Loading -> {
                 with(binding) {
                     progressBar.isVisible = !shoppingLists.isVisible
-                    emptyState.isVisible = false
                 }
             }
             is ShoppingListViewState.ShoppingListLoaded -> {
                 with(binding) {
                     progressBar.isVisible = false
-                    emptyState.isVisible = false
                     shoppingLists.setContent {
                         MaterialTheme {
                             LazyVerticalGrid(
@@ -114,29 +112,51 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                 with(binding) {
                     progressBar.isVisible = false
                     shoppingLists.isVisible = false
-                    emptyState.isVisible = true
-                    emptyState.setImage(context.getImage(R.drawable.empty_basket))
-                    emptyState.setTitle(context.getString(R.string.no_data))
-                    emptyState.resetCaption()
-                    emptyState.isButtonVisible = false
+                    emitEmptyStateView(
+                        R.string.no_data,
+                        "",
+                        R.drawable.empty_basket,
+                        shouldShowButton = false
+                    ) {}
                 }
             }
             is ShoppingListViewState.Error -> {
                 with(binding) {
                     shoppingLists.isVisible = false
                     progressBar.isVisible = false
-                    emptyState.isVisible = true
-                    emptyState.setImage(context.getImage(R.drawable.error))
-                    emptyState.setCaption(state.message)
-                    emptyState.setTitle(context.getString(R.string.an_error_occurred))
-                    emptyState.isButtonVisible = true
-                    binding.emptyState.setOnClickListener {
+                    emitEmptyStateView(
+                        R.string.an_error_occurred,
+                        state.message,
+                        R.drawable.error,
+                        shouldShowButton = true
+                    ) {
                         retry.invoke()
                     }
                 }
             }
             is ShoppingListViewState.NewShoppingListLoaded -> {
                 state.openProductScreen.consume(listCLick::invoke)
+            }
+        }
+    }
+
+    private fun emitEmptyStateView(
+        titleResId: Int,
+        caption: String,
+        imageResId: Int,
+        shouldShowButton: Boolean,
+        retryClick: () -> Unit
+    ) {
+        binding.emptyState.setContent {
+            MaterialTheme {
+                EmptyStateView(
+                    stringResource(titleResId),
+                    caption,
+                    imageResId,
+                    shouldShowButton = shouldShowButton
+                ) {
+                    retryClick.invoke()
+                }
             }
         }
     }
