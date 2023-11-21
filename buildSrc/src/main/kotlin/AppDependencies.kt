@@ -86,7 +86,7 @@ object Dependencies {
         const val composeUiToolingPreview = "androidx.compose.ui:ui-tooling-preview"
         const val composeFoundation = "androidx.compose.foundation:foundation"
         const val composeFoundationLayout = "androidx.compose.foundation:foundation-layout"
-        const val composeMaterial = "androidx.compose.material:material"
+        const val composeMaterial = "androidx.compose.material3:material3"
         override val components: List<String> = listOf(appCompat, fragment)
     }
 

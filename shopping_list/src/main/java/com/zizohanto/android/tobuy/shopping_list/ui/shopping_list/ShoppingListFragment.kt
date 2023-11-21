@@ -2,16 +2,7 @@ package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.material3.MaterialTheme
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.zizohanto.android.tobuy.core.ext.observe
@@ -46,36 +37,21 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list) {
         with(viewModel) {
             binding.shoppingList.setContent {
                 MaterialTheme {
-                    Scaffold(
-                        topBar = {
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        stringResource(R.string.shopping_list_frag_toolbar_title),
-                                        modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)
-                                    )
-                                },
-                                backgroundColor = colorResource(R.color.amber_primary),
-                            )
+                    ShoppingListsView(
+                        state,
+                        listCLick = { shoppingListId ->
+                            navigator.openShoppingListDetail(shoppingListId)
+                        },
+                        listDelete = { shoppingListId ->
+                            onListDeleted(shoppingListId)
+                        },
+                        create = {
+                            onCreateShoppingList()
+                        },
+                        retry = {
+                            onRetry()
                         }
-                    ) { innerPadding ->
-                        ShoppingListsView(
-                            state,
-                            listCLick = { shoppingListId ->
-                                navigator.openShoppingListDetail(shoppingListId)
-                            },
-                            listDelete = { shoppingListId ->
-                                onListDeleted(shoppingListId)
-                            },
-                            create = {
-                                onCreateShoppingList()
-                            },
-                            retry = {
-                                onRetry()
-                            },
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                    }
+                    )
                 }
             }
         }
