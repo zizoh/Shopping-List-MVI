@@ -10,16 +10,21 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,16 +48,11 @@ import com.zizohanto.android.tobuy.shopping_list.databinding.LayoutShoppingListB
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
-import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet) :
     LinearLayout(context, attributeSet) {
-
-    @Inject
-    lateinit var shoppingListAdapter: ShoppingListAdapter
 
     private var binding: LayoutShoppingListBinding
 
@@ -62,9 +62,6 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         binding = LayoutShoppingListBinding.inflate(inflater, this, true)
-        with(binding) {
-            shoppingLists.adapter = shoppingListAdapter
-        }
     }
 
     fun render(
@@ -90,16 +87,30 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                 with(binding) {
                     progressBar.isVisible = false
                     emptyState.isVisible = false
-                    shoppingLists.isVisible = true
+                    shoppingLists.setContent {
+                        MaterialTheme {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                contentPadding = PaddingValues(
+                                    start = 8.dp,
+                                    top = 16.dp,
+                                    end = 8.dp
+                                )
+                            ) {
+                                items(state.listWithProducts) { item ->
+                                    ShoppingListItem(
+                                        item,
+                                        listCLick,
+                                        listDelete,
+                                        Modifier.padding(horizontal = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
-                shoppingListAdapter.submitList(
-                    state.listWithProducts,
-                    listCLick,
-                    listDelete
-                )
             }
             ShoppingListViewState.ShoppingListEmpty -> {
-                shoppingListAdapter.reset()
                 with(binding) {
                     progressBar.isVisible = false
                     shoppingLists.isVisible = false
@@ -189,12 +200,13 @@ fun ProductItem(
 fun ShoppingListItem(
     listWithProducts: ShoppingListWithProductsModel,
     onClick: (String) -> Unit,
-    onDelete: (String) -> Unit
+    onDelete: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val shoppingList = listWithProducts.shoppingList
     var showDialog by remember { mutableStateOf(false) }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .combinedClickable(
                 onClick = {
                     onClick.invoke(shoppingList.id)
@@ -203,7 +215,6 @@ fun ShoppingListItem(
                     showDialog = true
                 }
             )
-            .padding(8.dp)
             .border(1.dp, colorResource(R.color.amber_light), shape = RoundedCornerShape(8.dp))
     ) {
         ShoppingListTitle(shoppingList.name)
