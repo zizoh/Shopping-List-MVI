@@ -6,40 +6,29 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zizohanto.android.tobuy.core.ext.inflate
-import com.zizohanto.android.tobuy.core.ext.safeOffer
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.ItemShoppingListBinding
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list.ShoppingListItem
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter.ShoppingListViewHolder
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.conflate
 import javax.inject.Inject
-
-typealias ShoppingListClickListener = (String) -> Unit
-
-typealias ShoppingListDeleteListener = (String) -> Unit
 
 class ShoppingListAdapter @Inject constructor() :
     ListAdapter<ShoppingListWithProductsModel, ShoppingListViewHolder>(diffUtilCallback) {
 
-    var clickListener: ShoppingListClickListener? = null
+    private var clickListener: (String) -> Unit = {}
 
-    private var deleteListener: ShoppingListDeleteListener? = null
+    private var deleteListener: (String) -> Unit = {}
 
-    val deletes: Flow<String>
-        get() = callbackFlow {
-            val listener: ShoppingListDeleteListener = { shoppingListId ->
-                safeOffer(shoppingListId)
-                Unit
-            }
-            deleteListener = listener
-            awaitClose {
-                deleteListener = null
-            }
-        }.conflate()
+    fun submitList(
+        listWithProducts: List<ShoppingListWithProductsModel>,
+        listCLick: (String) -> Unit,
+        listDelete: (String) -> Unit
+    ) {
+        clickListener = listCLick
+        deleteListener = listDelete
+        submitList(listWithProducts)
+    }
 
     fun reset() {
         submitList(emptyList())
@@ -59,8 +48,8 @@ class ShoppingListAdapter @Inject constructor() :
 
     class ShoppingListViewHolder(
         private val binding: ItemShoppingListBinding,
-        private val clickListener: ShoppingListClickListener?,
-        private val deleteListener: ShoppingListDeleteListener?
+        private val clickListener: (String) -> Unit,
+        private val deleteListener: (String) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listWithProducts: ShoppingListWithProductsModel) {
@@ -69,9 +58,9 @@ class ShoppingListAdapter @Inject constructor() :
                     ShoppingListItem(
                         listWithProducts,
                         {
-                            clickListener?.invoke(it)
+                            clickListener.invoke(it)
                         }, {
-                            deleteListener?.invoke(it)
+                            deleteListener.invoke(it)
                         }
                     )
                 }

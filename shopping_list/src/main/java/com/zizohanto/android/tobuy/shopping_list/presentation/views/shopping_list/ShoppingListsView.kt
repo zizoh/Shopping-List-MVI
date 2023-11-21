@@ -50,7 +50,6 @@ import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.Shoppin
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import reactivecircus.flowbinding.android.view.clicks
 import javax.inject.Inject
 
@@ -67,6 +66,10 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
 
     private var binding: LayoutShoppingListBinding
 
+    private var clickListener: (String) -> Unit = {}
+
+    private var deleteListener: (String) -> Unit = {}
+
     init {
         isSaveEnabled = true
         val inflater: LayoutInflater = context
@@ -74,9 +77,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
 
         binding = LayoutShoppingListBinding.inflate(inflater, this, true)
         with(binding) {
-            shoppingLists.adapter = shoppingListAdapter.apply {
-                clickListener = navigator::openShoppingListDetail
-            }
+            shoppingLists.adapter = shoppingListAdapter
         }
     }
 
@@ -84,6 +85,16 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         binding.emptyState.clicks.map {
             ShoppingListViewIntent.LoadShoppingLists
         }
+
+    fun render(
+        state: ShoppingListViewState,
+        listCLick: (String) -> Unit,
+        listDelete: (String) -> Unit
+    ) {
+        clickListener = listCLick
+        deleteListener = listDelete
+        render(state)
+    }
 
     override fun render(state: ShoppingListViewState) {
         when (state) {
@@ -101,7 +112,11 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
                     emptyState.isVisible = false
                     shoppingLists.isVisible = true
                 }
-                shoppingListAdapter.submitList(state.listWithProducts)
+                shoppingListAdapter.submitList(
+                    state.listWithProducts,
+                    clickListener,
+                    deleteListener
+                )
             }
             ShoppingListViewState.ShoppingListEmpty -> {
                 shoppingListAdapter.reset()
@@ -132,18 +147,10 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         }
     }
 
-    private val createNewShoppingListIntent: Flow<ShoppingListViewIntent>
+    override val intents: Flow<ShoppingListViewIntent>
         get() = binding.addShoppingList.clicks().map {
             ShoppingListViewIntent.CreateNewShoppingList
         }
-
-    private val deleteShoppingListIntent: Flow<ShoppingListViewIntent>
-        get() = shoppingListAdapter.deletes.map {
-            ShoppingListViewIntent.DeleteShoppingList(it)
-        }
-
-    override val intents: Flow<ShoppingListViewIntent>
-        get() = merge(createNewShoppingListIntent, deleteShoppingListIntent)
 }
 
 @Composable

@@ -49,6 +49,16 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
     }
 
     override fun render(state: ShoppingListViewState) {
-        binding.shoppingList.render(state)
+        with(viewModel) {
+            binding.shoppingList.render(
+                state,
+                { shoppingListId ->
+                    onListClicked(shoppingListId)
+                },
+                { shoppingListId ->
+                    onListDeleted(shoppingListId)
+                }
+            )
+        }
     }
 }
