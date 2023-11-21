@@ -119,7 +119,7 @@ fun ShoppingListTitle(
             unfocusedIndicatorColor = Color.Transparent,
             cursorColor = colorResource(R.color.amber_light)
         ),
-        modifier = modifier.requiredHeight(42.dp),
+        modifier = modifier,
         onValueChange = {
             val title = it.trim()
             shoppingListTitle = title
