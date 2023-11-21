@@ -49,8 +49,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.
 import com.zizohanto.android.tobuy.shopping_list.ui.shopping_list.adaper.ShoppingListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import reactivecircus.flowbinding.android.view.clicks
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -87,12 +86,16 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         state: ShoppingListViewState,
         listCLick: (String) -> Unit,
         listDelete: (String) -> Unit,
+        create: () -> Unit,
         retry: () -> Unit
     ) {
         clickListener = listCLick
         deleteListener = listDelete
         retryListener = retry
         render(state)
+        binding.addShoppingList.setOnClickListener {
+            create.invoke()
+        }
     }
 
     override fun render(state: ShoppingListViewState) {
@@ -149,10 +152,7 @@ class ShoppingListsView @JvmOverloads constructor(context: Context, attributeSet
         }
     }
 
-    override val intents: Flow<ShoppingListViewIntent>
-        get() = binding.addShoppingList.clicks().map {
-            ShoppingListViewIntent.CreateNewShoppingList
-        }
+    override val intents: Flow<ShoppingListViewIntent> = flowOf()
 }
 
 @Composable

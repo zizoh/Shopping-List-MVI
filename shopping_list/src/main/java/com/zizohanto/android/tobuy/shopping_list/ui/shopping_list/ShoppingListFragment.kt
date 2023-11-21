@@ -62,8 +62,11 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list),
                 listDelete = { shoppingListId ->
                     onListDeleted(shoppingListId)
                 },
+                create = {
+                    onCreateShoppingList()
+                },
                 retry = {
-                    retry()
+                    onRetry()
                 }
             )
         }
