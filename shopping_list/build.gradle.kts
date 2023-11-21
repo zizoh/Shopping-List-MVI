@@ -63,6 +63,7 @@ dependencies {
         implementation(fragment)
         implementation(materialComponent)
         implementation(constraintLayout)
+        implementation(constraintLayoutCompose)
         implementation(recyclerView)
         implementation(shimmerLayout)
         implementation(composeRuntime)

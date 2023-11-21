@@ -1,130 +1,74 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.views
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.content.Context
-import android.content.res.TypedArray
-import android.graphics.drawable.Drawable
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.LinearLayout
-import androidx.core.view.isVisible
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.zizohanto.android.tobuy.shopping_list.R
-import com.zizohanto.android.tobuy.shopping_list.databinding.SimpleEmptyStateViewLayoutBinding
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.debounce
-import reactivecircus.flowbinding.common.safeOffer
 
-typealias ActionButtonClickListener = () -> Unit
-
-class EmptyStateView : LinearLayout {
-
-    private var binding: SimpleEmptyStateViewLayoutBinding
-
-    private var buttonClickListener: ActionButtonClickListener? = null
-
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+@Composable
+fun EmptyStateView(
+    title: String,
+    caption: String,
+    imageResId: Int,
+    shouldShowButton: Boolean,
+    modifier: Modifier = Modifier,
+    retryClick: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-
-        val inflater: LayoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-        binding = SimpleEmptyStateViewLayoutBinding.inflate(inflater, this, true)
-
-        val attributes: TypedArray =
-            context.obtainStyledAttributes(attrs, R.styleable.EmptyStateView, 0, 0)
-
-        val emptyStateTitle: String? =
-            attributes.getString(R.styleable.EmptyStateView_emptyStateTitleText)
-        val emptyStateImageSrc: Drawable? =
-            attributes.getDrawable(R.styleable.EmptyStateView_emptyStateImageSrc)
-        val emptyStateCaption: String? =
-            attributes.getString(R.styleable.EmptyStateView_emptyStateCaptionText)
-        val emptyStateButtonText: String? =
-            attributes.getString(R.styleable.EmptyStateView_emptyStateButtonText)
-
-        val emptyStateButtonVisible: Boolean =
-            attributes.getBoolean(R.styleable.EmptyStateView_isButtonVisible, false)
-        val emptyStateTitleVisible: Boolean =
-            attributes.getBoolean(R.styleable.EmptyStateView_isTitleVisible, true)
-
-        attributes.recycle()
-
-        setTitle(emptyStateTitle)
-
-        binding.title.isVisible = emptyStateTitleVisible
-
-        setImage(emptyStateImageSrc)
-
-        setCaption(emptyStateCaption)
-
-        if (emptyStateButtonText != null) {
-            binding.retryBtn.text = emptyStateButtonText
+        if (imageResId != -1) {
+            Image(
+                painter = painterResource(imageResId),
+                contentDescription = stringResource(id = R.string.cont_desc_empty_state_icon),
+                modifier = Modifier
+                    .size(width = 100.dp, height = 100.dp)
+            )
         }
-
-        binding.retryBtn.isVisible = emptyStateButtonVisible
-
-        binding.retryBtn.setOnClickListener {
-            buttonClickListener?.invoke()
-        }
-
-        val actionBtnBounceAnim: ObjectAnimator =
-            ObjectAnimator.ofFloat(binding.image, "translationY", 0f, 25f, 0f)
-        actionBtnBounceAnim.interpolator = AccelerateDecelerateInterpolator()
-        actionBtnBounceAnim.duration = 3000
-        actionBtnBounceAnim.repeatMode = ValueAnimator.RESTART
-        actionBtnBounceAnim.repeatCount = ValueAnimator.INFINITE
-        actionBtnBounceAnim.start()
-    }
-
-    fun setImage(emptyStateImageSrc: Drawable?) {
-        if (emptyStateImageSrc != null) {
-            binding.image.isVisible = true
-            binding.image.setImageDrawable(emptyStateImageSrc)
-        } else {
-            binding.image.isVisible = false
-        }
-    }
-
-    var isButtonVisible: Boolean = false
-        set(value) {
-            field = value
-            binding.retryBtn.isVisible = value
-        }
-
-    fun setCaption(emptyStateCaption: String?) {
-        if (emptyStateCaption != null) {
-            binding.caption.text = emptyStateCaption
-        }
-    }
-
-    fun resetCaption() {
-        binding.caption.text = ""
-    }
-
-    fun setTitle(emptyStateTitle: String?) {
-        if (emptyStateTitle != null) {
-            binding.title.text = emptyStateTitle
-        }
-    }
-
-    val clicks: Flow<Unit>
-        get() = callbackFlow {
-            val listener: () -> Unit = {
-                safeOffer(Unit)
-                Unit
+        Text(
+            text = title,
+            color = Color.Black,
+            fontSize = 18.sp,
+            modifier = Modifier
+                .padding(top = 16.dp)
+        )
+        Text(
+            text = caption,
+            color = Color.DarkGray,
+            fontSize = 16.sp,
+            modifier = Modifier
+                .padding(top = 8.dp)
+        )
+        if (shouldShowButton) {
+            Button(onClick = retryClick) {
+                Text(text = stringResource(id = R.string.retry))
             }
-            buttonClickListener = listener
-            awaitClose { buttonClickListener = null }
-        }.conflate().debounce(200)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun EmptyStateViewPreview() {
+    EmptyStateView(
+        "An error occurred",
+        "You don’t have any data right now",
+        imageResId = R.drawable.error,
+        shouldShowButton = true
+    ) {}
 }

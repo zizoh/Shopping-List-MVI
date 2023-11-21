@@ -7,6 +7,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 
@@ -26,5 +27,21 @@ class ShoppingListViewModel @Inject constructor(
         shoppingListStateMachine
             .processIntents(intents)
             .launchIn(viewModelScope)
+    }
+
+    fun processIntent(intent: ShoppingListViewIntent) {
+        processIntent(flowOf(intent))
+    }
+
+    fun onListDeleted(shoppingListId: String) {
+        processIntent(ShoppingListViewIntent.DeleteShoppingList(shoppingListId))
+    }
+
+    fun onCreateShoppingList() {
+        processIntent(ShoppingListViewIntent.CreateNewShoppingList)
+    }
+
+    fun onRetry() {
+        processIntent(ShoppingListViewIntent.LoadShoppingLists)
     }
 }
