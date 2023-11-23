@@ -13,14 +13,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -125,12 +127,14 @@ private fun ProductsContent(
                 )
                 LazyColumn {
                     items(products) { product ->
+                        Divider(color = Color.LightGray)
                         RowProduct(
                             product = product,
                             onAddNewProduct = onAddNewProduct,
                             onUpdateProduct = onUpdateProduct,
                             onDeleteProduct = onDeleteProduct
                         )
+                        Divider(color = Color.LightGray)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -151,12 +155,15 @@ fun ShoppingListTitle(
     var shoppingListTitle by rememberSaveable { mutableStateOf(shoppingList.name) }
     TextField(
         value = shoppingListTitle,
-        textStyle = MaterialTheme.typography.titleSmall,
+        placeholder = {
+            Text(stringResource(R.string.title))
+        },
+        textStyle = MaterialTheme.typography.titleMedium,
         colors = TextFieldDefaults.colors(
             focusedTextColor = Color.Black,
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = colorResource(R.color.amber_light),
+            focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             cursorColor = colorResource(R.color.amber_light)
         ),
@@ -177,16 +184,22 @@ fun RowProduct(
     onDeleteProduct: (ProductsViewItem.ProductModel) -> Unit
 ) {
     var productName by rememberSaveable { mutableStateOf(product.name) }
-    var isRemoveButtonVisible by rememberSaveable { mutableStateOf(true) }
-    Row(modifier = Modifier.fillMaxWidth()) {
+    var isRemoveButtonVisible by rememberSaveable { mutableStateOf(false) }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         TextField(
             value = productName,
+            placeholder = {
+                Text(stringResource(R.string.product))
+            },
             textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedTextColor = Color.Black,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = colorResource(R.color.amber_light),
+                focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = colorResource(R.color.amber_light)
             ),
@@ -229,7 +242,8 @@ fun AddProductButton(
     modifier: Modifier = Modifier,
     onAddProductClick: () -> Unit
 ) {
-    Button(
+    ElevatedButton(
+        shape = RoundedCornerShape(8.dp),
         onClick = onAddProductClick,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
@@ -250,7 +264,6 @@ fun AddProductButton(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(R.string.add_product),
-                color = Color.Black,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
             )
