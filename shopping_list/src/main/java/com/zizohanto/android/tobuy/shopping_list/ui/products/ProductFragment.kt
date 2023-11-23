@@ -10,7 +10,7 @@ import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.databinding.FragmentProductsBinding
 import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.views.product.ProductsView
+import com.zizohanto.android.tobuy.shopping_list.presentation.views.product.ProductsScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class ProductFragment : Fragment(R.layout.fragment_products) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.productsView.setContent {
-            ProductsView(viewModel = viewModel) { navigationDispatcher.goBack() }
+            ProductsScreen(viewModel = viewModel) { navigationDispatcher.goBack() }
         }
     }
 }
