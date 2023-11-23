@@ -169,8 +169,7 @@ fun ShoppingListTitle(
         ),
         modifier = modifier,
         onValueChange = {
-            val title = it.trim()
-            shoppingListTitle = title
+            shoppingListTitle = it
             onUpdateShoppingList.invoke(shoppingList.copy(name = shoppingListTitle))
         }
     )
@@ -204,8 +203,7 @@ fun RowProduct(
                 cursorColor = colorResource(R.color.amber_light)
             ),
             onValueChange = {
-                val name = it.trim()
-                productName = name
+                productName = it
                 onUpdateProduct.invoke(product.copy(name = productName))
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
