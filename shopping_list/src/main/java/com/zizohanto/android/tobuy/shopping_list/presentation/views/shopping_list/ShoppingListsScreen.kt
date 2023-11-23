@@ -8,17 +8,15 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -29,7 +27,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -47,7 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
@@ -56,7 +52,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateVi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShoppingListsView(
+fun ShoppingListsScreen(
     state: ShoppingListViewState,
     listCLick: (String) -> Unit,
     listDelete: (String) -> Unit,
@@ -88,20 +84,16 @@ fun ShoppingListsView(
                         )
                     }
                     is ShoppingListViewState.ShoppingListLoaded -> {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            contentPadding = PaddingValues(
-                                start = 8.dp,
-                                top = 16.dp,
-                                end = 8.dp
-                            )
+                        LazyVerticalStaggeredGrid(
+                            columns = StaggeredGridCells.Fixed(2),
+                            contentPadding = PaddingValues(12.dp)
                         ) {
                             items(state.listWithProducts) { item ->
                                 ShoppingListItem(
                                     item,
                                     listCLick,
                                     listDelete,
-                                    Modifier.padding(horizontal = 8.dp)
+                                    Modifier.padding(4.dp)
                                 )
                             }
                         }
@@ -166,13 +158,15 @@ fun ShoppingListsView(
 }
 
 @Composable
-fun ShoppingListTitle(shoppingListTitle: String) {
+fun ShoppingListTitle(
+    shoppingListTitle: String,
+    modifier: Modifier = Modifier
+) {
     Text(
         text = shoppingListTitle,
         color = Color.Black,
         fontSize = 18.sp,
-        modifier = Modifier
-            .padding(start = 8.dp, top = 8.dp)
+        modifier = modifier
     )
 }
 
@@ -180,40 +174,20 @@ fun ShoppingListTitle(shoppingListTitle: String) {
 fun ProductItem(
     productName: String
 ) {
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        val (checkbox, productText) = createRefs()
-
-        IconButton(
-            onClick = {},
-            modifier = Modifier.constrainAs(checkbox) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                bottom.linkTo(parent.bottom)
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_check_box_outline_blank_24),
-                contentDescription = stringResource(id = R.string.cont_desc_select_button),
-                modifier = Modifier.size(24.dp)
-            )
-        }
-
+        Icon(
+            painter = painterResource(id = R.drawable.ic_baseline_check_box_outline_blank_24),
+            contentDescription = stringResource(id = R.string.cont_desc_select_button),
+        )
         Text(
             text = productName,
             color = Color.Black,
             fontSize = 16.sp,
             modifier = Modifier
-                .constrainAs(productText) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(checkbox.end)
-                }
-                .wrapContentWidth(Alignment.Start)
-
+                .padding(start = 8.dp)
         )
     }
 }
@@ -239,12 +213,14 @@ fun ShoppingListItem(
                 }
             )
             .border(1.dp, colorResource(R.color.amber_light), shape = RoundedCornerShape(8.dp))
+            .padding(16.dp)
     ) {
-        ShoppingListTitle(shoppingList.name)
-        Column {
-            listWithProducts.products.forEach {
-                ProductItem(it.name)
-            }
+        ShoppingListTitle(
+            shoppingList.name,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        listWithProducts.products.forEach {
+            ProductItem(it.name)
         }
     }
     if (showDialog) {
@@ -277,8 +253,12 @@ fun ShoppingListItem(
 fun ShoppingListPreview() {
     val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
     val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
-    ShoppingListItem(
-        ShoppingListWithProductsModel(shoppingList, listOf(product)),
+    ShoppingListsScreen(
+        ShoppingListViewState.ShoppingListLoaded(
+            listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
+        ),
+        {},
+        {},
         {},
         {}
     )
