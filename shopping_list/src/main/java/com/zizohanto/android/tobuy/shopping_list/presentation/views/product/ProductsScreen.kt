@@ -13,14 +13,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,22 +46,53 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductsView(
+fun ProductsScreen(
     modifier: Modifier = Modifier,
     viewModel: ProductViewModel = viewModel(),
     onBackPressed: () -> Unit = {}
 ) {
     val state by viewModel.viewState.collectAsState(initial = ProductsViewState.Idle)
+    ProductsContent(
+        state,
+        modifier,
+        onBackPressed,
+        onUpdateShoppingList = {
+            viewModel.updateShoppingList(it)
+        },
+        onAddNewProduct = { shoppingListId, newProductPosition ->
+            viewModel.addNewProduct(shoppingListId, newProductPosition)
+        },
+        onUpdateProduct = {
+            viewModel.updateProduct(it)
+        },
+        onDeleteProduct = {
+            viewModel.deleteProduct(it)
+        }
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun ProductsContent(
+    state: ProductsViewState,
+    modifier: Modifier,
+    onBackPressed: () -> Unit,
+    onUpdateShoppingList: (ProductsViewItem.ShoppingListModel) -> Unit,
+    onAddNewProduct: (String, Int) -> Unit,
+    onUpdateProduct: (ProductsViewItem.ProductModel) -> Unit,
+    onDeleteProduct: (ProductsViewItem.ProductModel) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,21 +122,25 @@ fun ProductsView(
                 val products = listWithProducts.products
                 ShoppingListTitle(
                     shoppingList,
-                    viewModel,
+                    onUpdateShoppingList = onUpdateShoppingList,
                     modifier = Modifier.fillMaxWidth()
                 )
                 LazyColumn {
-                    items(products) {
-                        RowProduct(it, viewModel)
+                    items(products) { product ->
+                        Divider(color = Color.LightGray)
+                        RowProduct(
+                            product = product,
+                            onAddNewProduct = onAddNewProduct,
+                            onUpdateProduct = onUpdateProduct,
+                            onDeleteProduct = onDeleteProduct
+                        )
+                        Divider(color = Color.LightGray)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                AddProductButton(
-                    shoppingList.id,
-                    products.size,
-                    viewModel,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
+                AddProductButton(Modifier.padding(start = 16.dp)) {
+                    onAddNewProduct.invoke(shoppingList.id, products.size)
+                }
             }
         }
     }
@@ -112,26 +149,28 @@ fun ProductsView(
 @Composable
 fun ShoppingListTitle(
     shoppingList: ProductsViewItem.ShoppingListModel,
-    viewModel: ProductViewModel,
+    onUpdateShoppingList: (ProductsViewItem.ShoppingListModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var shoppingListTitle by rememberSaveable { mutableStateOf(shoppingList.name) }
     TextField(
         value = shoppingListTitle,
-        textStyle = MaterialTheme.typography.titleSmall,
+        placeholder = {
+            Text(stringResource(R.string.title))
+        },
+        textStyle = MaterialTheme.typography.titleMedium,
         colors = TextFieldDefaults.colors(
             focusedTextColor = Color.Black,
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor = colorResource(R.color.amber_light),
+            focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             cursorColor = colorResource(R.color.amber_light)
         ),
         modifier = modifier,
         onValueChange = {
-            val title = it.trim()
-            shoppingListTitle = title
-            viewModel.updateShoppingList(shoppingList.copy(name = shoppingListTitle))
+            shoppingListTitle = it
+            onUpdateShoppingList.invoke(shoppingList.copy(name = shoppingListTitle))
         }
     )
 }
@@ -139,32 +178,39 @@ fun ShoppingListTitle(
 @Composable
 fun RowProduct(
     product: ProductsViewItem.ProductModel,
-    viewModel: ProductViewModel
+    onAddNewProduct: (String, Int) -> Unit,
+    onUpdateProduct: (ProductsViewItem.ProductModel) -> Unit,
+    onDeleteProduct: (ProductsViewItem.ProductModel) -> Unit
 ) {
     var productName by rememberSaveable { mutableStateOf(product.name) }
-    var isRemoveButtonVisible by rememberSaveable { mutableStateOf(true) }
-    Row(modifier = Modifier.fillMaxWidth()) {
+    var isRemoveButtonVisible by rememberSaveable { mutableStateOf(false) }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         TextField(
             value = productName,
+            placeholder = {
+                Text(stringResource(R.string.product))
+            },
             textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedTextColor = Color.Black,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = colorResource(R.color.amber_light),
+                focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = colorResource(R.color.amber_light)
             ),
             onValueChange = {
-                val name = it.trim()
-                productName = name
-                viewModel.updateProduct(product.copy(name = productName))
+                productName = it
+                onUpdateProduct.invoke(product.copy(name = productName))
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
                 onDone = {
                     if (product.name.isNotEmpty()) {
-                        viewModel.addNewProduct(product.shoppingListId, product.position)
+                        onAddNewProduct.invoke(product.shoppingListId, product.position)
                     }
                 },
             ),
@@ -177,7 +223,7 @@ fun RowProduct(
         if (isRemoveButtonVisible) {
             IconButton(
                 onClick = {
-                    viewModel.deleteProduct(product)
+                    onDeleteProduct.invoke(product)
                 },
             ) {
                 Icon(
@@ -191,15 +237,12 @@ fun RowProduct(
 
 @Composable
 fun AddProductButton(
-    shoppingListId: String,
-    newProductPosition: Int,
-    viewModel: ProductViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAddProductClick: () -> Unit
 ) {
-    Button(
-        onClick = {
-            viewModel.addNewProduct(shoppingListId, newProductPosition)
-        },
+    ElevatedButton(
+        shape = RoundedCornerShape(8.dp),
+        onClick = onAddProductClick,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
@@ -219,10 +262,28 @@ fun AddProductButton(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(R.string.add_product),
-                color = Color.Black,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun ProductsViewPreview() {
+    val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
+    val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
+    val state = ProductViewState.Success(
+        ShoppingListWithProductsModel(shoppingList, listOf(product))
+    )
+    ProductsContent(
+        state,
+        modifier = Modifier,
+        onBackPressed = {},
+        {},
+        { _, _ -> },
+        {},
+        {},
+    )
 }

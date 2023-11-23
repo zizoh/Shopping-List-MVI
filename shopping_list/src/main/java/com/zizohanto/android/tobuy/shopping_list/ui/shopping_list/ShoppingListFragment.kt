@@ -13,7 +13,7 @@ import com.zizohanto.android.tobuy.shopping_list.navigation.NavigationDispatcher
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent.LoadShoppingLists
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
-import com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list.ShoppingListsView
+import com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list.ShoppingListsScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list) {
         with(viewModel) {
             binding.shoppingList.setContent {
                 MaterialTheme {
-                    ShoppingListsView(
+                    ShoppingListsScreen(
                         state,
                         listCLick = { shoppingListId ->
                             navigator.openShoppingListDetail(shoppingListId)
