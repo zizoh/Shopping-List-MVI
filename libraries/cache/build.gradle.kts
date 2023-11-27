@@ -16,6 +16,7 @@ android {
     defaultConfig {
         minSdk = Config.Version.minSdkVersion
         compileSdk = Config.Version.compileSdkVersion
+        targetSdk = Config.Version.targetSdkVersion
 
         javaCompileOptions {
             annotationProcessorOptions {

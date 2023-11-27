@@ -22,6 +22,7 @@ android {
     defaultConfig {
         compileSdk = Config.Version.compileSdkVersion
         minSdk = Config.Version.minSdkVersion
+        targetSdk = Config.Version.targetSdkVersion
         testInstrumentationRunner = Config.Android.testInstrumentationRunner
     }
 
