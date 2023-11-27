@@ -2,6 +2,7 @@
 
 package com.zizohanto.android.tobuy.shopping_list.presentation.views.shopping_list
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -27,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -37,13 +39,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
@@ -66,8 +67,8 @@ fun ShoppingListsScreen(
                     Text(stringResource(R.string.shopping_list_frag_toolbar_title))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.amber_primary),
-                    titleContentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
                 )
             )
         }
@@ -80,7 +81,8 @@ fun ShoppingListsScreen(
                     ShoppingListViewState.Loading -> {
                         CircularProgressIndicator(
                             modifier = Modifier.width(64.dp),
-                            color = colorResource(R.color.amber_light)
+                            color = MaterialTheme.colorScheme.secondary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant
                         )
                     }
                     is ShoppingListViewState.ShoppingListLoaded -> {
@@ -98,7 +100,8 @@ fun ShoppingListsScreen(
                             }
                         }
                         FloatingActionButton(
-                            containerColor = colorResource(R.color.amber_primary),
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
                                 .navigationBarsPadding()
@@ -122,7 +125,8 @@ fun ShoppingListsScreen(
                             modifier = Modifier.fillMaxSize()
                         ) {}
                         FloatingActionButton(
-                            containerColor = colorResource(R.color.amber_primary),
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
                                 .navigationBarsPadding()
@@ -164,7 +168,6 @@ fun ShoppingListTitle(
 ) {
     Text(
         text = shoppingListTitle,
-        color = Color.Black,
         fontSize = 18.sp,
         modifier = modifier
     )
@@ -184,7 +187,6 @@ fun ProductItem(
         )
         Text(
             text = productName,
-            color = Color.Black,
             fontSize = 16.sp,
             modifier = Modifier
                 .padding(start = 8.dp)
@@ -212,7 +214,11 @@ fun ShoppingListItem(
                     showDialog = true
                 }
             )
-            .border(1.dp, colorResource(R.color.amber_light), shape = RoundedCornerShape(8.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = RoundedCornerShape(8.dp)
+            )
             .padding(16.dp)
     ) {
         ShoppingListTitle(
@@ -248,18 +254,27 @@ fun ShoppingListItem(
     }
 }
 
-@Preview
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    name = "DefaultPreviewLight"
+)
 @Composable
 fun ShoppingListPreview() {
     val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
     val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
-    ShoppingListsScreen(
-        ShoppingListViewState.ShoppingListLoaded(
-            listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
-        ),
-        {},
-        {},
-        {},
-        {}
-    )
+    ShoppingListTheme {
+        ShoppingListsScreen(
+            ShoppingListViewState.ShoppingListLoaded(
+                listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
+            ),
+            {},
+            {},
+            {},
+            {}
+        )
+    }
 }

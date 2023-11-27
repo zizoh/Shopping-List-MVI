@@ -2,6 +2,7 @@
 
 package com.zizohanto.android.tobuy.shopping_list.presentation.views.product
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,7 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,6 +54,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingLis
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
+import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 
 @Composable
 fun ProductsScreen(
@@ -98,15 +98,14 @@ private fun ProductsContent(
             TopAppBar(
                 title = {},
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.amber_primary),
-                    titleContentColor = Color.Black,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Top bar back button",
-                            tint = colorResource(R.color.black)
+                            contentDescription = "Top bar back button"
                         )
                     }
                 }
@@ -127,14 +126,14 @@ private fun ProductsContent(
                 )
                 LazyColumn {
                     items(products) { product ->
-                        Divider(color = Color.LightGray)
+                        Divider(color = MaterialTheme.colorScheme.outlineVariant)
                         RowProduct(
                             product = product,
                             onAddNewProduct = onAddNewProduct,
                             onUpdateProduct = onUpdateProduct,
                             onDeleteProduct = onDeleteProduct
                         )
-                        Divider(color = Color.LightGray)
+                        Divider(color = MaterialTheme.colorScheme.outlineVariant)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -160,12 +159,10 @@ fun ShoppingListTitle(
         },
         textStyle = MaterialTheme.typography.titleMedium,
         colors = TextFieldDefaults.colors(
-            focusedTextColor = Color.Black,
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = colorResource(R.color.amber_light)
+            unfocusedIndicatorColor = Color.Transparent
         ),
         modifier = modifier,
         onValueChange = {
@@ -195,12 +192,10 @@ fun RowProduct(
             },
             textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = colorResource(R.color.amber_light)
+                unfocusedIndicatorColor = Color.Transparent
             ),
             onValueChange = {
                 productName = it
@@ -243,11 +238,7 @@ fun AddProductButton(
     ElevatedButton(
         shape = RoundedCornerShape(8.dp),
         onClick = onAddProductClick,
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        )
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
@@ -256,7 +247,6 @@ fun AddProductButton(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
-                tint = Color.Black,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -269,7 +259,14 @@ fun AddProductButton(
     }
 }
 
-@Preview
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    name = "DefaultPreviewLight"
+)
 @Composable
 fun ProductsViewPreview() {
     val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
@@ -277,13 +274,15 @@ fun ProductsViewPreview() {
     val state = ProductViewState.Success(
         ShoppingListWithProductsModel(shoppingList, listOf(product))
     )
-    ProductsContent(
-        state,
-        modifier = Modifier,
-        onBackPressed = {},
-        {},
-        { _, _ -> },
-        {},
-        {},
-    )
+    ShoppingListTheme {
+        ProductsContent(
+            state,
+            modifier = Modifier,
+            onBackPressed = {},
+            {},
+            { _, _ -> },
+            {},
+            {},
+        )
+    }
 }
