@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -99,22 +100,7 @@ fun ShoppingListsScreen(
                                 )
                             }
                         }
-                        FloatingActionButton(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .navigationBarsPadding()
-                                .padding(16.dp),
-                            onClick = {
-                                create.invoke()
-                            }
-                        ) {
-                            Icon(
-                                Icons.Filled.Add,
-                                stringResource(R.string.cont_desc_add_new_shopping_list)
-                            )
-                        }
+                        ShoppingListFloatingActionButton(create)
                     }
                     ShoppingListViewState.ShoppingListEmpty -> {
                         EmptyStateView(
@@ -124,22 +110,7 @@ fun ShoppingListsScreen(
                             shouldShowButton = false,
                             modifier = Modifier.fillMaxSize()
                         ) {}
-                        FloatingActionButton(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .navigationBarsPadding()
-                                .padding(16.dp),
-                            onClick = {
-                                create.invoke()
-                            }
-                        ) {
-                            Icon(
-                                Icons.Filled.Add,
-                                stringResource(R.string.cont_desc_add_new_shopping_list)
-                            )
-                        }
+                        ShoppingListFloatingActionButton(create)
                     }
                     is ShoppingListViewState.Error -> {
                         EmptyStateView(
@@ -250,6 +221,26 @@ fun ShoppingListItem(
                     Text(stringResource(R.string.cancel))
                 }
             }
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.ShoppingListFloatingActionButton(create: () -> Unit) {
+    FloatingActionButton(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.secondary,
+        modifier = Modifier.Companion
+            .align(Alignment.BottomEnd)
+            .navigationBarsPadding()
+            .padding(24.dp),
+        onClick = {
+            create.invoke()
+        }
+    ) {
+        Icon(
+            Icons.Filled.Add,
+            stringResource(R.string.cont_desc_add_new_shopping_list)
         )
     }
 }
