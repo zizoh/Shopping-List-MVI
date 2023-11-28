@@ -10,10 +10,10 @@ class NavigationDispatcherImpl @Inject constructor(
 ) : NavigationDispatcher {
 
     override fun openShoppingListDetail(shoppingListId: String) {
-        navController.get().navigate(
-            ShoppingListFragmentDirections.actionShoppingListFragmentToProductFragment(
-                shoppingListId
-            )
+        val controller = navController.get()
+        controller.previousBackStackEntry?.savedStateHandle?.set("shoppingListId", shoppingListId)
+        controller.navigate(
+            ShoppingListFragmentDirections.actionShoppingListFragmentToProductFragment()
         )
     }
 
