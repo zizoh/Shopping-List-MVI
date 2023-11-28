@@ -21,16 +21,13 @@ class ShoppingListViewModel @Inject constructor(
 
     init {
         shoppingListStateMachine.processor.launchIn(viewModelScope)
+        processIntent(ShoppingListViewIntent.LoadShoppingLists)
     }
 
     override fun processIntent(intents: Flow<ShoppingListViewIntent>) {
         shoppingListStateMachine
             .processIntents(intents)
             .launchIn(viewModelScope)
-    }
-
-    fun processIntent(intent: ShoppingListViewIntent) {
-        processIntent(flowOf(intent))
     }
 
     fun onListDeleted(shoppingListId: String) {
@@ -43,5 +40,9 @@ class ShoppingListViewModel @Inject constructor(
 
     fun onRetry() {
         processIntent(ShoppingListViewIntent.LoadShoppingLists)
+    }
+
+    private fun processIntent(intent: ShoppingListViewIntent) {
+        processIntent(flowOf(intent))
     }
 }

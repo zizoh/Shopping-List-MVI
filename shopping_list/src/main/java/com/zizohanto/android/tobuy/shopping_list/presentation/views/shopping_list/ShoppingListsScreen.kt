@@ -34,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,16 +45,43 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateView
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShoppingListsScreen(
+    listCLick: (String) -> Unit = {},
+    viewModel: ShoppingListViewModel = viewModel()
+) {
+    val state by viewModel.viewState.collectAsState(initial = ShoppingListViewState.Idle)
+    with(viewModel) {
+        ShoppingListsContent(
+            state,
+            listCLick = { shoppingListId ->
+                listCLick.invoke(shoppingListId)
+            },
+            listDelete = { shoppingListId ->
+                onListDeleted(shoppingListId)
+            },
+            create = {
+                onCreateShoppingList()
+            },
+            retry = {
+                onRetry()
+            }
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun ShoppingListsContent(
     state: ShoppingListViewState,
     listCLick: (String) -> Unit,
     listDelete: (String) -> Unit,
@@ -257,7 +285,7 @@ fun ShoppingListPreview() {
     val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
     val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
     ShoppingListTheme {
-        ShoppingListsScreen(
+        ShoppingListsContent(
             ShoppingListViewState.ShoppingListLoaded(
                 listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
             ),
