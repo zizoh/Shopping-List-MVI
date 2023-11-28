@@ -78,6 +78,7 @@ dependencies {
 
     implementation(FlowBinding.android)
     implementation(DI.hiltAndroid)
+    implementation(DI.hiltNavigationCompose)
     implementation(composeBom)
     implementAll(AndroidX.components)
     implementAll(Coroutines.components)

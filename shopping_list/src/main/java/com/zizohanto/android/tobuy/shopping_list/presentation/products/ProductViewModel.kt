@@ -26,7 +26,7 @@ class ProductViewModel @Inject constructor(
         productStateMachine.processor.launchIn(viewModelScope)
         processIntent(
             ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts(
-                savedStateHandle.get<String>("shoppingListId").orEmpty()
+                savedStateHandle.get<String>(SHOPPING_LIST_ID_SAVED_STATE_KEY).orEmpty()
             )
         )
     }
@@ -60,5 +60,9 @@ class ProductViewModel @Inject constructor(
 
     private fun processIntent(intent: ProductsViewIntent) {
         processIntent(flowOf(intent))
+    }
+
+    companion object {
+        private const val SHOPPING_LIST_ID_SAVED_STATE_KEY = "shoppingListId"
     }
 }

@@ -45,7 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
@@ -57,7 +57,7 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateVi
 @Composable
 fun ShoppingListsScreen(
     listCLick: (String) -> Unit = {},
-    viewModel: ShoppingListViewModel = viewModel()
+    viewModel: ShoppingListViewModel = hiltViewModel()
 ) {
     val state by viewModel.viewState.collectAsState(initial = ShoppingListViewState.Idle)
     with(viewModel) {

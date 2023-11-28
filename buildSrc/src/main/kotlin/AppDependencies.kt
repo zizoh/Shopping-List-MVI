@@ -40,6 +40,7 @@ object Dependencies {
             "androidx.navigation:navigation-fragment-ktx:${Version.navigation}"
         const val navigationUiKtx: String =
             "androidx.navigation:navigation-ui-ktx:${Version.navigation}"
+        const val navigationCompose: String = "androidx.navigation:navigation-compose"
         const val multiDex: String = "androidx.multidex:multidex:${Version.multidex}"
         const val activity: String = "androidx.activity:activity:${Version.activity}"
         const val lifeCycleCommon: String =
@@ -51,7 +52,7 @@ object Dependencies {
 
         override val components: List<String>
             get() = listOf(
-                coreKtx, navigationFragmentKtx, navigationUiKtx, multiDex, activity,
+                coreKtx, navigationFragmentKtx, navigationUiKtx, navigationCompose, multiDex, activity,
                 lifeCycleCommon, viewModel, viewModelCompose
             )
     }
@@ -111,6 +112,7 @@ object Dependencies {
         object Version {
             const val javaxInject: String = "1"
             const val hiltAndroid: String = "2.48.1"
+            const val hiltNavigationCompose: String = "1.1.0"
             const val hiltViewModel: String = "1.0.0-alpha02"
         }
 
@@ -124,6 +126,7 @@ object Dependencies {
         const val hiltAndroid: String = "com.google.dagger:hilt-android:${Version.hiltAndroid}"
         const val hiltTesting: String =
             "com.google.dagger:hilt-android-testing:${Version.hiltAndroid}"
+        const val hiltNavigationCompose: String = "androidx.hilt:hilt-navigation-compose:${Version.hiltNavigationCompose}"
     }
 
     object Coroutines : Libraries {
