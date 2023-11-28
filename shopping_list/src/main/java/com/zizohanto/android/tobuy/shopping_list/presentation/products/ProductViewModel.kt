@@ -1,5 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zizohanto.android.tobuy.presentation.mvi.MVIPresenter
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(
-    private val productStateMachine: ProductStateMachine
+    private val productStateMachine: ProductStateMachine,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel(), MVIPresenter<ProductsViewState, ProductsViewIntent> {
 
     override val viewState: Flow<ProductsViewState>
@@ -22,18 +24,17 @@ class ProductViewModel @Inject constructor(
 
     init {
         productStateMachine.processor.launchIn(viewModelScope)
+        processIntent(
+            ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts(
+                savedStateHandle.get<String>(SHOPPING_LIST_ID_SAVED_STATE_KEY).orEmpty()
+            )
+        )
     }
 
     override fun processIntent(intents: Flow<ProductsViewIntent>) {
         productStateMachine
             .processIntents(intents)
             .launchIn(viewModelScope)
-    }
-
-    fun getShoppingList(shoppingListId: String) {
-        processIntent(
-            ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts(shoppingListId)
-        )
     }
 
     fun addNewProduct(shoppingListId: String, newProductPosition: Int) {
@@ -59,5 +60,9 @@ class ProductViewModel @Inject constructor(
 
     private fun processIntent(intent: ProductsViewIntent) {
         processIntent(flowOf(intent))
+    }
+
+    companion object {
+        private const val SHOPPING_LIST_ID_SAVED_STATE_KEY = "shoppingListId"
     }
 }
