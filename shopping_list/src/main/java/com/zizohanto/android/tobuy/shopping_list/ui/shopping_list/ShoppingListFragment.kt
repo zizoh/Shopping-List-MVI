@@ -2,9 +2,9 @@ package com.zizohanto.android.tobuy.shopping_list.ui.shopping_list
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.material3.MaterialTheme
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 import com.zizohanto.android.tobuy.core.ext.observe
 import com.zizohanto.android.tobuy.core.view_binding.viewBinding
 import com.zizohanto.android.tobuy.shopping_list.R
@@ -36,7 +36,7 @@ class ShoppingListFragment : Fragment(R.layout.fragment_shopping_list) {
     private fun render(state: ShoppingListViewState) {
         with(viewModel) {
             binding.shoppingList.setContent {
-                MaterialTheme {
+                ShoppingListTheme {
                     ShoppingListsScreen(
                         state,
                         listCLick = { shoppingListId ->

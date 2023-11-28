@@ -22,6 +22,7 @@ android {
     defaultConfig {
         applicationId = Config.Android.applicationId
         minSdk = Config.Version.minSdkVersion
+        targetSdk = Config.Version.targetSdkVersion
         compileSdk = Config.Version.compileSdkVersion
         versionCode = Config.Version.versionCode
         versionName = Config.Version.versionName
