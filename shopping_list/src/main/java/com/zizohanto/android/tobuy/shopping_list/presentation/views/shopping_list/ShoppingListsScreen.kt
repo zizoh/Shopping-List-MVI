@@ -44,7 +44,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
@@ -139,7 +138,7 @@ fun ShoppingListTitle(
 ) {
     Text(
         text = shoppingListTitle,
-        fontSize = 18.sp,
+        style = MaterialTheme.typography.titleMedium,
         modifier = modifier
     )
 }
@@ -158,7 +157,7 @@ fun ProductItem(
         )
         Text(
             text = productName,
-            fontSize = 16.sp,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .padding(start = 8.dp)
         )
