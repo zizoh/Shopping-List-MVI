@@ -6,10 +6,16 @@
 ## Summary
 This app was built in an attempt to explore the `Model-View-Intent`(MVI) architecture. The UI was inspired by [Keep Notes](https://play.google.com/store/apps/details?id=com.google.android.keep) while its architecture by [Star Wars search](https://github.com/Ezike/StarWarsSearch). [Please check out](https://github.com/Ezike/StarWarsSearch/blob/master/process.md) the explanation it has on the whats and whys of MVI used in the project.
 
+Built in multiple GitHub branches:
+
+* `mvi-with-xml` - original app built with XML.
+* `master` - refactored app in Compose.
+
 ## Screenshots
 | Empty List | Add Products | Shopping Lists |
 |:-:|:-:|:-:|
-| ![1](screenshots/empty_list.png?raw=true) | ![2](screenshots/products.png?raw=true) | ![3](screenshots/shopping_lists.png?raw=true) |
+| ![1](screenshots/empty_list_compose_dark.png?raw=true) | ![2](screenshots/products_compose_dark.png?raw=true) | ![3](screenshots/shopping_lists_compose_dark.png?raw=true) |
+| ![4](screenshots/empty_list_compose.png?raw=true) | ![5](screenshots/products_compose.png?raw=true) | ![6](screenshots/shopping_lists_compose.png?raw=true) |
 
 ## Features
 * Clean Architecture with MVI (Uni-directional data flow)
