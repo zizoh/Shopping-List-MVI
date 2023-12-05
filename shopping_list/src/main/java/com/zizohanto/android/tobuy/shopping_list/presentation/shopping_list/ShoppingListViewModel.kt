@@ -21,7 +21,7 @@ class ShoppingListViewModel @Inject constructor(
 
     init {
         shoppingListStateMachine.processor.launchIn(viewModelScope)
-        processIntent(ShoppingListViewIntent.LoadShoppingLists)
+        loadShoppingLists()
     }
 
     override fun processIntent(intents: Flow<ShoppingListViewIntent>) {
@@ -38,7 +38,7 @@ class ShoppingListViewModel @Inject constructor(
         processIntent(ShoppingListViewIntent.CreateNewShoppingList)
     }
 
-    fun onRetry() {
+    fun loadShoppingLists() {
         processIntent(ShoppingListViewIntent.LoadShoppingLists)
     }
 
