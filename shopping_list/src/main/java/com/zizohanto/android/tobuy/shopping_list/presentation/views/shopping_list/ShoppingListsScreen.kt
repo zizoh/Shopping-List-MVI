@@ -56,10 +56,12 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateVi
 
 @Composable
 fun ShoppingListsScreen(
+    shouldRefreshList: Boolean,
     listCLick: (String) -> Unit = {},
     viewModel: ShoppingListViewModel = hiltViewModel()
 ) {
     val state by viewModel.viewState.collectAsState(initial = ShoppingListViewState.Idle)
+    if (shouldRefreshList) viewModel.loadShoppingLists()
     with(viewModel) {
         ShoppingListsContent(
             state,
@@ -73,7 +75,7 @@ fun ShoppingListsScreen(
                 onCreateShoppingList()
             },
             retry = {
-                onRetry()
+                loadShoppingLists()
             }
         )
     }

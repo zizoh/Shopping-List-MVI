@@ -19,8 +19,10 @@ fun ShoppingListNavHost(
     navController: NavHostController
 ) {
     NavHost(navController = navController, startDestination = Screen.ShoppingList.route) {
-        composable(route = Screen.ShoppingList.route) {
+        composable(route = Screen.ShoppingList.route) { entry ->
+            val shouldRefresh = entry.savedStateHandle.remove<Boolean>(IS_FROM_BACK_PRESS) ?: false
             ShoppingListsScreen(
+                shouldRefreshList = shouldRefresh,
                 listCLick = { shoppingListId ->
                     navController.navigate(Screen.Products.createRoute(shoppingListId))
                 }
@@ -28,8 +30,15 @@ fun ShoppingListNavHost(
         }
         composable(route = Screen.Products.route, arguments = Screen.Products.navArguments) {
             ProductsScreen(
-                onBackPressed = { navController.navigateUp() }
+                onBackPressed = {
+                    with(navController) {
+                        previousBackStackEntry?.savedStateHandle?.set(IS_FROM_BACK_PRESS, true)
+                        navigateUp()
+                    }
+                }
             )
         }
     }
 }
+
+private const val IS_FROM_BACK_PRESS = "is_from_back_press"
