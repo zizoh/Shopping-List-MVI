@@ -4,6 +4,7 @@ import Dependencies.DI
 import Dependencies.FlowBinding
 import Dependencies.Test
 import Dependencies.View
+import ProjectLib.cache
 import ProjectLib.core
 import ProjectLib.domain
 import ProjectLib.presentation
@@ -57,6 +58,10 @@ dependencies {
     implementation(project(domain))
 
     testImplementation(project(testUtils))
+    testImplementation(project(core))
+    testImplementation(project(presentation))
+    testImplementation(project(domain))
+    testImplementation(project(cache))
     androidTestImplementation(project(testUtils))
 
     with(View) {
@@ -86,14 +91,16 @@ dependencies {
     kapt(DI.AnnotationProcessor.hiltAndroid)
     kapt(DI.AnnotationProcessor.hiltCompiler)
 
-    androidTestImplementation(DI.hiltTesting)
+    testImplementation(Test.coroutinesTest)
+    testImplementation(Test.mockk)
+    testImplementation(Test.mockkAgent)
+    testImplementation(Test.runner)
+
     androidTestImplementation(Test.espresso)
     androidTestImplementation(Test.espressoContrib)
     androidTestImplementation(Test.fragmentTesting)
     androidTestImplementation(Test.rules)
     androidTestImplementation(Test.archCoreTest)
-
-    androidTestImplementation(Test.runner)
     androidTestImplementation(Test.androidXTest)
 
     kaptAndroidTest(DI.AnnotationProcessor.hiltAndroid)
