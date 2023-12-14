@@ -165,10 +165,13 @@ object Dependencies {
             const val truth: String = "1.0.1"
             const val robolectric: String = "4.4"
             const val archCoreTest: String = "1.1.1"
+            const val mockk: String = "1.13.8"
         }
 
         const val junit: String = "junit:junit:${Version.junit}"
         const val runner: String = "androidx.test:runner:${Version.runner}"
+        const val mockk = "io.mockk:mockk-android:${Version.mockk}"
+        const val mockkAgent = "io.mockk:mockk-agent:${Version.mockk}"
         const val rules: String = "androidx.test:rules:${Version.rules}"
         const val fragmentTesting: String = "androidx.fragment:fragment-testing:$fragment"
         const val androidXTest: String = "androidx.test.ext:junit:${Version.testExt}"
