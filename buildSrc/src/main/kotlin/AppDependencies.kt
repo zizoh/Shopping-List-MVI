@@ -100,14 +100,6 @@ object Dependencies {
         const val jodaTime: String = "net.danlew:android.joda:${Version.jodaTime}"
     }
 
-    object FlowBinding {
-        private const val flowBinding: String = "1.0.0-alpha04"
-        const val android: String =
-            "io.github.reactivecircus.flowbinding:flowbinding-android:$flowBinding"
-        const val lifecycle: String =
-            "io.github.reactivecircus.flowbinding:flowbinding-lifecycle:$flowBinding"
-    }
-
     object DI {
         object Version {
             const val javaxInject: String = "1"

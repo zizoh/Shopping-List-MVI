@@ -1,7 +1,6 @@
 import Dependencies.AndroidX
 import Dependencies.Coroutines
 import Dependencies.DI
-import Dependencies.FlowBinding
 import Dependencies.Test
 import Dependencies.View
 import ProjectLib.cache
@@ -85,7 +84,6 @@ dependencies {
         implementation(composeMaterial)
     }
 
-    implementation(FlowBinding.android)
     implementation(DI.hiltAndroid)
     implementation(DI.hiltNavigationCompose)
     implementation(composeBom)
