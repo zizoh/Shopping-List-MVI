@@ -41,6 +41,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +55,13 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.Shop
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateView
 
+data class ShoppingListsContentCallbacks(
+    val listCLick: (String) -> Unit,
+    val listDelete: (String) -> Unit,
+    val create: () -> Unit,
+    val retry: () -> Unit
+)
+
 @Composable
 fun ShoppingListsScreen(
     shouldRefreshList: Boolean,
@@ -65,30 +73,29 @@ fun ShoppingListsScreen(
     with(viewModel) {
         ShoppingListsContent(
             state,
-            listCLick = { shoppingListId ->
-                listCLick.invoke(shoppingListId)
-            },
-            listDelete = { shoppingListId ->
-                onListDeleted(shoppingListId)
-            },
-            create = {
-                onCreateShoppingList()
-            },
-            retry = {
-                loadShoppingLists()
-            }
+            ShoppingListsContentCallbacks(
+                listCLick = { shoppingListId ->
+                    listCLick.invoke(shoppingListId)
+                },
+                listDelete = { shoppingListId ->
+                    onListDeleted(shoppingListId)
+                },
+                create = {
+                    onCreateShoppingList()
+                },
+                retry = {
+                    loadShoppingLists()
+                }
+            )
         )
     }
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun ShoppingListsContent(
+fun ShoppingListsContent(
     state: ShoppingListViewState,
-    listCLick: (String) -> Unit,
-    listDelete: (String) -> Unit,
-    create: () -> Unit,
-    retry: () -> Unit
+    callbacks: ShoppingListsContentCallbacks
 ) {
     Scaffold(
         topBar = {
@@ -110,9 +117,11 @@ private fun ShoppingListsContent(
                     }
                     ShoppingListViewState.Loading -> {
                         CircularProgressIndicator(
-                            modifier = Modifier.width(64.dp),
+                            modifier = Modifier
+                                .width(64.dp)
+                                .testTag("progressBar"),
                             color = MaterialTheme.colorScheme.secondary,
-                            trackColor = MaterialTheme.colorScheme.surfaceVariant
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
                         )
                     }
                     is ShoppingListViewState.ShoppingListLoaded -> {
@@ -123,13 +132,13 @@ private fun ShoppingListsContent(
                             items(state.listWithProducts) { item ->
                                 ShoppingListItem(
                                     item,
-                                    listCLick,
-                                    listDelete,
+                                    callbacks.listCLick,
+                                    callbacks.listDelete,
                                     Modifier.padding(4.dp)
                                 )
                             }
                         }
-                        ShoppingListFloatingActionButton(create)
+                        ShoppingListFloatingActionButton(callbacks.create)
                     }
                     ShoppingListViewState.ShoppingListEmpty -> {
                         EmptyStateView(
@@ -139,7 +148,7 @@ private fun ShoppingListsContent(
                             shouldShowButton = false,
                             modifier = Modifier.fillMaxSize()
                         ) {}
-                        ShoppingListFloatingActionButton(create)
+                        ShoppingListFloatingActionButton(callbacks.create)
                     }
                     is ShoppingListViewState.Error -> {
                         EmptyStateView(
@@ -149,11 +158,11 @@ private fun ShoppingListsContent(
                             shouldShowButton = true,
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            retry.invoke()
+                            callbacks.retry.invoke()
                         }
                     }
                     is ShoppingListViewState.NewShoppingListLoaded -> {
-                        state.openProductScreen.consume(listCLick::invoke)
+                        state.openProductScreen.consume(callbacks.listCLick::invoke)
                     }
                 }
             }
@@ -291,10 +300,7 @@ fun ShoppingListPreview() {
             ShoppingListViewState.ShoppingListLoaded(
                 listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
             ),
-            {},
-            {},
-            {},
-            {}
+            ShoppingListsContentCallbacks({}, {}, {}, {})
         )
     }
 }

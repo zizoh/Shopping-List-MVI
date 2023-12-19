@@ -62,6 +62,10 @@ dependencies {
     testImplementation(project(presentation))
     testImplementation(project(domain))
     testImplementation(project(cache))
+    androidTestImplementation(project(core))
+    androidTestImplementation(project(presentation))
+    androidTestImplementation(project(domain))
+    androidTestImplementation(project(cache))
     androidTestImplementation(project(testUtils))
 
     with(View) {
@@ -96,6 +100,9 @@ dependencies {
     testImplementation(Test.mockkAgent)
     testImplementation(Test.runner)
 
+    debugImplementation(Test.composeUITestManifest)
+    androidTestImplementation(Test.composeUITestJUnit)
+    androidTestImplementation(Test.hiltTesting)
     androidTestImplementation(Test.espresso)
     androidTestImplementation(Test.espressoContrib)
     androidTestImplementation(Test.fragmentTesting)
