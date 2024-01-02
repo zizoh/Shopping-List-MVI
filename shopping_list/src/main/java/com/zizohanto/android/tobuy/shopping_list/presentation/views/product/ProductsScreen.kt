@@ -56,6 +56,14 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.Produ
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 
+data class ProductsContentCallbacks(
+    val onBackPressed: () -> Unit,
+    val onUpdateShoppingList: (ProductsViewItem.ShoppingListModel) -> Unit,
+    val onAddNewProduct: (String, Int) -> Unit,
+    val onUpdateProduct: (ProductsViewItem.ProductModel) -> Unit,
+    val onDeleteProduct: (ProductsViewItem.ProductModel) -> Unit
+)
+
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
@@ -65,33 +73,23 @@ fun ProductsScreen(
     val state by viewModel.viewState.collectAsState(initial = ProductsViewState.Idle)
     ProductsContent(
         state,
-        modifier,
-        onBackPressed,
-        onUpdateShoppingList = {
-            viewModel.updateShoppingList(it)
-        },
-        onAddNewProduct = { shoppingListId, newProductPosition ->
-            viewModel.addNewProduct(shoppingListId, newProductPosition)
-        },
-        onUpdateProduct = {
-            viewModel.updateProduct(it)
-        },
-        onDeleteProduct = {
-            viewModel.deleteProduct(it)
-        }
+        ProductsContentCallbacks(
+            onBackPressed,
+            viewModel::updateShoppingList,
+            viewModel::addNewProduct,
+            viewModel::updateProduct,
+            viewModel::deleteProduct
+        ),
+        modifier
     )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun ProductsContent(
+fun ProductsContent(
     state: ProductsViewState,
-    modifier: Modifier,
-    onBackPressed: () -> Unit,
-    onUpdateShoppingList: (ProductsViewItem.ShoppingListModel) -> Unit,
-    onAddNewProduct: (String, Int) -> Unit,
-    onUpdateProduct: (ProductsViewItem.ProductModel) -> Unit,
-    onDeleteProduct: (ProductsViewItem.ProductModel) -> Unit
+    callbacks: ProductsContentCallbacks,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
@@ -102,7 +100,7 @@ private fun ProductsContent(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
+                    IconButton(onClick = callbacks.onBackPressed) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Top bar back button"
@@ -121,7 +119,7 @@ private fun ProductsContent(
                 val products = listWithProducts.products
                 ShoppingListTitle(
                     shoppingList,
-                    onUpdateShoppingList = onUpdateShoppingList,
+                    onUpdateShoppingList = callbacks.onUpdateShoppingList,
                     modifier = Modifier.fillMaxWidth()
                 )
                 LazyColumn {
@@ -129,16 +127,16 @@ private fun ProductsContent(
                         Divider(color = MaterialTheme.colorScheme.outlineVariant)
                         RowProduct(
                             product = product,
-                            onAddNewProduct = onAddNewProduct,
-                            onUpdateProduct = onUpdateProduct,
-                            onDeleteProduct = onDeleteProduct
+                            onAddNewProduct = callbacks.onAddNewProduct,
+                            onUpdateProduct = callbacks.onUpdateProduct,
+                            onDeleteProduct = callbacks.onDeleteProduct
                         )
                         Divider(color = MaterialTheme.colorScheme.outlineVariant)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 AddProductButton(Modifier.padding(start = 16.dp)) {
-                    onAddNewProduct.invoke(shoppingList.id, products.size)
+                    callbacks.onAddNewProduct.invoke(shoppingList.id, products.size)
                 }
             }
         }
@@ -277,12 +275,8 @@ fun ProductsViewPreview() {
     ShoppingListTheme {
         ProductsContent(
             state,
+            ProductsContentCallbacks({}, {}, { _, _ -> }, {}, {}),
             modifier = Modifier,
-            onBackPressed = {},
-            {},
-            { _, _ -> },
-            {},
-            {},
         )
     }
 }
