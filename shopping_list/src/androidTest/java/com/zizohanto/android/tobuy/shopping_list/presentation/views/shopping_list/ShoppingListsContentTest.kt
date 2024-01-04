@@ -27,14 +27,14 @@ class ShoppingListsContentTest {
 
     @Test
     fun idleState_ToolbarIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.Idle)
+        setShoppingListContent(ShoppingListViewState())
 
         composeTestRule.onNodeWithText("Shopping List").assertIsDisplayed()
     }
 
     @Test
     fun loadingState_ProgressBarIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.Loading)
+        setShoppingListContent(ShoppingListViewState(isLoading = true))
 
         composeTestRule.onNodeWithTag("progressBar").assertIsDisplayed()
     }
@@ -57,14 +57,14 @@ class ShoppingListsContentTest {
 
     @Test
     fun emptyState_EmptyStateIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.ShoppingListEmpty)
+        setShoppingListContent(ShoppingListViewState())
 
         composeTestRule.onNodeWithText("No shopping list added yet.").assertIsDisplayed()
     }
 
     @Test
     fun emptyState_FloatingButtonIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.ShoppingListEmpty)
+        setShoppingListContent(ShoppingListViewState())
 
         composeTestRule.onNodeWithContentDescription(
             "Add New Shopping List"
@@ -74,7 +74,7 @@ class ShoppingListsContentTest {
     @Test
     fun errorState_ErrorStateIsDisplayed() {
         val errorMessage = "There was an error getting shopping lists"
-        setShoppingListContent(ShoppingListViewState.Error(errorMessage))
+        setShoppingListContent(ShoppingListViewState(error = errorMessage))
 
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
     }
