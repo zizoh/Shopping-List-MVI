@@ -1,7 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
 import com.zizohanto.android.tobuy.core.ext.removeFirst
-import com.zizohanto.android.tobuy.core.ext.replaceFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
@@ -10,7 +9,6 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsVie
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductStateReducer
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult.*
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
 import javax.inject.Inject
 
 class ProductViewStateReducer @Inject constructor(
@@ -24,77 +22,55 @@ class ProductViewStateReducer @Inject constructor(
         result: ProductsViewResult
     ): ProductsViewState {
         return when (result) {
-            Idle -> ProductsViewState.Idle
+            Idle -> ProductsViewState()
             is ProductViewResult.Success -> {
                 val listWithProducts: ShoppingListWithProductsModel =
                     listWithProductsMapper.mapToModel(result.listWithProducts)
-                ProductViewState.Success(listWithProducts,)
+                ProductsViewState(listWithProducts = listWithProducts)
             }
             is ProductViewResult.ProductSaved -> {
-                when (previous) {
-                    ProductsViewState.Idle -> ProductsViewState.Idle
-                    is ProductViewState.Success -> {
-                        val listWithProducts: ShoppingListWithProductsModel =
-                            previous.listWithProducts
-                        val savedProduct: ProductModel = productMapper.mapToModel(result.product)
-                        val products: List<ProductModel> =
-                            listWithProducts.products.replaceFirst(savedProduct) { it.id == savedProduct.id }
-                        ProductViewState.Success(listWithProducts.copy(products = products),)
+                val listWithProducts = previous.listWithProducts?.let { list ->
+                    val savedProduct: ProductModel = productMapper.mapToModel(result.product)
+                    val updatedProducts = list.products.map {
+                        if (it.id == savedProduct.id) savedProduct else it
                     }
-                    ProductViewState.DeleteShoppingList -> TODO()
-                    is ProductsViewState.Error -> ProductsViewState.Idle
-
+                    list.copy(products = updatedProducts)
                 }
+                ProductsViewState(listWithProducts = listWithProducts)
             }
             is ProductViewResult.ProductDeleted -> {
-                when (previous) {
-                    ProductsViewState.Idle -> ProductsViewState.Idle
-                    is ProductViewState.Success -> {
-                        val listWithProducts: ShoppingListWithProductsModel =
-                            previous.listWithProducts
-                        val products: List<ProductModel> =
-                            listWithProducts.products.removeFirst { it.id == result.productId }
-                        ProductViewState.Success(listWithProducts.copy(products = products))
-                    }
-                    ProductViewState.DeleteShoppingList -> TODO()
-                    is ProductsViewState.Error -> TODO()
+                val listWithProducts = previous.listWithProducts?.let { list ->
+                    val products: List<ProductModel> =
+                        list.products.removeFirst { it.id == result.productId }
+                    list.copy(products = products)
                 }
+                ProductsViewState(listWithProducts = listWithProducts)
             }
             is ProductViewResult.ShoppingListSaved -> {
-                when (previous) {
-                    ProductsViewState.Idle -> ProductsViewState.Idle
-                    is ProductViewState.Success -> {
-                        val shoppingListModel: ShoppingListModel =
-                            shoppingListModelMapper.mapToModel(result.shoppingList)
-                        val listWithProducts: ShoppingListWithProductsModel =
-                            previous.listWithProducts.copy(shoppingList = shoppingListModel)
-                        ProductViewState.Success(listWithProducts)
-                    }
-                    ProductViewState.DeleteShoppingList -> TODO()
-                    is ProductsViewState.Error -> ProductsViewState.Idle
+                val listWithProducts = previous.listWithProducts?.let { list ->
+                    val shoppingList: ShoppingListModel =
+                        shoppingListModelMapper.mapToModel(result.shoppingList)
+                    list.copy(shoppingList = shoppingList)
                 }
+                ProductsViewState(listWithProducts = listWithProducts)
             }
             ProductViewResult.ShoppingListDeleted -> {
-                ProductViewState.DeleteShoppingList
+                ProductsViewState()
             }
             is Error -> TODO()
-            is ProductViewResult.ProductAddedAtPosition -> when (previous) {
-                ProductsViewState.Idle -> ProductsViewState.Idle
-                is ProductViewState.Success -> {
-                    val product: ProductModel = productMapper.mapToModel(result.product)
-                    val currentList: MutableList<ProductModel> =
-                        previous.listWithProducts.products.toMutableList()
-                    if (currentList.isEmpty()) {
-                        currentList.add(product)
-                    } else {
-                        currentList.apply { add(product.position, product) }
+            is ProductViewResult.ProductAddedAtPosition -> {
+                val product: ProductModel = productMapper.mapToModel(result.product)
+                val listWithProducts = if (previous.listWithProducts?.products?.isEmpty() == true) {
+                    listOf(product)
+                } else {
+                    buildList {
+                        addAll(previous.listWithProducts?.products.orEmpty())
+                        add(product.position, product)
                     }
-                    ProductViewState.Success(
-                        previous.listWithProducts.copy(products = currentList),
-                    )
                 }
-                ProductViewState.DeleteShoppingList -> TODO()
-                is ProductsViewState.Error -> TODO()
+                ProductsViewState(
+                    listWithProducts = previous.listWithProducts?.copy(products = listWithProducts),
+                )
 
             }
         }
