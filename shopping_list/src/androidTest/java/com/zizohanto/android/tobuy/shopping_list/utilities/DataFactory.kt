@@ -10,8 +10,8 @@ object DataFactory {
         return ShoppingListViewState(listWithProducts = getShoppingLists())
     }
 
-    fun getProductsSuccess(): ProductsViewState.ProductViewState.Success {
-        return ProductsViewState.ProductViewState.Success(getShoppingLists().first())
+    fun getProductsSuccess(): ProductsViewState {
+        return ProductsViewState(getShoppingLists().first())
     }
 
     private fun getShoppingLists(): List<ShoppingListWithProductsModel> {

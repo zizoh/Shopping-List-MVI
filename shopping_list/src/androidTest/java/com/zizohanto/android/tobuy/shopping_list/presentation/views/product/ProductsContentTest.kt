@@ -26,7 +26,7 @@ class ProductsContentTest {
 
     @Test
     fun idleState_ToolbarBackButtonIsDisplayed() {
-        setProductContent(ProductsViewState.Idle)
+        setProductContent(ProductsViewState())
 
         composeTestRule.onNodeWithContentDescription("Top bar back button").assertIsDisplayed()
     }
