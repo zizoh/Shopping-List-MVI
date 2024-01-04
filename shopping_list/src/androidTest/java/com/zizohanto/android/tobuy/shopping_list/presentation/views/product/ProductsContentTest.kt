@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.zizohanto.android.tobuy.shopping_list.HiltTestActivity
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
-import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getProductsSuccess
+import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getProductsViewState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
@@ -25,29 +25,29 @@ class ProductsContentTest {
         .around(composeTestRule)
 
     @Test
-    fun idleState_ToolbarBackButtonIsDisplayed() {
+    fun loaded_ToolbarBackButtonIsDisplayed() {
         setProductContent(ProductsViewState())
 
         composeTestRule.onNodeWithContentDescription("Top bar back button").assertIsDisplayed()
     }
 
     @Test
-    fun success_ShoppingListNameIsDisplayed() {
-        setProductContent(getProductsSuccess())
+    fun loaded_ShoppingListNameIsDisplayed() {
+        setProductContent(getProductsViewState())
 
         composeTestRule.onNodeWithText("Weekend").assertIsDisplayed()
     }
 
     @Test
-    fun success_ProductTitleIsDisplayed() {
-        setProductContent(getProductsSuccess())
+    fun loaded_ProductTitleIsDisplayed() {
+        setProductContent(getProductsViewState())
 
         composeTestRule.onNodeWithText("Vegetables").assertIsDisplayed()
     }
 
     @Test
-    fun success_AddProductButtonIsDisplayed() {
-        setProductContent(getProductsSuccess())
+    fun loaded_AddProductButtonIsDisplayed() {
+        setProductContent(getProductsViewState())
 
         composeTestRule.onNodeWithText("Add product").assertIsDisplayed()
     }

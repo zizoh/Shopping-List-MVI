@@ -6,11 +6,11 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.Produ
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 
 object DataFactory {
-    fun getShoppingListLoadedState(): ShoppingListViewState {
+    fun getShoppingListStateWithList(): ShoppingListViewState {
         return ShoppingListViewState(listWithProducts = getShoppingLists())
     }
 
-    fun getProductsSuccess(): ProductsViewState {
+    fun getProductsViewState(): ProductsViewState {
         return ProductsViewState(getShoppingLists().first())
     }
 
