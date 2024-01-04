@@ -6,13 +6,12 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.Produ
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 
 object DataFactory {
-    fun getShoppingListLoadedState(): ShoppingListViewState.ShoppingListLoaded {
-        val shoppingLists = getShoppingLists()
-        return ShoppingListViewState.ShoppingListLoaded(shoppingLists)
+    fun getShoppingListStateWithList(): ShoppingListViewState {
+        return ShoppingListViewState(listWithProducts = getShoppingLists())
     }
 
-    fun getProductsSuccess(): ProductsViewState.ProductViewState.Success {
-        return ProductsViewState.ProductViewState.Success(getShoppingLists().first())
+    fun getProductsViewState(): ProductsViewState {
+        return ProductsViewState(getShoppingLists().first())
     }
 
     private fun getShoppingLists(): List<ShoppingListWithProductsModel> {

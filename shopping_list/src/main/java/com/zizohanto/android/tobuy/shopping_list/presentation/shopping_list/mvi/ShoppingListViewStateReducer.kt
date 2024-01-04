@@ -20,39 +20,37 @@ class ShoppingListViewStateReducer @Inject constructor(
         result: ShoppingListViewResult
     ): ShoppingListViewState {
         return when (result) {
-            ShoppingListViewResult.Idle -> ShoppingListViewState.Idle
-            ShoppingListViewResult.Loading -> ShoppingListViewState.Loading
+            ShoppingListViewResult.Idle -> ShoppingListViewState()
+            ShoppingListViewResult.Loading -> ShoppingListViewState(isLoading = true)
             is ShoppingListViewResult.Success -> {
-                val shoppingLists: List<ShoppingListWithProductsModel> =
+                val listWithProducts =
                     listWithProductsMapper.mapToModelList(result.listWithProducts)
-                ShoppingListViewState.ShoppingListLoaded(shoppingLists)
+                ShoppingListViewState(
+                    listWithProducts = listWithProducts
+                )
             }
             is ShoppingListViewResult.NewShoppingListCreated -> {
-                val shoppingList: ShoppingListModel = listMapper.mapToModel(result.shoppingList)
-                ShoppingListViewState.NewShoppingListLoaded(ViewEvent(shoppingList.id))
+                val shoppingList = listMapper.mapToModel(result.shoppingList)
+                ShoppingListViewState(openProductScreenEvent = ViewEvent(shoppingList.id))
             }
             is ShoppingListViewResult.ShoppingListDeleted -> {
-                when (previous) {
-                    ShoppingListViewState.Idle -> ShoppingListViewState.Idle
-                    ShoppingListViewState.Loading -> ShoppingListViewState.Idle
-                    is ShoppingListViewState.NewShoppingListLoaded -> ShoppingListViewState.Idle
-                    is ShoppingListViewState.ShoppingListLoaded -> {
-                        val shoppingList: List<ShoppingListWithProductsModel> =
-                            previous.listWithProducts
-                        if (shoppingList.size == 1) {
-                            ShoppingListViewState.ShoppingListEmpty
-                        } else {
-                            val shoppingLists: List<ShoppingListWithProductsModel> =
-                                shoppingList.removeFirst { it.shoppingList.id == result.shoppingListId }
-                            ShoppingListViewState.ShoppingListLoaded(shoppingLists)
-                        }
-                    }
-                    ShoppingListViewState.ShoppingListEmpty -> ShoppingListViewState.Idle
-                    is ShoppingListViewState.Error -> ShoppingListViewState.Idle
+                val shoppingList = previous.listWithProducts
+                if (shoppingList.size == 1) {
+                    emptyList()
+                } else {
+                    shoppingList.removeFirst { it.shoppingList.id == result.shoppingListId }
                 }
+                val listWithProducts = if (shoppingList.size == 1) {
+                    emptyList()
+                } else {
+                    shoppingList.removeFirst { it.shoppingList.id == result.shoppingListId }
+                }
+                ShoppingListViewState(listWithProducts = listWithProducts)
             }
-            ShoppingListViewResult.Empty -> ShoppingListViewState.ShoppingListEmpty
-            is ShoppingListViewResult.Error -> ShoppingListViewState.Error(result.throwable.errorMessage)
+            ShoppingListViewResult.Empty -> ShoppingListViewState()
+            is ShoppingListViewResult.Error -> ShoppingListViewState(
+                error = result.throwable.errorMessage
+            )
         }
     }
 }

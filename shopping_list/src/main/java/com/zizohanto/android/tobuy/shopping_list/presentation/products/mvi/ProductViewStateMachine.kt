@@ -12,5 +12,5 @@ class ProductViewStateMachine @Inject constructor(
     intentProcessor,
     reducer,
     ProductsViewIntent.Idle,
-    ProductsViewState.Idle
+    ProductsViewState()
 )

@@ -17,8 +17,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,9 +36,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -47,13 +47,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.ShoppingListViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.shopping_list.presentation.views.EmptyStateView
+import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 
 data class ShoppingListsContentCallbacks(
     val listCLick: (String) -> Unit,
@@ -68,7 +68,7 @@ fun ShoppingListsScreen(
     listCLick: (String) -> Unit = {},
     viewModel: ShoppingListViewModel = hiltViewModel()
 ) {
-    val state by viewModel.viewState.collectAsState(initial = ShoppingListViewState.Idle)
+    val state by viewModel.viewState.collectAsState(initial = ShoppingListViewState())
     if (shouldRefreshList) viewModel.loadShoppingLists()
     with(viewModel) {
         ShoppingListsContent(
@@ -112,35 +112,30 @@ fun ShoppingListsContent(
     ) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
             Box(Modifier.weight(1f)) {
-                when (state) {
-                    ShoppingListViewState.Idle -> {
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .width(64.dp)
+                            .testTag("progressBar"),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+                if (state.error != null) {
+                    EmptyStateView(
+                        stringResource(R.string.an_error_occurred),
+                        state.error,
+                        R.drawable.error,
+                        shouldShowButton = true,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        callbacks.retry.invoke()
                     }
-                    ShoppingListViewState.Loading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .width(64.dp)
-                                .testTag("progressBar"),
-                            color = MaterialTheme.colorScheme.secondary,
-                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                        )
-                    }
-                    is ShoppingListViewState.ShoppingListLoaded -> {
-                        LazyVerticalStaggeredGrid(
-                            columns = StaggeredGridCells.Fixed(2),
-                            contentPadding = PaddingValues(12.dp)
-                        ) {
-                            items(state.listWithProducts) { item ->
-                                ShoppingListItem(
-                                    item,
-                                    callbacks.listCLick,
-                                    callbacks.listDelete,
-                                    Modifier.padding(4.dp)
-                                )
-                            }
-                        }
-                        ShoppingListFloatingActionButton(callbacks.create)
-                    }
-                    ShoppingListViewState.ShoppingListEmpty -> {
+                }
+                if (state.listWithProducts.isEmpty() && !state.isLoading && state.error == null) {
+                    if (state.openProductScreenEvent != null) {
+                        state.openProductScreenEvent.consume(callbacks.listCLick::invoke)
+                    } else {
                         EmptyStateView(
                             stringResource(R.string.no_data),
                             "",
@@ -150,20 +145,22 @@ fun ShoppingListsContent(
                         ) {}
                         ShoppingListFloatingActionButton(callbacks.create)
                     }
-                    is ShoppingListViewState.Error -> {
-                        EmptyStateView(
-                            stringResource(R.string.an_error_occurred),
-                            state.message,
-                            R.drawable.error,
-                            shouldShowButton = true,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            callbacks.retry.invoke()
+                }
+                if (state.listWithProducts.isNotEmpty()) {
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Fixed(2),
+                        contentPadding = PaddingValues(12.dp)
+                    ) {
+                        items(state.listWithProducts) { item ->
+                            ShoppingListItem(
+                                item,
+                                callbacks.listCLick,
+                                callbacks.listDelete,
+                                Modifier.padding(4.dp)
+                            )
                         }
                     }
-                    is ShoppingListViewState.NewShoppingListLoaded -> {
-                        state.openProductScreen.consume(callbacks.listCLick::invoke)
-                    }
+                    ShoppingListFloatingActionButton(callbacks.create)
                 }
             }
         }
@@ -296,10 +293,9 @@ fun ShoppingListPreview() {
     val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
     val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
     ShoppingListTheme {
+        val listWithProducts = listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
         ShoppingListsContent(
-            ShoppingListViewState.ShoppingListLoaded(
-                listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
-            ),
+            ShoppingListViewState(listWithProducts = listWithProducts),
             ShoppingListsContentCallbacks({}, {}, {}, {})
         )
     }

@@ -7,7 +7,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import com.zizohanto.android.tobuy.shopping_list.HiltTestActivity
 import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
-import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getShoppingListLoadedState
+import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getShoppingListStateWithList
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
@@ -26,29 +26,29 @@ class ShoppingListsContentTest {
         .around(composeTestRule)
 
     @Test
-    fun idleState_ToolbarIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.Idle)
+    fun loadedState_ToolbarIsDisplayed() {
+        setShoppingListContent(ShoppingListViewState())
 
         composeTestRule.onNodeWithText("Shopping List").assertIsDisplayed()
     }
 
     @Test
-    fun loadingState_ProgressBarIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.Loading)
+    fun isLoading_ProgressBarIsDisplayed() {
+        setShoppingListContent(ShoppingListViewState(isLoading = true))
 
         composeTestRule.onNodeWithTag("progressBar").assertIsDisplayed()
     }
 
     @Test
-    fun loadedState_ShoppingListsAreDisplayed() {
-        setShoppingListContent(getShoppingListLoadedState())
+    fun shoppingListNotEmpty_ShoppingListsAreDisplayed() {
+        setShoppingListContent(getShoppingListStateWithList())
 
         composeTestRule.onNodeWithText("Vegetables").assertIsDisplayed()
     }
 
     @Test
-    fun loadedState_FloatingButtonIsDisplayed() {
-        setShoppingListContent(getShoppingListLoadedState())
+    fun shoppingListNotEmpty_FloatingButtonIsDisplayed() {
+        setShoppingListContent(getShoppingListStateWithList())
 
         composeTestRule.onNodeWithContentDescription(
             "Add New Shopping List"
@@ -56,15 +56,15 @@ class ShoppingListsContentTest {
     }
 
     @Test
-    fun emptyState_EmptyStateIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.ShoppingListEmpty)
+    fun shoppingListIsEmpty_EmptyStateIsDisplayed() {
+        setShoppingListContent(ShoppingListViewState())
 
         composeTestRule.onNodeWithText("No shopping list added yet.").assertIsDisplayed()
     }
 
     @Test
-    fun emptyState_FloatingButtonIsDisplayed() {
-        setShoppingListContent(ShoppingListViewState.ShoppingListEmpty)
+    fun shoppingListIsEmpty_FloatingButtonIsDisplayed() {
+        setShoppingListContent(ShoppingListViewState())
 
         composeTestRule.onNodeWithContentDescription(
             "Add New Shopping List"
@@ -72,9 +72,9 @@ class ShoppingListsContentTest {
     }
 
     @Test
-    fun errorState_ErrorStateIsDisplayed() {
+    fun isError_ErrorStateIsDisplayed() {
         val errorMessage = "There was an error getting shopping lists"
-        setShoppingListContent(ShoppingListViewState.Error(errorMessage))
+        setShoppingListContent(ShoppingListViewState(error = errorMessage))
 
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
     }

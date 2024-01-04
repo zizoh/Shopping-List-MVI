@@ -53,7 +53,6 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsVie
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState.ProductViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 
 data class ProductsContentCallbacks(
@@ -70,7 +69,7 @@ fun ProductsScreen(
     viewModel: ProductViewModel = hiltViewModel(),
     onBackPressed: () -> Unit = {}
 ) {
-    val state by viewModel.viewState.collectAsState(initial = ProductsViewState.Idle)
+    val state by viewModel.viewState.collectAsState(initial = ProductsViewState())
     ProductsContent(
         state,
         ProductsContentCallbacks(
@@ -110,11 +109,10 @@ fun ProductsContent(
             )
         }
     ) { innerPadding ->
-        (state as? ProductViewState.Success)?.let {
-            Column(
-                modifier = modifier.padding(innerPadding)
-            ) {
-                val listWithProducts = it.listWithProducts
+        Column(
+            modifier = modifier.padding(innerPadding)
+        ) {
+            state.listWithProducts?.let { listWithProducts ->
                 val shoppingList = listWithProducts.shoppingList
                 val products = listWithProducts.products
                 ShoppingListTitle(
@@ -269,7 +267,7 @@ fun AddProductButton(
 fun ProductsViewPreview() {
     val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
     val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
-    val state = ProductViewState.Success(
+    val state = ProductsViewState(
         ShoppingListWithProductsModel(shoppingList, listOf(product))
     )
     ShoppingListTheme {
