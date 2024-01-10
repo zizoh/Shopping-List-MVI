@@ -1,8 +1,6 @@
 import Dependencies.Cache
 import Dependencies.DI
 import Dependencies.Test
-import ProjectLib.data
-import ProjectLib.testUtils
 
 plugins {
     androidLibrary
@@ -42,8 +40,8 @@ android {
 }
 
 dependencies {
-    implementation(project(data))
-    implementation(project(testUtils))
+    implementation(project(":libraries:data"))
+    implementation(project(":libraries:testUtils"))
 
     implementation(DI.hiltAndroid)
     api(Cache.room)

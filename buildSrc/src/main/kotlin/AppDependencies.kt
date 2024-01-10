@@ -180,14 +180,3 @@ object Dependencies {
             "com.google.dagger:hilt-android-testing:${DI.Version.hiltAndroid}"
     }
 }
-
-object ProjectLib {
-    const val app: String = ":app"
-    const val core: String = ":core"
-    const val presentation: String = ":presentation"
-    const val domain: String = ":libraries:domain"
-    const val data: String = ":libraries:data"
-    const val cache: String = ":libraries:cache"
-    const val testUtils: String = ":libraries:testUtils"
-    const val shoppingList: String = ":shopping_list"
-}

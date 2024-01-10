@@ -3,11 +3,6 @@ import Dependencies.Coroutines
 import Dependencies.DI
 import Dependencies.Test
 import Dependencies.View
-import ProjectLib.cache
-import ProjectLib.core
-import ProjectLib.domain
-import ProjectLib.presentation
-import ProjectLib.testUtils
 
 plugins {
     androidLibrary
@@ -52,20 +47,26 @@ android {
 
 dependencies {
     val composeBom = platform(Dependencies.View.composeBom)
-    implementation(project(core))
-    implementation(project(presentation))
-    implementation(project(domain))
+    val coreDependencyNotation = project(":core")
+    val presentationDependencyNotation = project(":presentation")
+    val dependencyNotation = project(":libraries:cache")
+    val domainDependencyNotation = project(":libraries:domain")
+    val testUtilsDependencyNotation = project(":libraries:testUtils")
 
-    testImplementation(project(testUtils))
-    testImplementation(project(core))
-    testImplementation(project(presentation))
-    testImplementation(project(domain))
-    testImplementation(project(cache))
-    androidTestImplementation(project(core))
-    androidTestImplementation(project(presentation))
-    androidTestImplementation(project(domain))
-    androidTestImplementation(project(cache))
-    androidTestImplementation(project(testUtils))
+    implementation(coreDependencyNotation)
+    implementation(presentationDependencyNotation)
+    implementation(domainDependencyNotation)
+
+    testImplementation(testUtilsDependencyNotation)
+    testImplementation(coreDependencyNotation)
+    testImplementation(presentationDependencyNotation)
+    testImplementation(domainDependencyNotation)
+    testImplementation(dependencyNotation)
+    androidTestImplementation(coreDependencyNotation)
+    androidTestImplementation(presentationDependencyNotation)
+    androidTestImplementation(domainDependencyNotation)
+    androidTestImplementation(dependencyNotation)
+    androidTestImplementation(testUtilsDependencyNotation)
 
     with(View) {
         implementAll(components)

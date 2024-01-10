@@ -2,8 +2,6 @@ import Dependencies.AndroidX
 import Dependencies.Coroutines
 import Dependencies.DI
 import Dependencies.View
-import ProjectLib.data
-import ProjectLib.domain
 
 plugins {
     androidLibrary
@@ -37,8 +35,8 @@ android {
 }
 
 dependencies {
-    implementation(project(domain))
-    implementation(project(data))
+    implementation(project(":libraries:data"))
+    implementation(project(":libraries:domain"))
 
     implementation(AndroidX.lifeCycleCommon)
     implementation(View.appCompat)

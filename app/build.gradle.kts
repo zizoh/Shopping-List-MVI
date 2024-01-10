@@ -2,12 +2,6 @@ import Dependencies.AndroidX
 import Dependencies.DI
 import Dependencies.Others
 import Dependencies.View
-import ProjectLib.cache
-import ProjectLib.core
-import ProjectLib.data
-import ProjectLib.domain
-import ProjectLib.presentation
-import ProjectLib.shoppingList
 
 plugins {
     androidApplication
@@ -66,12 +60,12 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    implementation(project(shoppingList))
-    implementation(project(cache))
-    implementation(project(presentation))
-    implementation(project(domain))
-    implementation(project(data))
-    implementation(project(core))
+    implementation(project(":core"))
+    implementation(project(":libraries:cache"))
+    implementation(project(":libraries:data"))
+    implementation(project(":libraries:domain"))
+    implementation(project(":presentation"))
+    implementation(project(":shopping_list"))
 
     implementAll(View.components)
     implementation(DI.hiltAndroid)
