@@ -1,12 +1,10 @@
-import Dependencies.Test
-
 plugins {
-    kotlinLibrary
+    id(libs.plugins.kotlin.jvm.get().pluginId)
 }
 
 dependencies {
     implementation(project(":libraries:domain"))
-    api(Test.junit)
-    api(Test.truth)
-    api(Test.coroutinesTest)
+    api(libs.junit)
+    api(libs.google.truth)
+    api(libs.kotlinx.coroutines.test)
 }

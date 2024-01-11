@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     `kotlin-dsl`
     `kotlin-dsl-precompiled-script-plugins`
@@ -8,7 +6,7 @@ plugins {
 repositories {
     google()
     mavenCentral()
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+    maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
 }
 
 //val compileKotlin: KotlinCompile by tasks

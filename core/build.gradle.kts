@@ -1,21 +1,16 @@
-import Dependencies.AndroidX
-import Dependencies.Coroutines
-import Dependencies.DI
-import Dependencies.View
-
 plugins {
-    androidLibrary
-    kotlin(kotlinAndroid)
-    kotlin(kotlinKapt)
-    daggerHilt
+    id(libs.plugins.android.library.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.kotlin.kapt.get().pluginId)
+    id(libs.plugins.dagger.hilt.get().pluginId)
 }
 
 android {
     namespace = "com.zizohanto.android.tobuy.core"
-    compileSdk = Config.Version.compileSdkVersion
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = Config.Version.minSdkVersion
-        targetSdk = Config.Version.targetSdkVersion
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
     }
 
     compileOptions {
@@ -29,7 +24,7 @@ android {
 
     buildTypes {
         named(BuildType.DEBUG) {
-            isMinifyEnabled = BuildTypeDebug.isMinifyEnabled
+            isMinifyEnabled = false
         }
     }
 }
@@ -38,11 +33,8 @@ dependencies {
     implementation(project(":libraries:data"))
     implementation(project(":libraries:domain"))
 
-    implementation(AndroidX.lifeCycleCommon)
-    implementation(View.appCompat)
-    implementation(View.fragment)
-    implementation(DI.hiltAndroid)
-    implementation(Coroutines.core)
+    implementation(libs.hilt.android)
+    implementation(libs.kotlinx.coroutines.core)
 
-    kapt(DI.AnnotationProcessor.hiltAndroid)
+    kapt(libs.hilt.android.compiler)
 }

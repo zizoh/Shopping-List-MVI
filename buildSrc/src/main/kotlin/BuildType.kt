@@ -16,11 +16,3 @@ object BuildTypeDebug : BuildType {
     const val applicationIdSuffix: String = ".debug"
     const val versionNameSuffix: String = "-DEBUG"
 }
-
-object BuildTypeRelease : BuildType {
-    override val isMinifyEnabled: Boolean = true
-    override val isTestCoverageEnabled: Boolean = false
-
-    const val proguardAndroidFile: String = "proguard-android.txt"
-    const val proguardRules: String = "proguard-rules.pro"
-}
