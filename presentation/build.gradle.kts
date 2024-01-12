@@ -1,10 +1,9 @@
-import Dependencies.Test
-
 plugins {
-    kotlinLibrary
+    id(libs.plugins.kotlin.jvm.get().pluginId)
 }
 
 dependencies {
-    testImplementation(Test.junit)
-    testImplementation(Test.truth)
+    implementation(libs.kotlinx.coroutines.core)
+    testImplementation(libs.junit)
+    testImplementation(libs.google.truth)
 }

@@ -1,33 +1,21 @@
-import Dependencies.AndroidX
-import Dependencies.DI
-import Dependencies.Others
-import Dependencies.View
-import ProjectLib.cache
-import ProjectLib.core
-import ProjectLib.data
-import ProjectLib.domain
-import ProjectLib.presentation
-import ProjectLib.shoppingList
-
 plugins {
-    androidApplication
-    kotlin(kotlinAndroid)
-    kotlin(kotlinKapt)
-    safeArgs
-    daggerHilt
+    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.kotlin.kapt.get().pluginId)
+    id(libs.plugins.dagger.hilt.get().pluginId)
 }
 
 android {
-    namespace = Config.Android.applicationId
+    namespace = "com.zizohanto.android.tobuy"
     defaultConfig {
-        applicationId = Config.Android.applicationId
-        minSdk = Config.Version.minSdkVersion
-        targetSdk = Config.Version.targetSdkVersion
-        compileSdk = Config.Version.compileSdkVersion
-        versionCode = Config.Version.versionCode
-        versionName = Config.Version.versionName
-        multiDexEnabled = Config.isMultiDexEnabled
-        testInstrumentationRunner = Config.Android.testInstrumentationRunner
+        applicationId = "com.zizohanto.android.tobuy"
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        versionCode = libs.versions.version.code.get().toInt()
+        versionName = libs.versions.version.name.get()
+        multiDexEnabled = true
+        testInstrumentationRunner = "com.zizohanto.android.tobuy.shopping_list.utilities.CustomTestRunner"
     }
 
     kotlinOptions {
@@ -37,14 +25,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        named(BuildType.DEBUG) {
-            isMinifyEnabled = BuildTypeDebug.isMinifyEnabled
-            applicationIdSuffix = BuildTypeDebug.applicationIdSuffix
-            versionNameSuffix = BuildTypeDebug.versionNameSuffix
-        }
     }
 
     packaging {
@@ -66,25 +46,16 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    implementation(project(shoppingList))
-    implementation(project(cache))
-    implementation(project(presentation))
-    implementation(project(domain))
-    implementation(project(data))
-    implementation(project(core))
+    implementation(project(":core"))
+    implementation(project(":libraries:cache"))
+    implementation(project(":libraries:data"))
+    implementation(project(":libraries:domain"))
+    implementation(project(":presentation"))
+    implementation(project(":shopping_list"))
 
-    implementAll(View.components)
-    implementation(DI.hiltAndroid)
-    implementation(Others.jodaTime)
+    implementation(libs.hilt.android)
+    implementation(libs.joda.time)
 
-    AndroidX.run {
-        implementation(activity)
-        implementation(coreKtx)
-        implementation(navigationFragmentKtx)
-        implementation(navigationUiKtx)
-        implementation(multiDex)
-    }
-
-    kapt(DI.AnnotationProcessor.hiltAndroid)
-    kapt(DI.AnnotationProcessor.hiltCompiler)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
 }

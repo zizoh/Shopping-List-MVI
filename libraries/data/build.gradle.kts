@@ -1,14 +1,12 @@
-import Dependencies.Others
-import ProjectLib.domain
-import ProjectLib.testUtils
-
 plugins {
-    kotlinLibrary
+    id(libs.plugins.kotlin.jvm.get().pluginId)
 }
 
 dependencies {
-    implementation(project(domain))
-    implementation(Others.jodaTime)
+    implementation(project(":libraries:domain"))
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.javax.inject)
+    implementation(libs.joda.time)
 
-    testImplementation(project(testUtils))
+    testImplementation(project(":libraries:testUtils"))
 }

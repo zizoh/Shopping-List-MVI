@@ -1,29 +1,18 @@
-import Dependencies.AndroidX
-import Dependencies.Coroutines
-import Dependencies.DI
-import Dependencies.Test
-import Dependencies.View
-import ProjectLib.cache
-import ProjectLib.core
-import ProjectLib.domain
-import ProjectLib.presentation
-import ProjectLib.testUtils
-
 plugins {
-    androidLibrary
-    kotlin(kotlinAndroid)
-    kotlin(kotlinKapt)
-    safeArgs
-    daggerHilt
+    id(libs.plugins.android.library.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.kotlin.kapt.get().pluginId)
+    id(libs.plugins.dagger.hilt.get().pluginId)
 }
 
 android {
     namespace = "com.zizohanto.android.tobuy.shopping_list"
     defaultConfig {
-        compileSdk = Config.Version.compileSdkVersion
-        minSdk = Config.Version.minSdkVersion
-        targetSdk = Config.Version.targetSdkVersion
-        testInstrumentationRunner = Config.Android.testInstrumentationRunner
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        testInstrumentationRunner =
+            "com.zizohanto.android.tobuy.shopping_list.utilities.CustomTestRunner"
     }
 
     compileOptions {
@@ -36,13 +25,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = View.Version.kotlinCompilerExtensionVersion
-    }
-
-    buildTypes {
-        named(BuildType.DEBUG) {
-            isMinifyEnabled = BuildTypeDebug.isMinifyEnabled
-        }
+        kotlinCompilerExtensionVersion = libs.versions.kotlin.compiler.extension.get()
     }
 
     buildFeatures {
@@ -51,63 +34,66 @@ android {
 }
 
 dependencies {
-    val composeBom = platform(Dependencies.View.composeBom)
-    implementation(project(core))
-    implementation(project(presentation))
-    implementation(project(domain))
+    val composeBom = platform(libs.androidx.compose.bom)
+    val coreDependencyNotation = project(":core")
+    val presentationDependencyNotation = project(":presentation")
+    val dependencyNotation = project(":libraries:cache")
+    val domainDependencyNotation = project(":libraries:domain")
+    val testUtilsDependencyNotation = project(":libraries:testUtils")
 
-    testImplementation(project(testUtils))
-    testImplementation(project(core))
-    testImplementation(project(presentation))
-    testImplementation(project(domain))
-    testImplementation(project(cache))
-    androidTestImplementation(project(core))
-    androidTestImplementation(project(presentation))
-    androidTestImplementation(project(domain))
-    androidTestImplementation(project(cache))
-    androidTestImplementation(project(testUtils))
+    implementation(coreDependencyNotation)
+    implementation(presentationDependencyNotation)
+    implementation(domainDependencyNotation)
 
-    with(View) {
-        implementAll(components)
-        implementation(fragment)
-        implementation(materialComponent)
-        implementation(constraintLayout)
-        implementation(constraintLayoutCompose)
-        implementation(recyclerView)
-        implementation(shimmerLayout)
-        implementation(composeRuntime)
-        implementation(composeUi)
-        implementation(composeUiTooling)
-        implementation(composeUiToolingPreview)
-        implementation(composeFoundation)
-        implementation(composeFoundationLayout)
-        implementation(composeMaterial)
-    }
+    testImplementation(testUtilsDependencyNotation)
+    testImplementation(coreDependencyNotation)
+    testImplementation(presentationDependencyNotation)
+    testImplementation(domainDependencyNotation)
+    testImplementation(dependencyNotation)
+    androidTestImplementation(coreDependencyNotation)
+    androidTestImplementation(presentationDependencyNotation)
+    androidTestImplementation(domainDependencyNotation)
+    androidTestImplementation(dependencyNotation)
+    androidTestImplementation(testUtilsDependencyNotation)
 
-    implementation(DI.hiltAndroid)
-    implementation(DI.hiltNavigationCompose)
     implementation(composeBom)
-    implementAll(AndroidX.components)
-    implementAll(Coroutines.components)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.ui.tooling.preview)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.multidex)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.lifecycle.common)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.hilt.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.material.component)
 
-    kapt(DI.AnnotationProcessor.hiltAndroid)
-    kapt(DI.AnnotationProcessor.hiltCompiler)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
 
-    testImplementation(Test.coroutinesTest)
-    testImplementation(Test.mockk)
-    testImplementation(Test.mockkAgent)
-    testImplementation(Test.runner)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent)
+    testImplementation(libs.androidx.test.runner)
 
-    debugImplementation(Test.composeUITestManifest)
-    androidTestImplementation(Test.composeUITestJUnit)
-    androidTestImplementation(Test.hiltTesting)
-    androidTestImplementation(Test.espresso)
-    androidTestImplementation(Test.espressoContrib)
-    androidTestImplementation(Test.fragmentTesting)
-    androidTestImplementation(Test.rules)
-    androidTestImplementation(Test.archCoreTest)
-    androidTestImplementation(Test.androidXTest)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.android.arch.core.testing)
+    androidTestImplementation(libs.androidx.test.ext)
 
-    kaptAndroidTest(DI.AnnotationProcessor.hiltAndroid)
-    kaptAndroidTest(DI.AnnotationProcessor.hiltCompiler)
+    kaptAndroidTest(libs.hilt.android.compiler)
+    kaptAndroidTest(libs.androidx.hilt.compiler)
 }
