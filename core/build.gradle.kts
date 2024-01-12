@@ -21,12 +21,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-
-    buildTypes {
-        named(BuildType.DEBUG) {
-            isMinifyEnabled = false
-        }
-    }
 }
 
 dependencies {

@@ -27,14 +27,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    buildTypes {
-        named(BuildType.DEBUG) {
-            isMinifyEnabled = false
-            applicationIdSuffix = BuildTypeDebug.applicationIdSuffix
-            versionNameSuffix = BuildTypeDebug.versionNameSuffix
-        }
-    }
-
     packaging {
         resources {
             excludes += "META-INF/DEPENDENCIES"
