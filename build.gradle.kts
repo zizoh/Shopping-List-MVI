@@ -1,15 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    id(libs.plugins.kotlin.jvm.get().pluginId) apply false
-}
-
 buildscript {
     repositories {
         google()
         mavenCentral()
         maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+    }
+
+    dependencies {
+        classpath(libs.android.gradle.plugin)
+        classpath(libs.hilt.android.gradle.plugin)
+        classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.spotless.gradle.plugin)
     }
 }
 
@@ -29,11 +32,11 @@ subprojects {
 //    applySpotless
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions.freeCompilerArgs +=
-                "-Xuse-experimental=" +
-                        "kotlin.Experimental," +
-                        "kotlinx.coroutines.ExperimentalCoroutinesApi," +
-                        "kotlinx.coroutines.InternalCoroutinesApi," +
-                        "kotlinx.coroutines.ObsoleteCoroutinesApi," +
-                        "kotlinx.coroutines.FlowPreview"
+            "-Xuse-experimental=" +
+                    "kotlin.Experimental," +
+                    "kotlinx.coroutines.ExperimentalCoroutinesApi," +
+                    "kotlinx.coroutines.InternalCoroutinesApi," +
+                    "kotlinx.coroutines.ObsoleteCoroutinesApi," +
+                    "kotlinx.coroutines.FlowPreview"
     }
 }

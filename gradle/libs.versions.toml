@@ -33,6 +33,7 @@ kotlin = "1.9.20"
 navigation = "2.7.5"
 dagger-hilt-android = "2.48.1"
 spotless = "4.0.1"
+spotless-plugin = "6.7.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
@@ -76,14 +77,15 @@ androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-mani
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt-android" }
 joda-time = { module = "net.danlew:android.joda", version.ref = "joda-time" }
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger-hilt-android" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless-plugin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt-android" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "agp" }
-android-gradle = { id = "com.android.tools.build:gradle", version.ref = "agp" }
-androidx-navigation-safe-args = { id = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation" }
-dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt-android" }
-spotless = { id = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
