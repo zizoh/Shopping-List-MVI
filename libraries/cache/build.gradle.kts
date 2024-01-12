@@ -34,7 +34,7 @@ dependencies {
     implementation(project(":libraries:testUtils"))
 
     implementation(libs.hilt.android)
-    api(libs.android.room.ktx)
+    api(libs.androidx.room.ktx)
 
     testImplementation(libs.androidx.test.runner)
     testImplementation(libs.androidx.test.ext)
