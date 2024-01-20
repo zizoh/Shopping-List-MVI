@@ -60,18 +60,20 @@ class ProductViewStateReducer @Inject constructor(
             is Error -> TODO()
             is ProductViewResult.ProductAddedAtPosition -> {
                 val product: ProductModel = productMapper.mapToModel(result.product)
-                val listWithProducts = if (previous.listWithProducts?.products?.isEmpty() == true) {
-                    listOf(product)
-                } else {
-                    buildList {
-                        addAll(previous.listWithProducts?.products.orEmpty())
-                        add(product.position, product)
+                val listWithProducts = previous.listWithProducts?.products.orEmpty().toMutableList().apply {
+                    if (isEmpty()) {
+                        add(product)
+                    } else {
+                        if (product.position in 0 until size) {
+                            add(product.position, product)
+                        } else {
+                            add(product)
+                        }
                     }
                 }
                 ProductsViewState(
                     listWithProducts = previous.listWithProducts?.copy(products = listWithProducts),
                 )
-
             }
         }
     }
