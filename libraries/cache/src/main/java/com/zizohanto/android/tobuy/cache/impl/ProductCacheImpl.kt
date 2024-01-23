@@ -87,26 +87,25 @@ class ProductCacheImpl @Inject constructor(
     override suspend fun makeNewProductAtPosition(
         shoppingListId: String,
         newProductPosition: Int
-    ): ProductEntity? {
-        val allProductsForId: List<ProductCacheModel> =
-            dao.getProducts(shoppingListId)
-        return if (allProductsForId.isEmpty() || lastProductIsNotEmpty(allProductsForId.lastOrNull())) {
+    ): List<ProductEntity> {
+        val allProducts = dao.getProducts(shoppingListId)
+        val newList = if (allProducts.isEmpty() || lastProductIsNotEmpty(allProducts.lastOrNull())) {
             val product = ProductCacheModel(
                 shoppingListId = shoppingListId,
                 position = newProductPosition
             )
-            val newList: MutableList<ProductCacheModel> = allProductsForId.map { model ->
-                when (model.position) {
-                    in newProductPosition..allProductsForId.size -> {
-                        model.copy(position = model.position + 1)
-                    }
-                    else -> model
-                }
+            val updatedProducts = allProducts.mapIndexed { index, model ->
+                val isBelowNewProduct = index >= newProductPosition
+                if (isBelowNewProduct) model.copy(position = model.position + 1) else model
             }.toMutableList()
-            newList.add(product)
-            dao.insertProducts(newList)
-            mapper.mapToEntity(product)
-        } else null
+
+            updatedProducts.add(newProductPosition, product)
+            dao.insertProducts(updatedProducts)
+            updatedProducts
+        } else {
+            allProducts
+        }
+        return newList.map { mapper.mapToEntity(it) }
     }
 
     private fun lastProductIsNotEmpty(item: ProductCacheModel?): Boolean {

@@ -64,13 +64,13 @@ class ProductRepositoryImpl @Inject constructor(
     override fun createProductAtPosition(
         shoppingListId: String,
         newProductPosition: Int
-    ): Flow<Product> {
+    ): Flow<List<Product>> {
         return flow {
-            productCache.makeNewProductAtPosition(
-                shoppingListId, newProductPosition
-            )?.let { productEntity ->
-                emit(mapper.mapFromEntity(productEntity))
-            }
+            emit(
+                productCache.makeNewProductAtPosition(shoppingListId, newProductPosition).map {
+                    mapper.mapFromEntity(it)
+                }
+            )
         }
     }
 

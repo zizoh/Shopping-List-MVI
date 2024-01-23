@@ -1,6 +1,9 @@
 package com.zizohanto.android.tobuy.shopping_list.utilities
 
+import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
+import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult
 import kotlin.random.Random
 
 object DataFactory {
@@ -14,6 +17,20 @@ object DataFactory {
         position = getRandomInt(),
     )
 
+    fun getShoppingLists(products: List<ProductsViewItem.ProductModel> = listOf(getProductModel())): ShoppingListWithProductsModel {
+        return ShoppingListWithProductsModel(
+            getShoppingListModel(),
+            products
+        )
+    }
+
+    fun getShoppingLists(numberOfProducts: Int): ShoppingListWithProductsModel {
+        val products = (1..numberOfProducts).map {
+            getProductModel()
+        }
+        return ShoppingListWithProductsModel(getShoppingListModel(), products)
+    }
+
     fun getShoppingListModel() = ProductsViewItem.ShoppingListModel(
         id = getRandomString(),
         name = getRandomString(),
@@ -21,6 +38,9 @@ object DataFactory {
         dateCreated = getRandomLong(),
         dateModified = getRandomLong()
     )
+
+    fun getResultProductAddedAtPosition() =
+        ProductsViewResult.ProductViewResult.ProductAddedAtPosition(getProduct())
 
     fun getRandomString(length: Int = 5) = (1..length)
         .map { Random.nextInt(0, charPool.size).let { charPool[it] } }
@@ -31,4 +51,12 @@ object DataFactory {
     private fun getRandomDouble(): Double = Random.nextDouble()
 
     private fun getRandomLong() = Random.nextLong()
+
+    private fun getProduct() = Product(
+        id = getRandomString(),
+        shoppingListId = getRandomString(),
+        name = getRandomString(),
+        price = getRandomDouble(),
+        position = getRandomInt(),
+    )
 }

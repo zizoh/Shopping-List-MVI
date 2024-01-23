@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -121,9 +121,13 @@ fun ProductsContent(
                     modifier = Modifier.fillMaxWidth()
                 )
                 LazyColumn {
-                    items(products) { product ->
+                    itemsIndexed(
+                        products,
+                        key = { _, product -> product.id }
+                    ) { index, product ->
                         Divider(color = MaterialTheme.colorScheme.outlineVariant)
                         RowProduct(
+                            index,
                             product = product,
                             onAddNewProduct = callbacks.onAddNewProduct,
                             onUpdateProduct = callbacks.onUpdateProduct,
@@ -170,6 +174,7 @@ fun ShoppingListTitle(
 
 @Composable
 fun RowProduct(
+    indexOfProduct: Int,
     product: ProductsViewItem.ProductModel,
     onAddNewProduct: (String, Int) -> Unit,
     onUpdateProduct: (ProductsViewItem.ProductModel) -> Unit,
@@ -201,7 +206,7 @@ fun RowProduct(
             keyboardActions = KeyboardActions(
                 onDone = {
                     if (product.name.isNotEmpty()) {
-                        onAddNewProduct.invoke(product.shoppingListId, product.position)
+                        onAddNewProduct.invoke(product.shoppingListId, indexOfProduct + 1)
                     }
                 },
             ),
