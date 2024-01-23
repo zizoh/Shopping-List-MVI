@@ -12,12 +12,12 @@ import javax.inject.Inject
 class CreateProduct @Inject constructor(
     private val repository: ProductRepository,
     private val postExecutionThread: PostExecutionThread
-) : FlowUseCase<Pair<String, Int>, Product>() {
+) : FlowUseCase<Pair<String, Int>, List<Product>>() {
 
     override val dispatcher: CoroutineDispatcher
         get() = postExecutionThread.io
 
-    override fun execute(params: Pair<String, Int>?): Flow<Product> {
+    override fun execute(params: Pair<String, Int>?): Flow<List<Product>> {
         val (id: String, newProductPosition: Int) = requireParams(params)
         return repository.createProductAtPosition(id, newProductPosition)
     }

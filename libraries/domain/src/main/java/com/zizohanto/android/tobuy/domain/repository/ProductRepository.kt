@@ -12,5 +12,5 @@ interface ProductRepository {
     fun createProductAtPosition(
         shoppingListId: String,
         newProductPosition: Int
-    ): Flow<Product>
+    ): Flow<List<Product>>
 }
