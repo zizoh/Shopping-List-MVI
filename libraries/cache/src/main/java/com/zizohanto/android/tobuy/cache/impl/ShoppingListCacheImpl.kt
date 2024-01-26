@@ -2,52 +2,109 @@ package com.zizohanto.android.tobuy.cache.impl
 
 import com.zizohanto.android.tobuy.cache.mappers.ShoppingListCacheModelMapper
 import com.zizohanto.android.tobuy.cache.mappers.ShoppingListWithProductsCacheModelMapper
+import com.zizohanto.android.tobuy.cache.models.ProductCacheModel
 import com.zizohanto.android.tobuy.cache.models.ShoppingListCacheModel
 import com.zizohanto.android.tobuy.cache.models.ShoppingListWithProductsCacheModel
-import com.zizohanto.android.tobuy.cache.room.ShoppingListDao
+import com.zizohanto.android.tobuy.cache.sq.ShoppingListQueries
 import com.zizohanto.android.tobuy.data.contract.ShoppingListCache
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
 import javax.inject.Inject
 
 class ShoppingListCacheImpl @Inject constructor(
-    private val dao: ShoppingListDao,
+    private val queries: ShoppingListQueries,
     private val listMapper: ShoppingListCacheModelMapper,
     private val listWithProductsMapper: ShoppingListWithProductsCacheModelMapper
 ) : ShoppingListCache {
 
     override suspend fun saveShoppingList(shoppingListEntity: ShoppingListEntity) {
         val shoppingList: ShoppingListCacheModel = listMapper.mapToModel(shoppingListEntity)
-        dao.insertShoppingList(shoppingList)
+        queries.insertShoppingList(
+            shoppingList.id,
+            shoppingList.name,
+            shoppingList.budget,
+            shoppingList.dateCreated,
+            shoppingList.dateModified
+        )
     }
 
     override suspend fun updateShoppingList(id: String, name: String, dateModified: Long) {
-        dao.updateShoppingList(id, name, dateModified)
+        queries.updateShoppingList(name, dateModified, id)
     }
 
     override suspend fun getShoppingList(id: String): ShoppingListEntity? {
-        val shoppingList: ShoppingListCacheModel? = dao.getShoppingListWithId(id)
+        val shoppingList = queries.getShoppingListWithId(id).executeAsOneOrNull()
         return if (shoppingList == null) null
-        else listMapper.mapToEntity(shoppingList)
+        else listMapper.mapToEntity(
+            ShoppingListCacheModel(
+                shoppingList.id,
+                shoppingList.name,
+                shoppingList.budget,
+                shoppingList.dateCreated,
+                shoppingList.dateModified
+            )
+        )
     }
 
     override suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProductsEntity? {
-        val listWithProducts: ShoppingListWithProductsCacheModel? =
-            dao.getShoppingListWithProductsOrNull(id)
-        return if (listWithProducts == null) null
-        else listWithProductsMapper.mapToEntity(listWithProducts)
+        val results = queries.getShoppingListWithProductsOrNull(id).executeAsList()
+        val shoppingList = results.firstOrNull()?.let {
+            ShoppingListCacheModel(
+                it.id,
+                it.name,
+                it.budget,
+                it.dateCreated,
+                it.dateModified
+            )
+        }
+        val products = results.map {
+            ProductCacheModel(
+                it.id_.orEmpty(),
+                it.id,
+                it.name_.orEmpty(),
+                it.price ?: 0.0,
+                (it.position ?: 0).toInt()
+            )
+        }
+        return shoppingList?.let {
+            listWithProductsMapper.mapToEntity(ShoppingListWithProductsCacheModel(it, products))
+        }
     }
 
     override suspend fun getAllShoppingLists(): List<ShoppingListWithProductsEntity> {
-        val models: List<ShoppingListWithProductsCacheModel> = dao.getShoppingLists()
+        val results = queries.getShoppingLists().executeAsList()
+        val groupedResults = results.groupBy {
+            ShoppingListCacheModel(
+                it.id,
+                it.name,
+                it.budget,
+                it.dateCreated,
+                it.dateModified
+            )
+        }
+
+        val models = groupedResults.map { (shoppingList, products) ->
+            ShoppingListWithProductsCacheModel(
+                shoppingList,
+                products.map {
+                    ProductCacheModel(
+                        it.id_.orEmpty(),
+                        it.id,
+                        it.name_.orEmpty(),
+                        it.price ?: 0.0,
+                        (it.position ?: 0).toInt()
+                    )
+                }
+            )
+        }
         return listWithProductsMapper.mapToEntityList(models)
     }
 
     override suspend fun deleteShoppingList(id: String) {
-        dao.deleteShoppingList(id)
+        queries.deleteShoppingList(id)
     }
 
     override suspend fun deleteAllShoppingLists() {
-        dao.deleteAllShoppingLists()
+        queries.deleteAllShoppingLists()
     }
 }
