@@ -1,0 +1,33 @@
+CREATE TABLE Product (
+    id TEXT NOT NULL PRIMARY KEY,
+    shoppingListId TEXT NOT NULL,
+    name TEXT NOT NULL DEFAULT '',
+    price REAL NOT NULL DEFAULT 0.0,
+    position INTEGER NOT NULL,
+    FOREIGN KEY(shoppingListId) REFERENCES ShoppingList(id)
+);
+
+insertProduct:
+INSERT OR REPLACE INTO Product(id, shoppingListId, name, price, position)
+VALUES (?, ?, ?, ?, ?);
+
+updateProduct:
+UPDATE Product SET name = ?, position = ? WHERE id = ?;
+
+getProducts:
+SELECT * FROM Product WHERE shoppingListId = ? ORDER BY position;
+
+getProductAtPosition:
+SELECT * FROM Product WHERE shoppingListId = ? AND position = ? LIMIT 1;
+
+productExists:
+SELECT EXISTS(SELECT 1 FROM Product WHERE id = ?);
+
+deleteProduct:
+DELETE FROM Product WHERE id = ?;
+
+deleteAllProducts:
+DELETE FROM Product;
+
+getLastPosition:
+SELECT MAX(position) FROM Product WHERE shoppingListId = ?;

@@ -1,5 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+plugins {
+    alias(libs.plugins.sqldelight) apply false
+}
+
 buildscript {
     repositories {
         google()

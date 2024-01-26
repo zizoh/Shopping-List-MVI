@@ -2,46 +2,75 @@ package com.zizohanto.android.tobuy.cache.impl
 
 import com.zizohanto.android.tobuy.cache.mappers.ProductCacheModelMapper
 import com.zizohanto.android.tobuy.cache.models.ProductCacheModel
-import com.zizohanto.android.tobuy.cache.room.ProductDao
+import com.zizohanto.android.tobuy.cache.sq.Product
+import com.zizohanto.android.tobuy.cache.sq.ProductQueries
 import com.zizohanto.android.tobuy.data.contract.ProductCache
 import com.zizohanto.android.tobuy.data.models.ProductEntity
 import javax.inject.Inject
 
 class ProductCacheImpl @Inject constructor(
-    private val dao: ProductDao,
+    private val queries: ProductQueries,
     private val mapper: ProductCacheModelMapper
 ) : ProductCache {
 
     override suspend fun saveProduct(productEntity: ProductEntity) {
-        val newProduct: ProductCacheModel = mapper.mapToModel(productEntity)
-        val cachedProduct: ProductCacheModel? =
-            dao.getProductAtPosition(
-                newProduct.position,
-                newProduct.shoppingListId
-            )
-        when {
-            cachedProduct == null -> dao.insertProduct(newProduct)
-            dao.productExists(newProduct.id) -> dao.updateProduct(newProduct)
-            else -> updateProductsPosition(newProduct)
+        with(mapper.mapToModel(productEntity)) {
+            val cachedProduct = queries.getProductAtPosition(
+                shoppingListId,
+                position.toLong()
+            ).executeAsOneOrNull()
+            when {
+                cachedProduct == null -> {
+                    queries.insertProduct(
+                        id,
+                        shoppingListId,
+                        name,
+                        price,
+                        position.toLong()
+                    )
+                }
+                queries.productExists(id).executeAsOne() -> {
+                    queries.updateProduct(name, position.toLong(), id)
+                }
+                else -> updateProductsPosition(this)
+            }
         }
 
     }
 
-    private suspend fun updateProductsPosition(newProduct: ProductCacheModel) {
-        val allProductsForId: List<ProductCacheModel> =
-            dao.getProducts(newProduct.shoppingListId)
-        var pos: Int = newProduct.position
-        val newList: MutableList<ProductCacheModel> = allProductsForId.map { model ->
-            if (pos == model.position) {
-                model.copy(position = ++pos)
+    private fun updateProductsPosition(newProduct: ProductCacheModel) {
+        val allProductsForId =
+            queries.getProducts(newProduct.shoppingListId).executeAsList()
+        val pos: Int = newProduct.position
+        val newList = allProductsForId.map { model ->
+            if (pos.toLong() == model.position) {
+                val position = model.position + pos
+                model.copy(position = position)
             } else model
         }.toMutableList()
-        newList.add(newProduct)
-        dao.insertProducts(newList)
+        newList.add(
+            Product(
+                id = newProduct.id,
+                shoppingListId = newProduct.shoppingListId,
+                name = newProduct.name,
+                price = newProduct.price,
+                position = newProduct.position.toLong()
+            )
+        )
+        newList.forEach {
+            queries.insertProduct(
+                it.id,
+                it.shoppingListId,
+                it.name,
+                it.price,
+                it.position
+            )
+        }
     }
 
     override suspend fun makeNewProduct(shoppingListId: String): ProductEntity {
-        val position: Int? = dao.getLastPosition(shoppingListId)
+        val position: Int? =
+            queries.getLastPosition(shoppingListId).executeAsOneOrNull()?.MAX?.toInt()
         return if (position != null) {
             mapper.mapToEntity(
                 ProductCacheModel(
@@ -60,16 +89,24 @@ class ProductCacheImpl @Inject constructor(
     }
 
     override suspend fun getProducts(id: String): List<ProductEntity> {
-        val cacheModels: List<ProductCacheModel> = dao.getProducts(id)
+        val cacheModels: List<ProductCacheModel> = queries.getProducts(id).executeAsList().map {
+            ProductCacheModel(
+                id = it.id,
+                shoppingListId = it.shoppingListId,
+                name = it.name,
+                price = it.price,
+                position = it.position.toInt()
+            )
+        }
         return mapper.mapToEntityList(cacheModels)
     }
 
     override suspend fun deleteProduct(productEntity: ProductEntity) {
-        dao.deleteProduct(productEntity.id)
-        val allProductsForId: List<ProductCacheModel> =
-            dao.getProducts(productEntity.shoppingListId)
+        queries.deleteProduct(productEntity.id)
+        val allProductsForId =
+            queries.getProducts(productEntity.shoppingListId).executeAsList()
         val position: Int = productEntity.position
-        val newList: MutableList<ProductCacheModel> = allProductsForId.map { model ->
+        val newList = allProductsForId.map { model ->
             when (model.position) {
                 in position..allProductsForId.size -> {
                     model.copy(position = model.position - 1)
@@ -77,19 +114,28 @@ class ProductCacheImpl @Inject constructor(
                 else -> model
             }
         }.toMutableList()
-        dao.insertProducts(newList)
+        newList.forEach {
+            queries.insertProduct(
+                it.id,
+                it.shoppingListId,
+                it.name,
+                it.price,
+                it.position
+            )
+        }
     }
 
     override suspend fun deleteAllProducts() {
-        dao.deleteAllProducts()
+        queries.deleteAllProducts()
     }
 
     override suspend fun makeNewProductAtPosition(
         shoppingListId: String,
         newProductPosition: Int
     ): List<ProductEntity> {
-        val allProducts = dao.getProducts(shoppingListId)
-        val newList = if (allProducts.isEmpty() || lastProductIsNotEmpty(allProducts.lastOrNull())) {
+        val allProducts = queries.getProducts(shoppingListId).executeAsList()
+        val lastProductIsNotEmpty = allProducts.lastOrNull()?.name?.isNotEmpty() ?: false
+        val newList = if (allProducts.isEmpty() || lastProductIsNotEmpty) {
             val product = ProductCacheModel(
                 shoppingListId = shoppingListId,
                 position = newProductPosition
@@ -99,16 +145,39 @@ class ProductCacheImpl @Inject constructor(
                 if (isBelowNewProduct) model.copy(position = model.position + 1) else model
             }.toMutableList()
 
-            updatedProducts.add(newProductPosition, product)
-            dao.insertProducts(updatedProducts)
+            updatedProducts.add(
+                newProductPosition,
+                Product(
+                    product.id,
+                    product.shoppingListId,
+                    product.name,
+                    product.price,
+                    product.position.toLong()
+                )
+            )
+            updatedProducts.forEach {
+                queries.insertProduct(
+                    it.id,
+                    it.shoppingListId,
+                    it.name,
+                    it.price,
+                    it.position
+                )
+            }
             updatedProducts
         } else {
             allProducts
         }
-        return newList.map { mapper.mapToEntity(it) }
-    }
-
-    private fun lastProductIsNotEmpty(item: ProductCacheModel?): Boolean {
-        return item?.name?.isNotEmpty() ?: false
+        return newList.map {
+            mapper.mapToEntity(
+                ProductCacheModel(
+                    it.id,
+                    it.shoppingListId,
+                    it.name,
+                    it.price,
+                    it.position.toInt()
+                )
+            )
+        }
     }
 }

@@ -1,11 +1,13 @@
 package com.zizohanto.android.tobuy.cache.di
 
 import android.content.Context
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.zizohanto.android.tobuy.cache.impl.ProductCacheImpl
 import com.zizohanto.android.tobuy.cache.impl.ShoppingListCacheImpl
-import com.zizohanto.android.tobuy.cache.room.ProductDao
-import com.zizohanto.android.tobuy.cache.room.ShoppingListDao
-import com.zizohanto.android.tobuy.cache.room.ShoppingListDatabase
+import com.zizohanto.android.tobuy.cache.sq.ProductQueries
+import com.zizohanto.android.tobuy.cache.sq.ShoppingListDatabase
+import com.zizohanto.android.tobuy.cache.sq.ShoppingListQueries
+
 import com.zizohanto.android.tobuy.data.contract.ProductCache
 import com.zizohanto.android.tobuy.data.contract.ShoppingListCache
 import dagger.Binds
@@ -29,17 +31,19 @@ interface CacheModule {
     companion object {
         @[Provides Singleton]
         fun provideDatabase(@ApplicationContext context: Context): ShoppingListDatabase {
-            return ShoppingListDatabase.build(context)
+            val driver =
+                AndroidSqliteDriver(ShoppingListDatabase.Schema, context, "shopping_list.db")
+            return ShoppingListDatabase(driver)
         }
 
         @[Provides Singleton]
-        fun provideProductDao(database: ShoppingListDatabase): ProductDao {
-            return database.productDao
+        fun provideProductQueries(database: ShoppingListDatabase): ProductQueries {
+            return database.productQueries
         }
 
         @[Provides Singleton]
-        fun provideShoppingListDao(database: ShoppingListDatabase): ShoppingListDao {
-            return database.shoppingListDao
+        fun provideShoppingListQueries(database: ShoppingListDatabase): ShoppingListQueries {
+            return database.shoppingListQueries
         }
     }
 }
