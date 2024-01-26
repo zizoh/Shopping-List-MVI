@@ -22,8 +22,6 @@ androidx-hilt-compiler = "1.1.0"
 coroutines-core = "1.3.9"
 coroutines-android = "1.7.3"
 coroutines-test = "1.6.1"
-androidx-room = "2.6.1"
-androidx-room-compiler = "2.6.1"
 junit = "4.13.2"
 runner = "1.5.2"
 rules = "1.5.0"
@@ -63,8 +61,6 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidx-multidex" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room-compiler" }
-androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
 androidx-test-ext = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "rules" }

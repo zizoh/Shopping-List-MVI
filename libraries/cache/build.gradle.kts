@@ -44,12 +44,10 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(libs.sqldelight)
-    api(libs.androidx.room.ktx)
 
     testImplementation(libs.androidx.test.runner)
     testImplementation(libs.androidx.test.ext)
     testImplementation(libs.androidx.test.core)
 
-    kapt(libs.androidx.room.compiler)
     kapt(libs.hilt.android.compiler)
 }
