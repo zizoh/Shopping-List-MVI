@@ -21,13 +21,14 @@ getShoppingLists:
 SELECT ShoppingList.*, Product.*
 FROM ShoppingList
 LEFT JOIN Product ON ShoppingList.id = Product.shoppingListId
-ORDER BY ShoppingList.dateModified DESC;
+ORDER BY ShoppingList.dateModified DESC, Product.position ASC;
 
 getShoppingListWithProductsOrNull:
 SELECT ShoppingList.*, Product.*
 FROM ShoppingList
 LEFT JOIN Product ON ShoppingList.id = Product.shoppingListId
-WHERE ShoppingList.id = ?;
+WHERE ShoppingList.id = ?
+ORDER BY Product.position ASC;
 
 deleteShoppingList:
 DELETE FROM ShoppingList WHERE id = ?;

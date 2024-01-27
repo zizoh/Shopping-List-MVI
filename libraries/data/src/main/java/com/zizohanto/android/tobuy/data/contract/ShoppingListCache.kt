@@ -63,9 +63,8 @@ class ShoppingListCacheImpl @Inject constructor(
                 (it.position ?: 0).toInt()
             )
         }
-        // todo: sort products by position
         return shoppingList?.let {
-            ShoppingListWithProductsEntity(it, products.sortedBy { it.position })
+            ShoppingListWithProductsEntity(it, products)
         }
     }
 
@@ -96,8 +95,7 @@ class ShoppingListCacheImpl @Inject constructor(
             )
         }
         return models.map {
-            // todo: sort products by position
-            ShoppingListWithProductsEntity(it.shoppingList, it.products.sortedBy { it.position })
+            ShoppingListWithProductsEntity(it.shoppingList, it.products)
         }
     }
 
