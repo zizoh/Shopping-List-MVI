@@ -15,8 +15,8 @@ class ShoppingListWithProductsEntityMapper @Inject constructor(
 ) : EntityMapper<ShoppingListWithProductsEntity, ShoppingListWithProducts> {
 
     override fun mapFromEntity(entity: ShoppingListWithProductsEntity): ShoppingListWithProducts {
-        val shoppingList: ShoppingList = shoppingListMapper.mapFromEntity(entity.shoppingListEntity)
-        val products: List<Product> = productsMapper.mapFromEntityList(entity.productEntities)
+        val shoppingList: ShoppingList = shoppingListMapper.mapFromEntity(entity.shoppingList)
+        val products: List<Product> = productsMapper.mapFromEntityList(entity.products)
         return ShoppingListWithProducts(shoppingList, products)
     }
 

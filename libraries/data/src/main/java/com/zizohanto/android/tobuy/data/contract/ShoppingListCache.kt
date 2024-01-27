@@ -1,12 +1,8 @@
 package com.zizohanto.android.tobuy.data.contract
 
 import com.zizohanto.android.tobuy.cache.sq.ShoppingListQueries
-import com.zizohanto.android.tobuy.data.mappers.ShoppingListCacheModelMapper
-import com.zizohanto.android.tobuy.data.mappers.ShoppingListWithProductsCacheModelMapper
-import com.zizohanto.android.tobuy.data.models.ProductCacheModel
-import com.zizohanto.android.tobuy.data.models.ShoppingListCacheModel
+import com.zizohanto.android.tobuy.data.models.ProductEntity
 import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
-import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsCacheModel
 import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
 import javax.inject.Inject
 
@@ -21,20 +17,19 @@ interface ShoppingListCache {
 }
 
 class ShoppingListCacheImpl @Inject constructor(
-    private val queries: ShoppingListQueries,
-    private val listMapper: ShoppingListCacheModelMapper,
-    private val listWithProductsMapper: ShoppingListWithProductsCacheModelMapper
+    private val queries: ShoppingListQueries
 ) : ShoppingListCache {
 
     override suspend fun saveShoppingList(shoppingListEntity: ShoppingListEntity) {
-        val shoppingList: ShoppingListCacheModel = listMapper.mapToModel(shoppingListEntity)
-        queries.insertShoppingList(
-            shoppingList.id,
-            shoppingList.name,
-            shoppingList.budget,
-            shoppingList.dateCreated,
-            shoppingList.dateModified
-        )
+        with(shoppingListEntity) {
+            queries.insertShoppingList(
+                id,
+                name,
+                budget,
+                dateCreated,
+                dateModified
+            )
+        }
     }
 
     override suspend fun updateShoppingList(id: String, name: String, dateModified: Long) {
@@ -43,22 +38,15 @@ class ShoppingListCacheImpl @Inject constructor(
 
     override suspend fun getShoppingList(id: String): ShoppingListEntity? {
         val shoppingList = queries.getShoppingListWithId(id).executeAsOneOrNull()
-        return if (shoppingList == null) null
-        else listMapper.mapToEntity(
-            ShoppingListCacheModel(
-                shoppingList.id,
-                shoppingList.name,
-                shoppingList.budget,
-                shoppingList.dateCreated,
-                shoppingList.dateModified
-            )
-        )
+        return shoppingList?.let {
+            ShoppingListEntity(it.id, it.name, it.budget, it.dateCreated, it.dateModified)
+        }
     }
 
     override suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProductsEntity? {
         val results = queries.getShoppingListWithProductsOrNull(id).executeAsList()
         val shoppingList = results.firstOrNull()?.let {
-            ShoppingListCacheModel(
+            ShoppingListEntity(
                 it.id,
                 it.name,
                 it.budget,
@@ -67,7 +55,7 @@ class ShoppingListCacheImpl @Inject constructor(
             )
         }
         val products = results.map {
-            ProductCacheModel(
+            ProductEntity(
                 it.id_.orEmpty(),
                 it.id,
                 it.name_.orEmpty(),
@@ -75,15 +63,16 @@ class ShoppingListCacheImpl @Inject constructor(
                 (it.position ?: 0).toInt()
             )
         }
+        // todo: sort products by position
         return shoppingList?.let {
-            listWithProductsMapper.mapToEntity(ShoppingListWithProductsCacheModel(it, products))
+            ShoppingListWithProductsEntity(it, products.sortedBy { it.position })
         }
     }
 
     override suspend fun getAllShoppingLists(): List<ShoppingListWithProductsEntity> {
         val results = queries.getShoppingLists().executeAsList()
         val groupedResults = results.groupBy {
-            ShoppingListCacheModel(
+            ShoppingListEntity(
                 it.id,
                 it.name,
                 it.budget,
@@ -93,10 +82,10 @@ class ShoppingListCacheImpl @Inject constructor(
         }
 
         val models = groupedResults.map { (shoppingList, products) ->
-            ShoppingListWithProductsCacheModel(
+            ShoppingListWithProductsEntity(
                 shoppingList,
                 products.map {
-                    ProductCacheModel(
+                    ProductEntity(
                         it.id_.orEmpty(),
                         it.id,
                         it.name_.orEmpty(),
@@ -106,7 +95,10 @@ class ShoppingListCacheImpl @Inject constructor(
                 }
             )
         }
-        return listWithProductsMapper.mapToEntityList(models)
+        return models.map {
+            // todo: sort products by position
+            ShoppingListWithProductsEntity(it.shoppingList, it.products.sortedBy { it.position })
+        }
     }
 
     override suspend fun deleteShoppingList(id: String) {

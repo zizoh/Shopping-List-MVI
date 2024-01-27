@@ -2,8 +2,6 @@ package com.zizohanto.android.tobuy.data.contract
 
 import com.zizohanto.android.tobuy.cache.sq.Product
 import com.zizohanto.android.tobuy.cache.sq.ProductQueries
-import com.zizohanto.android.tobuy.data.mappers.ProductCacheModelMapper
-import com.zizohanto.android.tobuy.data.models.ProductCacheModel
 import com.zizohanto.android.tobuy.data.models.ProductEntity
 import javax.inject.Inject
 
@@ -19,13 +17,10 @@ interface ProductCache {
     ): List<ProductEntity>
 }
 
-class ProductCacheImpl @Inject constructor(
-    private val queries: ProductQueries,
-    private val mapper: ProductCacheModelMapper
-) : ProductCache {
+class ProductCacheImpl @Inject constructor(private val queries: ProductQueries) : ProductCache {
 
     override suspend fun saveProduct(productEntity: ProductEntity) {
-        with(mapper.mapToModel(productEntity)) {
+        with(productEntity) {
             val cachedProduct = queries.getProductAtPosition(
                 shoppingListId,
                 position.toLong()
@@ -51,7 +46,7 @@ class ProductCacheImpl @Inject constructor(
 
     }
 
-    private fun updateProductsPosition(newProduct: ProductCacheModel) {
+    private fun updateProductsPosition(newProduct: ProductEntity) {
         val allProductsForId =
             queries.getProducts(newProduct.shoppingListId).executeAsList()
         val pos: Int = newProduct.position
@@ -84,26 +79,16 @@ class ProductCacheImpl @Inject constructor(
     override suspend fun makeNewProduct(shoppingListId: String): ProductEntity {
         val position: Int? =
             queries.getLastPosition(shoppingListId).executeAsOneOrNull()?.MAX?.toInt()
-        return if (position != null) {
-            mapper.mapToEntity(
-                ProductCacheModel(
-                    shoppingListId = shoppingListId,
-                    position = position + 1
-                )
-            )
-        } else {
-            mapper.mapToEntity(
-                ProductCacheModel(
-                    shoppingListId = shoppingListId,
-                    position = 0
-                )
-            )
-        }
+        val updatedPosition = position?.plus(1) ?: 0
+        return ProductEntity(
+            shoppingListId = shoppingListId,
+            position = updatedPosition
+        )
     }
 
     override suspend fun getProducts(id: String): List<ProductEntity> {
-        val cacheModels: List<ProductCacheModel> = queries.getProducts(id).executeAsList().map {
-            ProductCacheModel(
+        return queries.getProducts(id).executeAsList().map {
+            ProductEntity(
                 id = it.id,
                 shoppingListId = it.shoppingListId,
                 name = it.name,
@@ -111,7 +96,6 @@ class ProductCacheImpl @Inject constructor(
                 position = it.position.toInt()
             )
         }
-        return mapper.mapToEntityList(cacheModels)
     }
 
     override suspend fun deleteProduct(productEntity: ProductEntity) {
@@ -150,7 +134,7 @@ class ProductCacheImpl @Inject constructor(
         val allProducts = queries.getProducts(shoppingListId).executeAsList()
         val lastProductIsNotEmpty = allProducts.lastOrNull()?.name?.isNotEmpty() ?: false
         val newList = if (allProducts.isEmpty() || lastProductIsNotEmpty) {
-            val product = ProductCacheModel(
+            val product = ProductEntity(
                 shoppingListId = shoppingListId,
                 position = newProductPosition
             )
@@ -183,14 +167,12 @@ class ProductCacheImpl @Inject constructor(
             allProducts
         }
         return newList.map {
-            mapper.mapToEntity(
-                ProductCacheModel(
-                    it.id,
-                    it.shoppingListId,
-                    it.name,
-                    it.price,
-                    it.position.toInt()
-                )
+            ProductEntity(
+                it.id,
+                it.shoppingListId,
+                it.name,
+                it.price,
+                it.position.toInt()
             )
         }
     }
