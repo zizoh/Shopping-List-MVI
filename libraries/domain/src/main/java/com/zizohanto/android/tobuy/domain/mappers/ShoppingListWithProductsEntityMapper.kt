@@ -1,12 +1,12 @@
-package com.zizohanto.android.tobuy.data.mappers
+package com.zizohanto.android.tobuy.domain.mappers
 
-import com.zizohanto.android.tobuy.data.mappers.base.EntityMapper
-import com.zizohanto.android.tobuy.data.models.ProductEntity
-import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
-import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
+import com.zizohanto.android.tobuy.domain.mappers.base.EntityMapper
 import com.zizohanto.android.tobuy.domain.models.Product
+import com.zizohanto.android.tobuy.domain.models.ProductEntity
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
+import com.zizohanto.android.tobuy.domain.models.ShoppingListEntity
 import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
+import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProductsEntity
 import javax.inject.Inject
 
 class ShoppingListWithProductsEntityMapper @Inject constructor(

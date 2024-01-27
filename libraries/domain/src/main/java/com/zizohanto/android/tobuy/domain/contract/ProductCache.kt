@@ -1,8 +1,8 @@
-package com.zizohanto.android.tobuy.data.contract
+package com.zizohanto.android.tobuy.domain.contract
 
-import com.zizohanto.android.tobuy.cache.sq.Product
-import com.zizohanto.android.tobuy.cache.sq.ProductQueries
-import com.zizohanto.android.tobuy.data.models.ProductEntity
+import com.zizohanto.android.tobuy.domain.sq.Product
+import com.zizohanto.android.tobuy.domain.models.ProductEntity
+import com.zizohanto.android.tobuy.domain.sq.ProductQueries
 import javax.inject.Inject
 
 interface ProductCache {

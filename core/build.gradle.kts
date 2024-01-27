@@ -24,7 +24,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":libraries:data"))
     implementation(project(":libraries:domain"))
 
     implementation(libs.hilt.android)

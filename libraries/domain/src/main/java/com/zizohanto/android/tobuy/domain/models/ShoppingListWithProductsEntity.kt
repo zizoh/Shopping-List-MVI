@@ -1,4 +1,4 @@
-package com.zizohanto.android.tobuy.data.models
+package com.zizohanto.android.tobuy.domain.models
 
 class ShoppingListWithProductsEntity(
     val shoppingList: ShoppingListEntity,

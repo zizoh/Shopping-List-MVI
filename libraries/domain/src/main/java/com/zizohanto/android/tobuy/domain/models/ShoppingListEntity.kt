@@ -1,7 +1,7 @@
-package com.zizohanto.android.tobuy.data.models
+package com.zizohanto.android.tobuy.domain.models
 
-import com.zizohanto.android.tobuy.data.utils.DateUtils.getCurrentTime
-import java.util.*
+import com.zizohanto.android.tobuy.domain.utils.DateUtils.getCurrentTime
+import java.util.UUID
 
 data class ShoppingListEntity(
     val id: String = UUID.randomUUID().toString(),

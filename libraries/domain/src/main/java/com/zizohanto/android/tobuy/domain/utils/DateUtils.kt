@@ -1,4 +1,4 @@
-package com.zizohanto.android.tobuy.data.utils
+package com.zizohanto.android.tobuy.domain.utils
 
 import org.joda.time.Instant
 

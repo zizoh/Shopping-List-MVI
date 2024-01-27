@@ -1,4 +1,4 @@
-package com.zizohanto.android.tobuy.data.mappers.base
+package com.zizohanto.android.tobuy.domain.mappers.base
 
 interface EntityMapper<E, D> {
 

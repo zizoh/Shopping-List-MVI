@@ -4,6 +4,5 @@ include(
     ":core",
     ":presentation",
     ":shopping_list",
-    ":libraries:data",
     ":libraries:domain"
 )

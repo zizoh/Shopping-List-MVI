@@ -1,8 +1,8 @@
-package com.zizohanto.android.tobuy.data.mappers
+package com.zizohanto.android.tobuy.domain.mappers
 
-import com.zizohanto.android.tobuy.data.mappers.base.EntityMapper
-import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
+import com.zizohanto.android.tobuy.domain.mappers.base.EntityMapper
 import com.zizohanto.android.tobuy.domain.models.ShoppingList
+import com.zizohanto.android.tobuy.domain.models.ShoppingListEntity
 import javax.inject.Inject
 
 class ShoppingListEntityMapper @Inject constructor() :

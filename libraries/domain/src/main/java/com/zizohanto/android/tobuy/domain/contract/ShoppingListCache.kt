@@ -1,9 +1,9 @@
-package com.zizohanto.android.tobuy.data.contract
+package com.zizohanto.android.tobuy.domain.contract
 
-import com.zizohanto.android.tobuy.cache.sq.ShoppingListQueries
-import com.zizohanto.android.tobuy.data.models.ProductEntity
-import com.zizohanto.android.tobuy.data.models.ShoppingListEntity
-import com.zizohanto.android.tobuy.data.models.ShoppingListWithProductsEntity
+import com.zizohanto.android.tobuy.domain.models.ProductEntity
+import com.zizohanto.android.tobuy.domain.sq.ShoppingListQueries
+import com.zizohanto.android.tobuy.domain.models.ShoppingListEntity
+import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProductsEntity
 import javax.inject.Inject
 
 interface ShoppingListCache {
