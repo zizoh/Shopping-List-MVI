@@ -1,4 +1,4 @@
-package com.zizohanto.android.tobuy.cache.models
+package com.zizohanto.android.tobuy.data.models
 
 import java.util.UUID
 

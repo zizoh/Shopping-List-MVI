@@ -1,4 +1,4 @@
-package com.zizohanto.android.tobuy.cache.mappers.base
+package com.zizohanto.android.tobuy.data.mappers.base
 
 interface CacheModelMapper<M, E> {
 

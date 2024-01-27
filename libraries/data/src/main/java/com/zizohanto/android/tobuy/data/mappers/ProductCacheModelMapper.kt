@@ -1,7 +1,7 @@
-package com.zizohanto.android.tobuy.cache.mappers
+package com.zizohanto.android.tobuy.data.mappers
 
-import com.zizohanto.android.tobuy.cache.mappers.base.CacheModelMapper
-import com.zizohanto.android.tobuy.cache.models.ProductCacheModel
+import com.zizohanto.android.tobuy.data.mappers.base.CacheModelMapper
+import com.zizohanto.android.tobuy.data.models.ProductCacheModel
 import com.zizohanto.android.tobuy.data.models.ProductEntity
 import javax.inject.Inject
 

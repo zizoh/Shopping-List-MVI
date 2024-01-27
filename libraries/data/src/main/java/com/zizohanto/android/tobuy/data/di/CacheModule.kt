@@ -1,15 +1,14 @@
-package com.zizohanto.android.tobuy.cache.di
+package com.zizohanto.android.tobuy.data.di
 
 import android.content.Context
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.zizohanto.android.tobuy.cache.impl.ProductCacheImpl
-import com.zizohanto.android.tobuy.cache.impl.ShoppingListCacheImpl
 import com.zizohanto.android.tobuy.cache.sq.ProductQueries
-import com.zizohanto.android.tobuy.cache.sq.ShoppingListDatabase
 import com.zizohanto.android.tobuy.cache.sq.ShoppingListQueries
-
 import com.zizohanto.android.tobuy.data.contract.ProductCache
+import com.zizohanto.android.tobuy.data.contract.ProductCacheImpl
 import com.zizohanto.android.tobuy.data.contract.ShoppingListCache
+import com.zizohanto.android.tobuy.data.contract.ShoppingListCacheImpl
+import com.zizohanto.android.tobuy.data.sq.ShoppingListDatabase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

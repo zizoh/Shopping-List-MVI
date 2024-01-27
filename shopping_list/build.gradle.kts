@@ -37,7 +37,6 @@ dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     val coreDependencyNotation = project(":core")
     val presentationDependencyNotation = project(":presentation")
-    val dependencyNotation = project(":libraries:cache")
     val domainDependencyNotation = project(":libraries:domain")
     val testUtilsDependencyNotation = project(":libraries:testUtils")
 
@@ -49,11 +48,9 @@ dependencies {
     testImplementation(coreDependencyNotation)
     testImplementation(presentationDependencyNotation)
     testImplementation(domainDependencyNotation)
-    testImplementation(dependencyNotation)
     androidTestImplementation(coreDependencyNotation)
     androidTestImplementation(presentationDependencyNotation)
     androidTestImplementation(domainDependencyNotation)
-    androidTestImplementation(dependencyNotation)
     androidTestImplementation(testUtilsDependencyNotation)
 
     implementation(composeBom)
