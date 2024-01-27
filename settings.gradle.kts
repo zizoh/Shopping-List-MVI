@@ -5,6 +5,5 @@ include(
     ":presentation",
     ":shopping_list",
     ":libraries:data",
-    ":libraries:testUtils",
     ":libraries:domain"
 )

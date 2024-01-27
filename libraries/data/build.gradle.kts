@@ -39,9 +39,7 @@ sqldelight {
 }
 
 dependencies {
-    implementation(project(":libraries:testUtils"))
     implementation(project(":libraries:domain"))
-    testImplementation(project(":libraries:testUtils"))
 
     implementation(libs.hilt.android)
     implementation(libs.javax.inject)
