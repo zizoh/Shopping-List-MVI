@@ -1,7 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
-import com.zizohanto.android.tobuy.domain.models.Product
-import com.zizohanto.android.tobuy.domain.models.ShoppingList
+import com.zizohanto.android.tobuy.domain.sq.Product
+import com.zizohanto.android.tobuy.domain.sq.ShoppingList
 import com.zizohanto.android.tobuy.domain.usecase.*
 import com.zizohanto.android.tobuy.domain.usecase.DeleteProduct
 import com.zizohanto.android.tobuy.domain.usecase.SaveProduct

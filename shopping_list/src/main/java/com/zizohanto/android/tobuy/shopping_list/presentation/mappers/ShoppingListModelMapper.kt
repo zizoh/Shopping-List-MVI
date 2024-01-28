@@ -1,6 +1,6 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.mappers
 
-import com.zizohanto.android.tobuy.domain.models.ShoppingList
+import com.zizohanto.android.tobuy.domain.sq.ShoppingList
 import com.zizohanto.android.tobuy.presentation.mapper.ModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 import javax.inject.Inject

@@ -1,17 +1,17 @@
 package com.zizohanto.android.tobuy.domain.contract
 
-import com.zizohanto.android.tobuy.domain.models.ProductEntity
 import com.zizohanto.android.tobuy.domain.sq.ShoppingListQueries
-import com.zizohanto.android.tobuy.domain.models.ShoppingListEntity
-import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProductsEntity
+import com.zizohanto.android.tobuy.domain.models.ShoppingListWithProducts
+import com.zizohanto.android.tobuy.domain.sq.Product
+import com.zizohanto.android.tobuy.domain.sq.ShoppingList
 import javax.inject.Inject
 
 interface ShoppingListCache {
-    suspend fun saveShoppingList(shoppingListEntity: ShoppingListEntity)
+    suspend fun saveShoppingList(shoppingList: ShoppingList)
     suspend fun updateShoppingList(id: String, name: String, dateModified: Long)
-    suspend fun getShoppingList(id: String): ShoppingListEntity?
-    suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProductsEntity?
-    suspend fun getAllShoppingLists(): List<ShoppingListWithProductsEntity>
+    suspend fun getShoppingList(id: String): ShoppingList?
+    suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProducts?
+    suspend fun getAllShoppingLists(): List<ShoppingListWithProducts>
     suspend fun deleteShoppingList(id: String)
     suspend fun deleteAllShoppingLists()
 }
@@ -20,8 +20,8 @@ class ShoppingListCacheImpl @Inject constructor(
     private val queries: ShoppingListQueries
 ) : ShoppingListCache {
 
-    override suspend fun saveShoppingList(shoppingListEntity: ShoppingListEntity) {
-        with(shoppingListEntity) {
+    override suspend fun saveShoppingList(shoppingList: ShoppingList) {
+        with(shoppingList) {
             queries.insertShoppingList(
                 id,
                 name,
@@ -36,17 +36,17 @@ class ShoppingListCacheImpl @Inject constructor(
         queries.updateShoppingList(name, dateModified, id)
     }
 
-    override suspend fun getShoppingList(id: String): ShoppingListEntity? {
+    override suspend fun getShoppingList(id: String): ShoppingList? {
         val shoppingList = queries.getShoppingListWithId(id).executeAsOneOrNull()
         return shoppingList?.let {
-            ShoppingListEntity(it.id, it.name, it.budget, it.dateCreated, it.dateModified)
+            ShoppingList(it.id, it.name, it.budget, it.dateCreated, it.dateModified)
         }
     }
 
-    override suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProductsEntity? {
+    override suspend fun getShoppingListWithProductsOrNull(id: String): ShoppingListWithProducts? {
         val results = queries.getShoppingListWithProductsOrNull(id).executeAsList()
         val shoppingList = results.firstOrNull()?.let {
-            ShoppingListEntity(
+            ShoppingList(
                 it.id,
                 it.name,
                 it.budget,
@@ -55,23 +55,23 @@ class ShoppingListCacheImpl @Inject constructor(
             )
         }
         val products = results.map {
-            ProductEntity(
+            Product(
                 it.id_.orEmpty(),
                 it.id,
                 it.name_.orEmpty(),
                 it.price ?: 0.0,
-                (it.position ?: 0).toInt()
+                it.position ?: 0
             )
         }
         return shoppingList?.let {
-            ShoppingListWithProductsEntity(it, products)
+            ShoppingListWithProducts(it, products)
         }
     }
 
-    override suspend fun getAllShoppingLists(): List<ShoppingListWithProductsEntity> {
+    override suspend fun getAllShoppingLists(): List<ShoppingListWithProducts> {
         val results = queries.getShoppingLists().executeAsList()
         val groupedResults = results.groupBy {
-            ShoppingListEntity(
+            ShoppingList(
                 it.id,
                 it.name,
                 it.budget,
@@ -81,21 +81,21 @@ class ShoppingListCacheImpl @Inject constructor(
         }
 
         val models = groupedResults.map { (shoppingList, products) ->
-            ShoppingListWithProductsEntity(
+            ShoppingListWithProducts(
                 shoppingList,
                 products.map {
-                    ProductEntity(
+                    Product(
                         it.id_.orEmpty(),
                         it.id,
                         it.name_.orEmpty(),
                         it.price ?: 0.0,
-                        (it.position ?: 0).toInt()
+                        it.position ?: 0
                     )
                 }
             )
         }
         return models.map {
-            ShoppingListWithProductsEntity(it.shoppingList, it.products)
+            ShoppingListWithProducts(it.shoppingList, it.products)
         }
     }
 

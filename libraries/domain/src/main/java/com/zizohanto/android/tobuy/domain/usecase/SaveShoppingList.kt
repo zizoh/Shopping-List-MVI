@@ -1,8 +1,8 @@
 package com.zizohanto.android.tobuy.domain.usecase
 
 import com.zizohanto.android.tobuy.domain.executor.PostExecutionThread
-import com.zizohanto.android.tobuy.domain.models.ShoppingList
 import com.zizohanto.android.tobuy.domain.repository.ShoppingListRepository
+import com.zizohanto.android.tobuy.domain.sq.ShoppingList
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

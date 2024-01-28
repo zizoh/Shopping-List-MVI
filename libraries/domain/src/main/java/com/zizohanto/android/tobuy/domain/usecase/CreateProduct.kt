@@ -2,8 +2,8 @@ package com.zizohanto.android.tobuy.domain.usecase
 
 import com.zizohanto.android.tobuy.domain.exception.requireParams
 import com.zizohanto.android.tobuy.domain.executor.PostExecutionThread
-import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.domain.repository.ProductRepository
+import com.zizohanto.android.tobuy.domain.sq.Product
 import com.zizohanto.android.tobuy.domain.usecase.base.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

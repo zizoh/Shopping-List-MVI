@@ -1,6 +1,5 @@
 package com.zizohanto.android.tobuy.shopping_list.utilities
 
-import com.zizohanto.android.tobuy.domain.models.Product
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult
