@@ -1,7 +1,9 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products
 
 import androidx.lifecycle.SavedStateHandle
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewIntent
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.ProductStateMachine
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.ProductViewModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getProductModel
 import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getRandomString
 import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getShoppingListModel

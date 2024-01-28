@@ -2,7 +2,7 @@ package com.zizohanto.android.tobuy.shopping_list.utilities
 
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewResult
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewResult
 import kotlin.random.Random
 
 object DataFactory {

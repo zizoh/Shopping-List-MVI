@@ -36,15 +36,11 @@ android {
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     val coreDependencyNotation = project(":core")
-    val presentationDependencyNotation = project(":presentation")
 
     implementation(coreDependencyNotation)
-    implementation(presentationDependencyNotation)
 
     testImplementation(coreDependencyNotation)
-    testImplementation(presentationDependencyNotation)
     androidTestImplementation(coreDependencyNotation)
-    androidTestImplementation(presentationDependencyNotation)
 
     implementation(composeBom)
     implementation(libs.androidx.appcompat)
