@@ -3,6 +3,5 @@ include(
     ":app",
     ":core",
     ":presentation",
-    ":shopping_list",
-    ":libraries:domain"
+    ":shopping_list"
 )

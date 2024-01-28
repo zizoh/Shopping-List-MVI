@@ -1,7 +1,7 @@
 package com.zizohanto.android.tobuy.core.di
 
 import com.zizohanto.android.tobuy.core.executor.PostExecutionThreadImpl
-import com.zizohanto.android.tobuy.domain.executor.PostExecutionThread
+import com.zizohanto.android.tobuy.core.executor.PostExecutionThread
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

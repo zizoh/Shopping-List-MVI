@@ -1,9 +1,9 @@
 package com.zizohanto.android.tobuy.core.di
 
-import com.zizohanto.android.tobuy.domain.repository.ProductRepository
-import com.zizohanto.android.tobuy.domain.repository.ProductRepositoryImpl
-import com.zizohanto.android.tobuy.domain.repository.ShoppingListRepository
-import com.zizohanto.android.tobuy.domain.repository.ShoppingListRepositoryImpl
+import com.zizohanto.android.tobuy.core.repository.ProductRepository
+import com.zizohanto.android.tobuy.core.repository.ProductRepositoryImpl
+import com.zizohanto.android.tobuy.core.repository.ShoppingListRepository
+import com.zizohanto.android.tobuy.core.repository.ShoppingListRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,6 +1,5 @@
 package com.zizohanto.android.tobuy.core.executor
 
-import com.zizohanto.android.tobuy.domain.executor.PostExecutionThread
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject

@@ -1,11 +1,12 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 
+import com.zizohanto.android.tobuy.core.usecase.CreateProduct
+import com.zizohanto.android.tobuy.core.usecase.DeleteProduct
+import com.zizohanto.android.tobuy.core.usecase.GetShoppingListWithProducts
+import com.zizohanto.android.tobuy.core.usecase.SaveProduct
+import com.zizohanto.android.tobuy.core.usecase.SaveShoppingList
 import com.zizohanto.android.tobuy.domain.sq.Product
 import com.zizohanto.android.tobuy.domain.sq.ShoppingList
-import com.zizohanto.android.tobuy.domain.usecase.*
-import com.zizohanto.android.tobuy.domain.usecase.DeleteProduct
-import com.zizohanto.android.tobuy.domain.usecase.SaveProduct
-import com.zizohanto.android.tobuy.domain.usecase.SaveShoppingList
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductIntentProcessor
