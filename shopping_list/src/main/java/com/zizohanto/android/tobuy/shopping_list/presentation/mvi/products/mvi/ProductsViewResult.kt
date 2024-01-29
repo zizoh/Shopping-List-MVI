@@ -1,9 +1,9 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi
 
-import com.zizohanto.android.tobuy.core.models.ShoppingListWithProducts
-import com.zizohanto.android.tobuy.domain.sq.Product
-import com.zizohanto.android.tobuy.domain.sq.ShoppingList
+import com.zizohanto.android.tobuy.shopping_list.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.ViewResult
+import com.zizohanto.android.tobuy.shoppinglist.sq.Product
+import com.zizohanto.android.tobuy.shoppinglist.sq.ShoppingList
 
 sealed class ProductsViewResult : ViewResult {
     object Idle : ProductsViewResult()

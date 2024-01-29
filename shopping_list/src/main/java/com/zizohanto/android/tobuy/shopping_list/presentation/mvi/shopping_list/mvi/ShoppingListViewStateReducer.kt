@@ -1,7 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.mvi.shopping_list.mvi
 
-import com.zizohanto.android.tobuy.core.ext.errorMessage
-import com.zizohanto.android.tobuy.core.ext.removeFirst
+import com.zizohanto.android.tobuy.shopping_list.ext.errorMessage
+import com.zizohanto.android.tobuy.shopping_list.ext.removeFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.event.ViewEvent
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper

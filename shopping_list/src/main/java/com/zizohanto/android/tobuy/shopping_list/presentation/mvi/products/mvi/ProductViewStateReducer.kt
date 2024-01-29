@@ -1,7 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi
 
-import com.zizohanto.android.tobuy.core.ext.removeFirst
-import com.zizohanto.android.tobuy.core.ext.replaceFirst
+import com.zizohanto.android.tobuy.shopping_list.ext.removeFirst
+import com.zizohanto.android.tobuy.shopping_list.ext.replaceFirst
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
@@ -9,7 +9,9 @@ import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsVie
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.ProductStateReducer
-import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewResult.*
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewResult.Error
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewResult.Idle
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewResult.ProductViewResult
 import javax.inject.Inject
 
 class ProductViewStateReducer @Inject constructor(

@@ -1,10 +1,14 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.mvi.shopping_list.mvi
 
-import com.zizohanto.android.tobuy.core.usecase.CreateShoppingList
-import com.zizohanto.android.tobuy.core.usecase.DeleteShoppingList
-import com.zizohanto.android.tobuy.core.usecase.GetShoppingLists
 import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.shopping_list.ShoppingListIntentProcessor
-import kotlinx.coroutines.flow.*
+import com.zizohanto.android.tobuy.shopping_list.usecase.CreateShoppingList
+import com.zizohanto.android.tobuy.shopping_list.usecase.DeleteShoppingList
+import com.zizohanto.android.tobuy.shopping_list.usecase.GetShoppingLists
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ShoppingListViewIntentProcessor @Inject constructor(
