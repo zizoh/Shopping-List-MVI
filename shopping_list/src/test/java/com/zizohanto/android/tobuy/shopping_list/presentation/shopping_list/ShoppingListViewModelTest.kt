@@ -1,7 +1,8 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list
 
-import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewIntent
-import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewStateMachine
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.shopping_list.ShoppingListViewModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.shopping_list.mvi.ShoppingListViewIntent
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.shopping_list.mvi.ShoppingListViewStateMachine
 import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getRandomString
 import com.zizohanto.android.tobuy.shopping_list.utilities.MainDispatcherRule
 import io.mockk.coEvery

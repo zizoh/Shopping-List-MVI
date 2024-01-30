@@ -5,7 +5,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.zizohanto.android.tobuy.shopping_list.HiltTestActivity
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getProductsViewState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

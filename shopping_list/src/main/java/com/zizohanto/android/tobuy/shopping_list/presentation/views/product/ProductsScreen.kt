@@ -51,8 +51,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zizohanto.android.tobuy.shopping_list.R
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.ProductViewModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.ProductViewModel
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.ui.theme.ShoppingListTheme
 
 data class ProductsContentCallbacks(

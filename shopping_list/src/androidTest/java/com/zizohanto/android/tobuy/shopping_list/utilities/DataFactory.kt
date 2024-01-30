@@ -2,8 +2,8 @@ package com.zizohanto.android.tobuy.shopping_list.utilities
 
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ShoppingListWithProductsModel
-import com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi.ProductsViewState
-import com.zizohanto.android.tobuy.shopping_list.presentation.shopping_list.mvi.ShoppingListViewState
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewState
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.shopping_list.mvi.ShoppingListViewState
 
 object DataFactory {
     fun getShoppingListStateWithList(): ShoppingListViewState {

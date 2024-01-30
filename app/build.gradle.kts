@@ -46,11 +46,6 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    implementation(project(":core"))
-    implementation(project(":libraries:cache"))
-    implementation(project(":libraries:data"))
-    implementation(project(":libraries:domain"))
-    implementation(project(":presentation"))
     implementation(project(":shopping_list"))
 
     implementation(libs.hilt.android)

@@ -1,0 +1,37 @@
+CREATE TABLE ShoppingList (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    budget REAL NOT NULL DEFAULT 0.0,
+    dateCreated INTEGER NOT NULL,
+    dateModified INTEGER NOT NULL
+);
+
+insertShoppingList:
+INSERT OR REPLACE INTO ShoppingList(id, name, budget, dateCreated, dateModified)
+VALUES (?, ?, ?, ?, ?);
+
+updateShoppingList:
+UPDATE ShoppingList SET name = ?, dateModified = ? WHERE id = ?;
+
+getShoppingListWithId:
+SELECT * FROM ShoppingList WHERE id = ?;
+-- ORDER BY dateModified DESC
+
+getShoppingLists:
+SELECT ShoppingList.*, Product.*
+FROM ShoppingList
+LEFT JOIN Product ON ShoppingList.id = Product.shoppingListId
+ORDER BY ShoppingList.dateModified DESC, Product.position ASC;
+
+getShoppingListWithProductsOrNull:
+SELECT ShoppingList.*, Product.*
+FROM ShoppingList
+LEFT JOIN Product ON ShoppingList.id = Product.shoppingListId
+WHERE ShoppingList.id = ?
+ORDER BY Product.position ASC;
+
+deleteShoppingList:
+DELETE FROM ShoppingList WHERE id = ?;
+
+deleteAllShoppingLists:
+DELETE FROM ShoppingList;

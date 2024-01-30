@@ -3,6 +3,8 @@ package com.zizohanto.android.tobuy.shopping_list.presentation.products.mvi
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ProductModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.mappers.ShoppingListWithProductsModelMapper
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductViewStateReducer
+import com.zizohanto.android.tobuy.shopping_list.presentation.mvi.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory
 import com.zizohanto.android.tobuy.shopping_list.utilities.DataFactory.getResultProductAddedAtPosition
 import io.mockk.every

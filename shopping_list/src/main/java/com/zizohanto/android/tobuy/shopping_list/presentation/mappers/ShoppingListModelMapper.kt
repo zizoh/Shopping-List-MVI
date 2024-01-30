@@ -1,8 +1,7 @@
 package com.zizohanto.android.tobuy.shopping_list.presentation.mappers
 
-import com.zizohanto.android.tobuy.domain.models.ShoppingList
-import com.zizohanto.android.tobuy.presentation.mapper.ModelMapper
 import com.zizohanto.android.tobuy.shopping_list.presentation.models.ProductsViewItem.ShoppingListModel
+import com.zizohanto.android.tobuy.shoppinglist.sq.ShoppingList
 import javax.inject.Inject
 
 class ShoppingListModelMapper @Inject constructor() : ModelMapper<ShoppingListModel, ShoppingList> {
