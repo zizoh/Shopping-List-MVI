@@ -1,9 +1,9 @@
 package com.zizohanto.android.tobuy.utils
 
-import org.joda.time.Instant
+import kotlinx.datetime.Clock
 
 object DateUtils {
     fun getCurrentTime(): Long {
-        return Instant.now().millis
+        return Clock.System.now().toEpochMilliseconds()
     }
 }

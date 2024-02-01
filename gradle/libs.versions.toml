@@ -13,8 +13,8 @@ androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
 material-component = "1.11.0"
 kotlin-compiler-extension = "1.5.6"
+kotlinx-datetime = "0.5.0"
 androidx-compose-bom = "2023.10.01"
-joda-time = "2.9.9.4"
 javax-inject = "1"
 hilt-android = "2.48.1"
 androidx-hilt-navigation-compose = "1.1.0"
@@ -71,12 +71,12 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger-hilt-android" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt-android" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
-joda-time = { module = "net.danlew:android.joda", version.ref = "joda-time" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines-android" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-test" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 material-component = { module = "com.google.android.material:material", version.ref = "material-component" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
