@@ -3,18 +3,15 @@ package com.zizohanto.android.tobuy.presentation.mvi.products
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zizohanto.android.tobuy.presentation.mvi.MVIPresenter
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
+import com.zizohanto.android.tobuy.presentation.mvi.MVIPresenter
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
-import javax.inject.Inject
 
-@HiltViewModel
-class ProductViewModel @Inject constructor(
+class ProductViewModel(
     private val productStateMachine: ProductStateMachine,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), MVIPresenter<ProductsViewState, ProductsViewIntent> {

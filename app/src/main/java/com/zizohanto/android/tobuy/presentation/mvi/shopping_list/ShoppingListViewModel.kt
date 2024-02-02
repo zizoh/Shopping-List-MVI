@@ -5,14 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.zizohanto.android.tobuy.presentation.mvi.MVIPresenter
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
-import javax.inject.Inject
 
-@HiltViewModel
-class ShoppingListViewModel @Inject constructor(
+class ShoppingListViewModel(
     private val shoppingListStateMachine: ShoppingListStateMachine
 ) : ViewModel(), MVIPresenter<ShoppingListViewState, ShoppingListViewIntent> {
 

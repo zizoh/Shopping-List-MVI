@@ -47,13 +47,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.zizohanto.android.tobuy.R
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.presentation.mvi.products.ProductViewModel
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewState
 import com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme
+import org.koin.androidx.compose.koinViewModel
 
 data class ProductsContentCallbacks(
     val onBackPressed: () -> Unit,
@@ -66,7 +66,7 @@ data class ProductsContentCallbacks(
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProductViewModel = hiltViewModel(),
+    viewModel: ProductViewModel = koinViewModel(),
     onBackPressed: () -> Unit = {}
 ) {
     val state by viewModel.viewState.collectAsState(initial = ProductsViewState())

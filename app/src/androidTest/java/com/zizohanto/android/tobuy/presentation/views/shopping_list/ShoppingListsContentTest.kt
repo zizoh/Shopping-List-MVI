@@ -1,14 +1,12 @@
-package com.zizohanto.android.tobuy.presentation.views
+package com.zizohanto.android.tobuy.presentation.views.shopping_list
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import com.zizohanto.android.tobuy.HiltTestActivity
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewState
-import com.zizohanto.android.tobuy.presentation.views.shopping_list.ShoppingListsContent
-import com.zizohanto.android.tobuy.presentation.views.shopping_list.ShoppingListsContentCallbacks
+import com.zizohanto.android.tobuy.ui.MainActivity
 import com.zizohanto.android.tobuy.utilities.DataFactory.getShoppingListStateWithList
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -20,7 +18,7 @@ import org.junit.rules.RuleChain
 class ShoppingListsContentTest {
 
     private val hiltRule = HiltAndroidRule(this)
-    private val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+    private val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @get:Rule
     val rule: RuleChain = RuleChain

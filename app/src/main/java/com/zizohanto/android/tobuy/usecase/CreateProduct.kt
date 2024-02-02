@@ -7,9 +7,8 @@ import com.zizohanto.android.tobuy.usecase.base.FlowUseCase
 import com.zizohanto.android.tobuy.sq.Product
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class CreateProduct @Inject constructor(
+class CreateProduct(
     private val repository: ProductRepository,
     private val postExecutionThread: PostExecutionThread
 ) : FlowUseCase<Pair<String, Int>, List<Product>>() {

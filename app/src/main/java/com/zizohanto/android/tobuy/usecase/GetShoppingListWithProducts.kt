@@ -7,9 +7,8 @@ import com.zizohanto.android.tobuy.repository.ShoppingListRepository
 import com.zizohanto.android.tobuy.usecase.base.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class GetShoppingListWithProducts @Inject constructor(
+class GetShoppingListWithProducts(
     private val repository: ShoppingListRepository,
     private val postExecutionThread: PostExecutionThread
 ) : FlowUseCase<String, ShoppingListWithProducts>() {

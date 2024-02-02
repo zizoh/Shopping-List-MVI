@@ -2,9 +2,8 @@ package com.zizohanto.android.tobuy.presentation.mappers
 
 import com.zizohanto.android.tobuy.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.presentation.models.ShoppingListWithProductsModel
-import javax.inject.Inject
 
-class ShoppingListWithProductsModelMapper @Inject constructor(
+class ShoppingListWithProductsModelMapper (
     private val shoppingListModelMapper: ShoppingListModelMapper,
     private val productModelMapper: ProductModelMapper
 ) : ModelMapper<ShoppingListWithProductsModel, ShoppingListWithProducts> {

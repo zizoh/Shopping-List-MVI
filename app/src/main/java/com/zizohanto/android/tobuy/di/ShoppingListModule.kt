@@ -6,22 +6,20 @@ import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListSt
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewIntentProcessor
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewStateMachine
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewStateReducer
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-
-@InstallIn(ActivityRetainedComponent::class)
-@Module
-interface ShoppingListModule {
-
-    @get:Binds
-    val ShoppingListViewIntentProcessor.intentProcessor: ShoppingListIntentProcessor
-
-    @get:Binds
-    val ShoppingListViewStateReducer.reducer: ShoppingListStateReducer
-
-    @get:Binds
-    val ShoppingListViewStateMachine.stateMachine: ShoppingListStateMachine
+val shoppingListModule = module {
+    factory<ShoppingListIntentProcessor>(named("shoppingListIntentProcessor")) {
+        ShoppingListViewIntentProcessor(get(), get(), get())
+    }
+    factory<ShoppingListStateReducer>(named("shoppingListStateReducer")) {
+        ShoppingListViewStateReducer(get(), get())
+    }
+    factory<ShoppingListStateMachine>(named("shoppingListStateMachine")) {
+        ShoppingListViewStateMachine(
+            get(named("shoppingListIntentProcessor")),
+            get(named("shoppingListStateReducer")),
+        )
+    }
 }

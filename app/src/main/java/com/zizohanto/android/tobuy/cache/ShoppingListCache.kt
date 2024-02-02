@@ -4,7 +4,6 @@ import com.zizohanto.android.tobuy.models.ShoppingListWithProducts
 import com.zizohanto.android.tobuy.sq.Product
 import com.zizohanto.android.tobuy.sq.ShoppingList
 import com.zizohanto.android.tobuy.sq.ShoppingListQueries
-import javax.inject.Inject
 
 interface ShoppingListCache {
     suspend fun saveShoppingList(shoppingList: ShoppingList)
@@ -16,7 +15,7 @@ interface ShoppingListCache {
     suspend fun deleteAllShoppingLists()
 }
 
-class ShoppingListCacheImpl @Inject constructor(
+class ShoppingListCacheImpl(
     private val queries: ShoppingListQueries
 ) : ShoppingListCache {
 
