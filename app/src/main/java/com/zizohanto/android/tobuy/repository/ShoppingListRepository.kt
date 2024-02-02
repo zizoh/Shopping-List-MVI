@@ -9,7 +9,6 @@ import com.zizohanto.android.tobuy.sq.ShoppingList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
 
 interface ShoppingListRepository {
     suspend fun saveShoppingList(shoppingList: ShoppingList)
@@ -21,7 +20,7 @@ interface ShoppingListRepository {
     suspend fun deleteAllShoppingLists()
 }
 
-class ShoppingListRepositoryImpl @Inject constructor(
+class ShoppingListRepositoryImpl(
     private val shoppingListCache: ShoppingListCache,
     private val productCache: ProductCache
 ) : ShoppingListRepository {

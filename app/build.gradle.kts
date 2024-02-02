@@ -2,7 +2,6 @@ plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.kotlin.kapt.get().pluginId)
-    id(libs.plugins.dagger.hilt.get().pluginId)
     id(libs.plugins.sqldelight.get().pluginId)
 }
 
@@ -75,7 +74,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.multidex)
@@ -83,7 +81,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.common)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.hilt.android)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation(libs.koin.core)
@@ -92,9 +89,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.material.component)
     implementation(libs.sqldelight)
-
-    kapt(libs.hilt.android.compiler)
-    kapt(libs.androidx.hilt.compiler)
 
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk.android)

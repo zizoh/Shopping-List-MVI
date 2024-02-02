@@ -4,9 +4,8 @@ import com.zizohanto.android.tobuy.executor.PostExecutionThread
 import com.zizohanto.android.tobuy.repository.ProductRepository
 import com.zizohanto.android.tobuy.sq.Product
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class SaveProduct @Inject constructor(
+class SaveProduct(
     private val repository: ProductRepository,
     private val postExecutionThread: PostExecutionThread
 ) {

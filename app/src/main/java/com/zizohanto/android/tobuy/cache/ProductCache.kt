@@ -3,7 +3,6 @@ package com.zizohanto.android.tobuy.cache
 import com.zizohanto.android.tobuy.repository.DataFactory.createProduct
 import com.zizohanto.android.tobuy.sq.Product
 import com.zizohanto.android.tobuy.sq.ProductQueries
-import javax.inject.Inject
 
 interface ProductCache {
     suspend fun saveProduct(product: Product)
@@ -17,7 +16,7 @@ interface ProductCache {
     ): List<Product>
 }
 
-class ProductCacheImpl @Inject constructor(private val queries: ProductQueries) : ProductCache {
+class ProductCacheImpl(private val queries: ProductQueries) : ProductCache {
 
     override suspend fun saveProduct(product: Product) {
         with(product) {

@@ -4,8 +4,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import com.zizohanto.android.tobuy.HiltTestActivity
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewState
+import com.zizohanto.android.tobuy.ui.MainActivity
 import com.zizohanto.android.tobuy.utilities.DataFactory.getProductsViewState
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -17,7 +17,7 @@ import org.junit.rules.RuleChain
 class ProductsContentTest {
 
     private val hiltRule = HiltAndroidRule(this)
-    private val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+    private val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @get:Rule
     val rule: RuleChain = RuleChain

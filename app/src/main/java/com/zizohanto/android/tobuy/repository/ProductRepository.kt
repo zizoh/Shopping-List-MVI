@@ -7,7 +7,6 @@ import com.zizohanto.android.tobuy.utils.DateUtils.getCurrentTime
 import com.zizohanto.android.tobuy.sq.Product
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 interface ProductRepository {
     suspend fun saveProduct(product: Product, shoppingListId: String)
@@ -21,7 +20,7 @@ interface ProductRepository {
     ): Flow<List<Product>>
 }
 
-class ProductRepositoryImpl @Inject constructor(
+class ProductRepositoryImpl(
     private val productCache: ProductCache,
     private val shoppingListCache: ShoppingListCache
 ) : ProductRepository {

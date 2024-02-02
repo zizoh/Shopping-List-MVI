@@ -12,9 +12,8 @@ import com.zizohanto.android.tobuy.presentation.mvi.products.ProductStateReducer
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewResult.Error
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewResult.Idle
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewResult.ProductViewResult
-import javax.inject.Inject
 
-class ProductViewStateReducer @Inject constructor(
+class ProductViewStateReducer(
     private val listWithProductsMapper: ShoppingListWithProductsModelMapper,
     private val shoppingListModelMapper: ShoppingListModelMapper,
     private val productMapper: ProductModelMapper

@@ -15,9 +15,8 @@ import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewRes
 import com.zizohanto.android.tobuy.sq.Product
 import com.zizohanto.android.tobuy.sq.ShoppingList
 import kotlinx.coroutines.flow.*
-import javax.inject.Inject
 
-class ProductViewIntentProcessor @Inject constructor(
+class ProductViewIntentProcessor(
     private val getShoppingListWithProducts: GetShoppingListWithProducts,
     private val saveProduct: SaveProduct,
     private val productMapper: ProductModelMapper,

@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class ShoppingListViewIntentProcessor @Inject constructor(
+class ShoppingListViewIntentProcessor(
     private val getShoppingLists: GetShoppingLists,
     private val createShoppingList: CreateShoppingList,
     private val deleteShoppingList: DeleteShoppingList

@@ -2,9 +2,8 @@ package com.zizohanto.android.tobuy.presentation.mappers
 
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem.ProductModel
 import com.zizohanto.android.tobuy.sq.Product
-import javax.inject.Inject
 
-class ProductModelMapper @Inject constructor() : ModelMapper<ProductModel, Product> {
+class ProductModelMapper : ModelMapper<ProductModel, Product> {
 
     override fun mapToModel(domain: Product): ProductModel {
         return domain.run {

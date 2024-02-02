@@ -6,9 +6,8 @@ import com.zizohanto.android.tobuy.presentation.event.ViewEvent
 import com.zizohanto.android.tobuy.presentation.mappers.ShoppingListModelMapper
 import com.zizohanto.android.tobuy.presentation.mappers.ShoppingListWithProductsModelMapper
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListStateReducer
-import javax.inject.Inject
 
-class ShoppingListViewStateReducer @Inject constructor(
+class ShoppingListViewStateReducer(
     private val listMapper: ShoppingListModelMapper,
     private val listWithProductsMapper: ShoppingListWithProductsModelMapper
 ) : ShoppingListStateReducer {
