@@ -2,16 +2,12 @@ package com.zizohanto.android.tobuy.di
 
 import com.zizohanto.android.tobuy.executor.PostExecutionThread
 import com.zizohanto.android.tobuy.executor.PostExecutionThreadImpl
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
-@InstallIn(SingletonComponent::class)
-@Module
-interface ExecutorModule {
-
-    @get:[Binds Singleton]
-    val PostExecutionThreadImpl.postExecutionThread: PostExecutionThread
+val executorModule = module {
+    singleOf(::PostExecutionThreadImpl) {
+        bind<PostExecutionThread>()
+    }
 }

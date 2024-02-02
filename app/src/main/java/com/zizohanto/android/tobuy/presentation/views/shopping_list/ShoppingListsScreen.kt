@@ -46,7 +46,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.zizohanto.android.tobuy.R
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.presentation.models.ShoppingListWithProductsModel
@@ -54,6 +53,7 @@ import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListVi
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.presentation.views.EmptyStateView
 import com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme
+import org.koin.androidx.compose.koinViewModel
 
 data class ShoppingListsContentCallbacks(
     val listCLick: (String) -> Unit,
@@ -66,7 +66,7 @@ data class ShoppingListsContentCallbacks(
 fun ShoppingListsScreen(
     shouldRefreshList: Boolean,
     listCLick: (String) -> Unit = {},
-    viewModel: ShoppingListViewModel = hiltViewModel()
+    viewModel: ShoppingListViewModel = koinViewModel()
 ) {
     val state by viewModel.viewState.collectAsState(initial = ShoppingListViewState())
     if (shouldRefreshList) viewModel.loadShoppingLists()

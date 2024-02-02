@@ -12,6 +12,8 @@ androidx-lifecycle = "2.6.2"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
 material-component = "1.11.0"
+koin-android = "3.5.3"
+koin-core = "3.5.3"
 kotlin-compiler-extension = "1.5.6"
 kotlinx-datetime = "0.5.0"
 androidx-compose-bom = "2023.10.01"
@@ -72,6 +74,9 @@ hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-p
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt-android" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
 junit = { module = "junit:junit", version.ref = "junit" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-android" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-android" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines-android" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
