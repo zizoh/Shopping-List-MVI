@@ -1,7 +1,6 @@
 package com.zizohanto.android.tobuy
 
 import android.app.Application
-import com.zizohanto.android.tobuy.di.appModule
 import com.zizohanto.android.tobuy.di.cacheModule
 import com.zizohanto.android.tobuy.di.dataModule
 import com.zizohanto.android.tobuy.di.executorModule
@@ -18,7 +17,6 @@ class ApplicationClass : Application() {
 
         startKoin {
             androidContext(this@ApplicationClass)
-            modules(appModule)
             modules(cacheModule)
             modules(dataModule)
             modules(executorModule)

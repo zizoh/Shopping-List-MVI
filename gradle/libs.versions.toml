@@ -11,6 +11,7 @@ androidx-multidex = "2.0.1"
 androidx-lifecycle = "2.6.2"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
+decompose = "2.2.2"
 material-component = "1.11.0"
 koin-android = "3.5.3"
 koin-core = "3.5.3"
@@ -67,6 +68,8 @@ androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-te
 androidx-test-ext = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "rules" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "runner" }
+decompose-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-extensions-compose-jetpack = { module = "com.arkivanov.decompose:extensions-compose-jetpack", version.ref = "decompose" }
 google-truth = { module = "com.google.truth:truth", version.ref = "google-truth" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android" }
@@ -95,4 +98,5 @@ dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hil
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "agp" }
+kotlin-parcelize = { id = "kotlin-parcelize" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }

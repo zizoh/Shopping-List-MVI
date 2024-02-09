@@ -34,7 +34,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,14 +45,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.zizohanto.android.tobuy.R
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.presentation.models.ShoppingListWithProductsModel
-import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListViewModel
+import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListComponent
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.presentation.views.EmptyStateView
 import com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme
-import org.koin.androidx.compose.koinViewModel
 
 data class ShoppingListsContentCallbacks(
     val listCLick: (String) -> Unit,
@@ -64,13 +63,13 @@ data class ShoppingListsContentCallbacks(
 
 @Composable
 fun ShoppingListsScreen(
+    component: ShoppingListComponent,
     shouldRefreshList: Boolean,
     listCLick: (String) -> Unit = {},
-    viewModel: ShoppingListViewModel = koinViewModel()
 ) {
-    val state by viewModel.viewState.collectAsState(initial = ShoppingListViewState())
-    if (shouldRefreshList) viewModel.loadShoppingLists()
-    with(viewModel) {
+    val state by component.viewState.subscribeAsState()
+    if (shouldRefreshList) component.loadShoppingLists()
+    with(component) {
         ShoppingListsContent(
             state,
             ShoppingListsContentCallbacks(

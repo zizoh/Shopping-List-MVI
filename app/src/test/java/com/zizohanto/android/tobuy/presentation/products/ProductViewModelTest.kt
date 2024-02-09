@@ -2,7 +2,7 @@ package com.zizohanto.android.tobuy.presentation.products
 
 import androidx.lifecycle.SavedStateHandle
 import com.zizohanto.android.tobuy.presentation.mvi.products.ProductStateMachine
-import com.zizohanto.android.tobuy.presentation.mvi.products.ProductViewModel
+import com.zizohanto.android.tobuy.presentation.mvi.products.ProductsComponent
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.utilities.DataFactory.getProductModel
 import com.zizohanto.android.tobuy.utilities.DataFactory.getRandomString
@@ -27,11 +27,11 @@ class ProductViewModelTest {
 
     private val productStateMachine = mockk<ProductStateMachine>(relaxed = true)
 
-    private lateinit var viewModel: ProductViewModel
+    private lateinit var viewModel: ProductsComponent
 
     @Before
     fun setUp() {
-        viewModel = ProductViewModel(productStateMachine, SavedStateHandle())
+        viewModel = ProductsComponent(productStateMachine, SavedStateHandle())
     }
 
     @Test

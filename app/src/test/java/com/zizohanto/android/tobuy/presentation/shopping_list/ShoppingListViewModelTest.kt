@@ -1,6 +1,6 @@
 package com.zizohanto.android.tobuy.presentation
 
-import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListViewModel
+import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListComponent
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewStateMachine
 import com.zizohanto.android.tobuy.utilities.DataFactory.getRandomString
@@ -25,11 +25,11 @@ class ShoppingListViewModelTest {
 
     private val shoppingListStateMachine = mockk<ShoppingListViewStateMachine>(relaxed = true)
 
-    private lateinit var viewModel: ShoppingListViewModel
+    private lateinit var viewModel: ShoppingListComponent
 
     @Before
     fun setUp() {
-        viewModel = ShoppingListViewModel(shoppingListStateMachine)
+        viewModel = ShoppingListComponent(shoppingListStateMachine)
     }
 
     @Test

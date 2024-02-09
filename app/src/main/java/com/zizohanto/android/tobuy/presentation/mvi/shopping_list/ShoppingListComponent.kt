@@ -1,30 +1,46 @@
 package com.zizohanto.android.tobuy.presentation.mvi.shopping_list
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.Value
 import com.zizohanto.android.tobuy.presentation.mvi.MVIPresenter
+import com.zizohanto.android.tobuy.presentation.mvi.asValue
+import com.zizohanto.android.tobuy.presentation.mvi.coroutineScope
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewIntent
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class ShoppingListViewModel(
-    private val shoppingListStateMachine: ShoppingListStateMachine
-) : ViewModel(), MVIPresenter<ShoppingListViewState, ShoppingListViewIntent> {
+class ShoppingListComponent(
+    componentContext: ComponentContext
+) : MVIPresenter<ShoppingListViewState, ShoppingListViewIntent>,
+    KoinComponent,
+    ComponentContext by componentContext {
 
-    override val viewState: Flow<ShoppingListViewState>
-        get() = shoppingListStateMachine.viewState
+    private val shoppingListStateMachine: ShoppingListStateMachine by inject(
+        named("shoppingListStateMachine")
+    )
+
+    private val coroutineScope = coroutineScope()
+
+    override val viewState: Value<ShoppingListViewState>
+        get() = shoppingListStateMachine.viewState.asValue(
+            initialValue = ShoppingListViewState(),
+            lifecycle = lifecycle
+        )
 
     init {
-        shoppingListStateMachine.processor.launchIn(viewModelScope)
+        shoppingListStateMachine.processor.launchIn(coroutineScope)
         loadShoppingLists()
     }
 
     override fun processIntent(intents: Flow<ShoppingListViewIntent>) {
         shoppingListStateMachine
             .processIntents(intents)
-            .launchIn(viewModelScope)
+            .launchIn(coroutineScope)
     }
 
     fun onListDeleted(shoppingListId: String) {

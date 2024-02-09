@@ -1,29 +1,43 @@
 package com.zizohanto.android.tobuy.presentation.mvi.products
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.Value
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.presentation.mvi.MVIPresenter
+import com.zizohanto.android.tobuy.presentation.mvi.asValue
+import com.zizohanto.android.tobuy.presentation.mvi.coroutineScope
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class ProductViewModel(
-    private val productStateMachine: ProductStateMachine,
-    savedStateHandle: SavedStateHandle
-) : ViewModel(), MVIPresenter<ProductsViewState, ProductsViewIntent> {
+class ProductsComponent(
+    componentContext: ComponentContext,
+    savedStateHandle: SavedStateHandle? = null
+) : MVIPresenter<ProductsViewState, ProductsViewIntent>,
+    KoinComponent,
+    ComponentContext by componentContext {
 
-    override val viewState: Flow<ProductsViewState>
-        get() = productStateMachine.viewState
+    private val productStateMachine: ProductStateMachine by inject(named("productStateMachine"))
+
+    private val coroutineScope = coroutineScope()
+
+    override val viewState: Value<ProductsViewState>
+        get() = productStateMachine.viewState.asValue(
+            initialValue = ProductsViewState(),
+            lifecycle = lifecycle
+        )
 
     init {
-        productStateMachine.processor.launchIn(viewModelScope)
+        productStateMachine.processor.launchIn(coroutineScope)
         processIntent(
             ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts(
-                savedStateHandle.get<String>(SHOPPING_LIST_ID_SAVED_STATE_KEY).orEmpty()
+                savedStateHandle?.get<String>(SHOPPING_LIST_ID_SAVED_STATE_KEY).orEmpty()
             )
         )
     }
@@ -31,7 +45,7 @@ class ProductViewModel(
     override fun processIntent(intents: Flow<ProductsViewIntent>) {
         productStateMachine
             .processIntents(intents)
-            .launchIn(viewModelScope)
+            .launchIn(coroutineScope)
     }
 
     fun addNewProduct(shoppingListId: String, newProductPosition: Int) {
