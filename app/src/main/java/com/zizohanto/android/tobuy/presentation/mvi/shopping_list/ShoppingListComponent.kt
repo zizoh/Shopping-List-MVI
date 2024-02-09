@@ -15,7 +15,8 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
 class ShoppingListComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    val onShoppingListClicked: (String) -> Unit
 ) : MVIPresenter<ShoppingListViewState, ShoppingListViewIntent>,
     KoinComponent,
     ComponentContext by componentContext {

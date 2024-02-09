@@ -64,8 +64,7 @@ data class ShoppingListsContentCallbacks(
 @Composable
 fun ShoppingListsScreen(
     component: ShoppingListComponent,
-    shouldRefreshList: Boolean,
-    listCLick: (String) -> Unit = {},
+    shouldRefreshList: Boolean
 ) {
     val state by component.viewState.subscribeAsState()
     if (shouldRefreshList) component.loadShoppingLists()
@@ -74,7 +73,7 @@ fun ShoppingListsScreen(
             state,
             ShoppingListsContentCallbacks(
                 listCLick = { shoppingListId ->
-                    listCLick.invoke(shoppingListId)
+                    onShoppingListClicked.invoke(shoppingListId)
                 },
                 listDelete = { shoppingListId ->
                     onListDeleted(shoppingListId)

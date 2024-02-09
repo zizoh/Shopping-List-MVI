@@ -1,6 +1,5 @@
 package com.zizohanto.android.tobuy.presentation.mvi.products
 
-import androidx.lifecycle.SavedStateHandle
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
@@ -18,7 +17,7 @@ import org.koin.core.qualifier.named
 
 class ProductsComponent(
     componentContext: ComponentContext,
-    savedStateHandle: SavedStateHandle? = null
+    shoppingListId: String
 ) : MVIPresenter<ProductsViewState, ProductsViewIntent>,
     KoinComponent,
     ComponentContext by componentContext {
@@ -36,9 +35,7 @@ class ProductsComponent(
     init {
         productStateMachine.processor.launchIn(coroutineScope)
         processIntent(
-            ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts(
-                savedStateHandle?.get<String>(SHOPPING_LIST_ID_SAVED_STATE_KEY).orEmpty()
-            )
+            ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts(shoppingListId)
         )
     }
 
@@ -71,9 +68,5 @@ class ProductsComponent(
 
     private fun processIntent(intent: ProductsViewIntent) {
         processIntent(flowOf(intent))
-    }
-
-    companion object {
-        private const val SHOPPING_LIST_ID_SAVED_STATE_KEY = "shoppingListId"
     }
 }

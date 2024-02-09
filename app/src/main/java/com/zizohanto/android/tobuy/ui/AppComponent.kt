@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.popTo
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.zizohanto.android.tobuy.presentation.mvi.products.ProductsComponent
@@ -43,10 +44,19 @@ class DefaultAppComponent(
     ): AppComponent.Child =
         when (config) {
             is Config.ShoppingList -> {
-                AppComponent.Child.ShoppingList(ShoppingListComponent(componentContext))
+                AppComponent.Child.ShoppingList(
+                    ShoppingListComponent(componentContext) { shoppingListId ->
+                        navigation.push(Config.Products(shoppingListId))
+                    }
+                )
             }
             is Config.Products -> {
-                AppComponent.Child.Products(ProductsComponent(componentContext))
+                AppComponent.Child.Products(
+                    ProductsComponent(
+                        componentContext,
+                        config.shoppingListId
+                    )
+                )
             }
         }
 
