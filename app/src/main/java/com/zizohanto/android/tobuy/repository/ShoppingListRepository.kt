@@ -51,11 +51,9 @@ class ShoppingListRepositoryImpl(
         return flow {
             val listWithProducts = shoppingListCache.getShoppingListWithProductsOrNull(id)
             val shoppingList = listWithProducts?.shoppingList ?: DataFactory.createShoppingList(id)
-            val products = if (listWithProducts?.products?.isEmpty() == true) {
-                addNewProduct(id)
-            } else {
-                listWithProducts?.products!!
-            }
+            val products = listWithProducts?.products.takeIf {
+                it?.isNotEmpty() == true
+            } ?: addNewProduct(id)
             emit(ShoppingListWithProducts(shoppingList, products))
         }
     }
