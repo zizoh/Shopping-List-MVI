@@ -17,7 +17,8 @@ import org.koin.core.qualifier.named
 
 class ProductsComponent(
     componentContext: ComponentContext,
-    shoppingListId: String
+    shoppingListId: String,
+    val onBackPressed: () -> Unit
 ) : MVIPresenter<ProductsViewState, ProductsViewIntent>,
     KoinComponent,
     ComponentContext by componentContext {

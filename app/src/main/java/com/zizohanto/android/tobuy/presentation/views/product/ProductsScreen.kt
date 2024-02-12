@@ -65,14 +65,13 @@ data class ProductsContentCallbacks(
 @Composable
 fun ProductsScreen(
     component: ProductsComponent,
-    modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     val state by component.viewState.subscribeAsState()
     ProductsContent(
         state,
         ProductsContentCallbacks(
-            onBackPressed,
+            component.onBackPressed,
             component::updateShoppingList,
             component::addNewProduct,
             component::updateProduct,
