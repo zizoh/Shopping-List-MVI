@@ -2,8 +2,8 @@ package com.zizohanto.android.tobuy.usecase
 
 import com.zizohanto.android.tobuy.executor.PostExecutionThread
 import com.zizohanto.android.tobuy.repository.ShoppingListRepository
-import com.zizohanto.android.tobuy.usecase.base.FlowUseCase
 import com.zizohanto.android.tobuy.sq.ShoppingList
+import com.zizohanto.android.tobuy.usecase.base.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 

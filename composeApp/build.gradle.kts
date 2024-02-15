@@ -1,9 +1,39 @@
 plugins {
     id(libs.plugins.android.application.get().pluginId)
-    id(libs.plugins.kotlin.android.get().pluginId)
-    id(libs.plugins.kotlin.kapt.get().pluginId)
+    id(libs.plugins.jetbrainsCompose.get().pluginId)
+    id(libs.plugins.kotlinMultiplatform.get().pluginId)
     id(libs.plugins.kotlin.parcelize.get().pluginId)
     id(libs.plugins.sqldelight.get().pluginId)
+}
+
+kotlin {
+    androidTarget {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_17.toString()
+            }
+        }
+    }
+
+    sourceSets {
+        androidMain.dependencies {
+            val composeBom = project.dependencies.platform(libs.androidx.compose.bom)
+
+            implementation(composeBom)
+            implementation(libs.androidx.compose.runtime)
+            implementation(libs.androidx.compose.ui)
+            implementation(libs.androidx.compose.ui.tooling)
+            implementation(libs.androidx.compose.ui.ui.tooling.preview)
+            implementation(libs.androidx.compose.foundation)
+            implementation(libs.androidx.compose.foundation.layout)
+            implementation(libs.androidx.compose.material)
+            implementation(libs.sqldelight)
+        }
+
+        commonMain.dependencies {
+            implementation(libs.sqldelight.runtime)
+        }
+    }
 }
 
 android {
@@ -17,10 +47,6 @@ android {
         versionName = libs.versions.version.name.get()
         multiDexEnabled = true
         testInstrumentationRunner = "com.zizohanto.android.tobuy.utilities.CustomTestRunner"
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     compileOptions {

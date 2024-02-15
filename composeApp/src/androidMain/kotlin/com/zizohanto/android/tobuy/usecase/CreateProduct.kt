@@ -3,8 +3,8 @@ package com.zizohanto.android.tobuy.usecase
 import com.zizohanto.android.tobuy.exception.requireParams
 import com.zizohanto.android.tobuy.executor.PostExecutionThread
 import com.zizohanto.android.tobuy.repository.ProductRepository
-import com.zizohanto.android.tobuy.usecase.base.FlowUseCase
 import com.zizohanto.android.tobuy.sq.Product
+import com.zizohanto.android.tobuy.usecase.base.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 

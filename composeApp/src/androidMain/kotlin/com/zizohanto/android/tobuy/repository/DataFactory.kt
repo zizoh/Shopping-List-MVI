@@ -1,8 +1,8 @@
 package com.zizohanto.android.tobuy.repository
 
-import com.zizohanto.android.tobuy.utils.DateUtils
 import com.zizohanto.android.tobuy.sq.Product
 import com.zizohanto.android.tobuy.sq.ShoppingList
+import com.zizohanto.android.tobuy.utils.DateUtils
 import java.util.UUID
 
 object DataFactory {
