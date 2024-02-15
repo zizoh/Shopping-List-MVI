@@ -2,6 +2,7 @@ package com.zizohanto.android.tobuy.presentation.mvi.products
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.backhandler.BackCallback
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
 import com.zizohanto.android.tobuy.presentation.mvi.MVIPresenter
 import com.zizohanto.android.tobuy.presentation.mvi.asValue
@@ -25,6 +26,8 @@ class ProductsComponent(
 
     private val productStateMachine: ProductStateMachine by inject(named("productStateMachine"))
 
+    private val backCallback = BackCallback { onBackPressed.invoke() }
+
     private val coroutineScope = coroutineScope()
 
     override val viewState: Value<ProductsViewState>
@@ -34,6 +37,7 @@ class ProductsComponent(
         )
 
     init {
+        backHandler.register(backCallback)
         productStateMachine.processor.launchIn(coroutineScope)
         processIntent(
             ProductsViewIntent.ProductViewIntent.LoadShoppingListWithProducts(shoppingListId)

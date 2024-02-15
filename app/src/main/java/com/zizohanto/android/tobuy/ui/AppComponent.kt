@@ -3,6 +3,7 @@ package com.zizohanto.android.tobuy.ui
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
@@ -57,7 +58,11 @@ class DefaultAppComponent(
                         componentContext,
                         config.shoppingListId
                     ) {
-                        navigation.pop()
+                        navigation.pop {
+                            val shoppingList =
+                                stack.active.instance as? AppComponent.Child.ShoppingList
+                            shoppingList?.component?.loadShoppingLists()
+                        }
                     }
                 )
             }
