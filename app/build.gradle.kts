@@ -52,7 +52,7 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(project(":composeApp"))
+    implementation(project(":shared"))
 
     val composeBom = platform(libs.androidx.compose.bom)
 
