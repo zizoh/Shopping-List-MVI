@@ -1,4 +1,3 @@
 rootProject.name = "Shopping List"
-include(
-    ":composeApp"
-)
+include(":app")
+include(":composeApp")

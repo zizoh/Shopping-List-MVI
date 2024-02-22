@@ -290,7 +290,7 @@ private fun BoxScope.ShoppingListFloatingActionButton(create: () -> Unit) {
 fun ShoppingListPreview() {
     val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
     val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
-    ShoppingListTheme {
+    com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme {
         val listWithProducts = listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
         ShoppingListsContent(
             ShoppingListViewState(listWithProducts = listWithProducts),

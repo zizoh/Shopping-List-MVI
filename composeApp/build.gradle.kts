@@ -1,5 +1,5 @@
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.android.library.get().pluginId)
     id(libs.plugins.jetbrainsCompose.get().pluginId)
     id(libs.plugins.kotlinMultiplatform.get().pluginId)
     id(libs.plugins.kotlin.parcelize.get().pluginId)
@@ -38,13 +38,11 @@ kotlin {
 
 android {
     namespace = "com.zizohanto.android.tobuy"
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        applicationId = "com.zizohanto.android.tobuy"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
-        versionCode = libs.versions.version.code.get().toInt()
-        versionName = libs.versions.version.name.get()
         multiDexEnabled = true
         testInstrumentationRunner = "com.zizohanto.android.tobuy.utilities.CustomTestRunner"
     }

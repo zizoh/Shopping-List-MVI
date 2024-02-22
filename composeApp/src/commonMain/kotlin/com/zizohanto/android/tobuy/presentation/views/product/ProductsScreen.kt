@@ -273,7 +273,7 @@ fun ProductsViewPreview() {
     val state = ProductsViewState(
         ShoppingListWithProductsModel(shoppingList, listOf(product))
     )
-    ShoppingListTheme {
+    com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme {
         ProductsContent(
             state,
             ProductsContentCallbacks({}, {}, { _, _ -> }, {}, {}),
