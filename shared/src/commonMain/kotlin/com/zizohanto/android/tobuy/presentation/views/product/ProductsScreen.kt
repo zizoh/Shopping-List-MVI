@@ -2,7 +2,6 @@
 
 package com.zizohanto.android.tobuy.presentation.views.product
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,17 +41,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
-import com.zizohanto.android.tobuy.R
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
-import com.zizohanto.android.tobuy.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.presentation.mvi.products.ProductsComponent
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewState
-import com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme
 
 data class ProductsContentCallbacks(
     val onBackPressed: () -> Unit,
@@ -153,7 +147,7 @@ fun ShoppingListTitle(
     TextField(
         value = shoppingListTitle,
         placeholder = {
-            Text(stringResource(R.string.title))
+            Text("Title")
         },
         textStyle = MaterialTheme.typography.titleMedium,
         colors = TextFieldDefaults.colors(
@@ -187,7 +181,7 @@ fun RowProduct(
         TextField(
             value = productName,
             placeholder = {
-                Text(stringResource(R.string.product))
+                Text("Product")
             },
             textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
@@ -222,7 +216,7 @@ fun RowProduct(
             ) {
                 Icon(
                     imageVector = Icons.Default.Clear,
-                    contentDescription = stringResource(R.string.cont_desc_remove_button)
+                    contentDescription = "Remove button"
                 )
             }
         }
@@ -250,34 +244,10 @@ fun AddProductButton(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.add_product),
+                text = "Add product",
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
             )
         }
-    }
-}
-
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    name = "DefaultPreviewDark"
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    name = "DefaultPreviewLight"
-)
-@Composable
-fun ProductsViewPreview() {
-    val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
-    val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
-    val state = ProductsViewState(
-        ShoppingListWithProductsModel(shoppingList, listOf(product))
-    )
-    com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme {
-        ProductsContent(
-            state,
-            ProductsContentCallbacks({}, {}, { _, _ -> }, {}, {}),
-            modifier = Modifier,
-        )
     }
 }

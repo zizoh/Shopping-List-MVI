@@ -1,7 +1,6 @@
 package com.zizohanto.android.tobuy.presentation.views
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -12,19 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.zizohanto.android.tobuy.R
-import com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun EmptyStateView(
     title: String,
     caption: String,
-    imageResId: Int,
+    imageResId: String?,
     shouldShowButton: Boolean,
     modifier: Modifier = Modifier,
     retryClick: () -> Unit
@@ -34,10 +31,10 @@ fun EmptyStateView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (imageResId != -1) {
+        if (!imageResId.isNullOrEmpty()) {
             Image(
                 painter = painterResource(imageResId),
-                contentDescription = stringResource(id = R.string.cont_desc_empty_state_icon),
+                contentDescription = "Empty state icon",
                 modifier = Modifier
                     .size(width = 100.dp, height = 100.dp)
             )
@@ -62,22 +59,8 @@ fun EmptyStateView(
                 modifier = Modifier
                     .padding(top = 16.dp)
             ) {
-                Text(text = stringResource(id = R.string.retry))
+                Text(text = "Retry")
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun EmptyStateViewPreview() {
-    ShoppingListTheme {
-        EmptyStateView(
-            "An error occurred",
-            "You don’t have any data right now",
-            imageResId = R.drawable.error,
-            shouldShowButton = true,
-            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-        ) {}
     }
 }

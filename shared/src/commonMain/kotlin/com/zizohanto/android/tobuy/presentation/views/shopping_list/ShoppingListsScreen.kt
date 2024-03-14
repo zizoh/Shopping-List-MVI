@@ -2,7 +2,6 @@
 
 package com.zizohanto.android.tobuy.presentation.views.shopping_list
 
-import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -41,18 +40,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
-import com.zizohanto.android.tobuy.R
-import com.zizohanto.android.tobuy.presentation.models.ProductsViewItem
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.zizohanto.android.tobuy.presentation.models.ShoppingListWithProductsModel
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListComponent
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.mvi.ShoppingListViewState
 import com.zizohanto.android.tobuy.presentation.views.EmptyStateView
-import com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
 data class ShoppingListsContentCallbacks(
     val listCLick: (String) -> Unit,
@@ -99,7 +94,7 @@ fun ShoppingListsContent(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(stringResource(R.string.shopping_list_frag_toolbar_title))
+                    Text("Shopping List")
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -121,9 +116,9 @@ fun ShoppingListsContent(
                 }
                 if (state.error != null) {
                     EmptyStateView(
-                        stringResource(R.string.an_error_occurred),
+                        "An error occurred.",
                         state.error,
-                        R.drawable.error,
+                        "drawable/error.xml",
                         shouldShowButton = true,
                         modifier = Modifier.fillMaxSize()
                     ) {
@@ -135,9 +130,9 @@ fun ShoppingListsContent(
                         state.openProductScreenEvent.consume(callbacks.listCLick::invoke)
                     } else {
                         EmptyStateView(
-                            stringResource(R.string.no_data),
+                            "No shopping list added yet.",
                             "",
-                            R.drawable.empty_basket,
+                            "drawable/empty_basket.xml",
                             shouldShowButton = false,
                             modifier = Modifier.fillMaxSize()
                         ) {}
@@ -177,6 +172,7 @@ fun ShoppingListTitle(
     )
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ProductItem(
     productName: String
@@ -186,8 +182,8 @@ fun ProductItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_baseline_check_box_outline_blank_24),
-            contentDescription = stringResource(id = R.string.cont_desc_select_button),
+            painter = painterResource("drawable/ic_baseline_check_box_outline_blank_24.xml"),
+            contentDescription = "Select button",
         )
         Text(
             text = productName,
@@ -236,7 +232,7 @@ fun ShoppingListItem(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text(stringResource(R.string.delete_shopping_list)) },
+            title = { Text("Delete Shopping List?") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -244,14 +240,14 @@ fun ShoppingListItem(
                         showDialog = false
                     }
                 ) {
-                    Text(stringResource(R.string.delete))
+                    Text("Delete")
                 }
             },
             dismissButton = {
                 Button(
                     onClick = { showDialog = false }
                 ) {
-                    Text(stringResource(R.string.cancel))
+                    Text("Cancel")
                 }
             }
         )
@@ -273,28 +269,7 @@ private fun BoxScope.ShoppingListFloatingActionButton(create: () -> Unit) {
     ) {
         Icon(
             Icons.Filled.Add,
-            stringResource(R.string.cont_desc_add_new_shopping_list)
-        )
-    }
-}
-
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    name = "DefaultPreviewDark"
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    name = "DefaultPreviewLight"
-)
-@Composable
-fun ShoppingListPreview() {
-    val shoppingList = ProductsViewItem.ShoppingListModel("", "Weekend", 0.0, 0L, 0L)
-    val product = ProductsViewItem.ProductModel("", "", "Vegetables", 19.59, 1)
-    com.zizohanto.android.tobuy.ui.theme.ShoppingListTheme {
-        val listWithProducts = listOf(ShoppingListWithProductsModel(shoppingList, listOf(product)))
-        ShoppingListsContent(
-            ShoppingListViewState(listWithProducts = listWithProducts),
-            ShoppingListsContentCallbacks({}, {}, {}, {})
+            "Add New Shopping List"
         )
     }
 }

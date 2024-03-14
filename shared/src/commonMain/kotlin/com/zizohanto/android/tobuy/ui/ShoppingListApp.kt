@@ -1,9 +1,9 @@
 package com.zizohanto.android.tobuy.ui
 
 import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.zizohanto.android.tobuy.presentation.views.product.ProductsScreen
 import com.zizohanto.android.tobuy.presentation.views.shopping_list.ShoppingListsScreen
 

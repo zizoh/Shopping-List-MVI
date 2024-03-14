@@ -1,3 +1,5 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
 plugins {
     id(libs.plugins.android.library.get().pluginId)
     id(libs.plugins.jetbrainsCompose.get().pluginId)
@@ -15,22 +17,45 @@ kotlin {
         }
     }
 
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "shared"
+            export("com.arkivanov.decompose:decompose:${libs.versions.decompose}")
+            export("com.arkivanov.essenty:lifecycle:1.3.0")
+        }
+    }
+
     sourceSets {
         androidMain.dependencies {
-            val composeBom = project.dependencies.platform(libs.androidx.compose.bom)
+            implementation(libs.decompose.extensions.compose.jetpack)
+            implementation(libs.material.component)
+            implementation(libs.sqldelight.android.driver)
+        }
 
-            implementation(composeBom)
-            implementation(libs.androidx.compose.runtime)
-            implementation(libs.androidx.compose.ui)
-            implementation(libs.androidx.compose.ui.tooling)
-            implementation(libs.androidx.compose.ui.ui.tooling.preview)
-            implementation(libs.androidx.compose.foundation)
-            implementation(libs.androidx.compose.foundation.layout)
-            implementation(libs.androidx.compose.material)
-            implementation(libs.sqldelight)
+        appleMain.dependencies {
+            implementation(libs.sqldelight.native.driver)
         }
 
         commonMain.dependencies {
+            val composeBom = project.dependencies.platform(libs.androidx.compose.bom)
+
+            implementation(composeBom)
+
+            @OptIn(ExperimentalComposeLibrary::class)
+            implementation(compose.components.resources)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.runtime)
+            implementation(compose.ui)
+            implementation(libs.decompose.decompose)
+            implementation(libs.decompose.decompose.ios)
+            implementation(libs.decompose.extensions.compose.jetbrains)
+            implementation(libs.koin.core)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.sqldelight.runtime)
         }
     }
@@ -39,6 +64,7 @@ kotlin {
 android {
     namespace = "com.zizohanto.android.tobuy"
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
@@ -82,45 +108,4 @@ sqldelight {
             packageName.set("com.zizohanto.android.tobuy.sq")
         }
     }
-}
-
-dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
-    val composeBom = platform(libs.androidx.compose.bom)
-
-    implementation(composeBom)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.ui.tooling.preview)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.multidex)
-    implementation(libs.androidx.activity)
-    implementation(libs.decompose.decompose)
-    implementation(libs.decompose.extensions.compose.jetpack)
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.koin.core)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.material.component)
-    implementation(libs.sqldelight)
-
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk.android)
-    testImplementation(libs.mockk.agent)
-    testImplementation(libs.androidx.test.runner)
-
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    androidTestImplementation(composeBom)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.android.arch.core.testing)
-    androidTestImplementation(libs.androidx.test.ext)
 }
