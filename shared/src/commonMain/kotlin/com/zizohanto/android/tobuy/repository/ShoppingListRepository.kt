@@ -22,7 +22,8 @@ interface ShoppingListRepository {
 
 class ShoppingListRepositoryImpl(
     private val shoppingListCache: ShoppingListCache,
-    private val productCache: ProductCache
+    private val productCache: ProductCache,
+    private val idProvider: IDProvider
 ) : ShoppingListRepository {
 
     override suspend fun saveShoppingList(shoppingList: ShoppingList) {
@@ -44,7 +45,7 @@ class ShoppingListRepositoryImpl(
     }
 
     override fun createShoppingList(): Flow<ShoppingList> {
-        return flowOf(DataFactory.createShoppingList())
+        return flowOf(DataFactory.createShoppingList(idProvider.getId()))
     }
 
     override fun getShoppingListWithProducts(id: String): Flow<ShoppingListWithProducts> {

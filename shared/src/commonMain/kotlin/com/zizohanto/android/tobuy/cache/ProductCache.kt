@@ -1,6 +1,7 @@
 package com.zizohanto.android.tobuy.cache
 
 import com.zizohanto.android.tobuy.repository.DataFactory.createProduct
+import com.zizohanto.android.tobuy.repository.IDProvider
 import com.zizohanto.android.tobuy.sq.Product
 import com.zizohanto.android.tobuy.sq.ProductQueries
 
@@ -16,7 +17,10 @@ interface ProductCache {
     ): List<Product>
 }
 
-class ProductCacheImpl(private val queries: ProductQueries) : ProductCache {
+class ProductCacheImpl(
+    private val queries: ProductQueries,
+    private val idProvider: IDProvider
+) : ProductCache {
 
     override suspend fun saveProduct(product: Product) {
         with(product) {
@@ -68,7 +72,7 @@ class ProductCacheImpl(private val queries: ProductQueries) : ProductCache {
         val position: Int? =
             queries.getLastPosition(shoppingListId).executeAsOneOrNull()?.MAX?.toInt()
         val updatedPosition = position?.plus(1) ?: 0
-        return createProduct(shoppingListId, updatedPosition)
+        return createProduct(idProvider.getId(), shoppingListId, updatedPosition)
     }
 
     override suspend fun getProducts(id: String): List<Product> {
@@ -111,7 +115,7 @@ class ProductCacheImpl(private val queries: ProductQueries) : ProductCache {
         val allProducts = queries.getProducts(shoppingListId).executeAsList()
         val lastProductIsNotEmpty = allProducts.lastOrNull()?.name?.isNotEmpty() ?: false
         val newList = if (allProducts.isEmpty() || lastProductIsNotEmpty) {
-            val product = createProduct(shoppingListId, newProductPosition)
+            val product = createProduct(idProvider.getId(), shoppingListId, newProductPosition)
             val updatedProducts = allProducts.mapIndexed { index, model ->
                 val isBelowNewProduct = index >= newProductPosition
                 if (isBelowNewProduct) model.copy(position = model.position + 1) else model

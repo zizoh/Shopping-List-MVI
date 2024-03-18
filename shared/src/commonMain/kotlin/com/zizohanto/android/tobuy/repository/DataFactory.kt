@@ -3,13 +3,12 @@ package com.zizohanto.android.tobuy.repository
 import com.zizohanto.android.tobuy.sq.Product
 import com.zizohanto.android.tobuy.sq.ShoppingList
 import com.zizohanto.android.tobuy.utils.DateUtils
-import java.util.UUID
 
 object DataFactory {
     fun createShoppingList(
-        id: String = UUID.randomUUID().toString()
+        shoppingListId: String
     ) = ShoppingList(
-        id = id,
+        id = shoppingListId,
         name = "",
         budget = 0.0,
         dateCreated = DateUtils.getCurrentTime(),
@@ -17,10 +16,11 @@ object DataFactory {
     )
 
     fun createProduct(
+        productId: String,
         shoppingListId: String,
         updatedPosition: Int
     ) = Product(
-        id = UUID.randomUUID().toString(),
+        id = productId,
         shoppingListId = shoppingListId,
         position = updatedPosition.toLong(),
         name = "",

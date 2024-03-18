@@ -1,8 +1,12 @@
 package com.zizohanto.android.tobuy.di
 
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.zizohanto.android.tobuy.repository.IDProvider
 import com.zizohanto.android.tobuy.sq.ShoppingListDatabase
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import java.util.UUID
 
 actual fun platformModule() = module {
     single {
@@ -13,4 +17,10 @@ actual fun platformModule() = module {
         )
         ShoppingListDatabase(driver)
     }
+
+    singleOf(::IDProviderAndroid) { bind<IDProvider>() }
+}
+
+class IDProviderAndroid : IDProvider {
+    override fun getId() = UUID.randomUUID().toString()
 }

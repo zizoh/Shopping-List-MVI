@@ -5,6 +5,7 @@ plugins {
     id(libs.plugins.jetbrainsCompose.get().pluginId)
     id(libs.plugins.kotlinMultiplatform.get().pluginId)
     id(libs.plugins.kotlin.parcelize.get().pluginId)
+    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
     id(libs.plugins.sqldelight.get().pluginId)
 }
 

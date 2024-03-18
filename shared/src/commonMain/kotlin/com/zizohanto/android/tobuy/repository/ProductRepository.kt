@@ -29,7 +29,7 @@ class ProductRepositoryImpl(
         val shoppingList =
             shoppingListCache.getShoppingList(shoppingListId)
         if (shoppingList == null) {
-            shoppingListCache.saveShoppingList(createShoppingList(id = shoppingListId))
+            shoppingListCache.saveShoppingList(createShoppingList(shoppingListId = shoppingListId))
         } else {
             shoppingListCache.updateShoppingList(
                 shoppingList.id,

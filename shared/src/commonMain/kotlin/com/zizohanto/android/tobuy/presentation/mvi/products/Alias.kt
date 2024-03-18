@@ -6,6 +6,7 @@ import com.zizohanto.android.tobuy.presentation.mvi.ViewStateReducer
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewIntent
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewResult
 import com.zizohanto.android.tobuy.presentation.mvi.products.mvi.ProductsViewState
+import kotlin.jvm.JvmSuppressWildcards
 
 typealias ProductIntentProcessor =
         @JvmSuppressWildcards IntentProcessor<ProductsViewIntent, ProductsViewResult>

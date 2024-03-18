@@ -1,9 +1,9 @@
 package com.zizohanto.android.tobuy.presentation.event
 
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.atomicfu.atomic
 
 abstract class SingleEvent<T>(private val content: T) {
-    private val isConsumed = AtomicBoolean(false)
+    private val isConsumed = atomic(false)
     fun consume(action: (T) -> Unit) {
         if (!isConsumed.getAndSet(true)) {
             action.invoke(content)
@@ -11,7 +11,7 @@ abstract class SingleEvent<T>(private val content: T) {
     }
 
     fun reset() {
-        isConsumed.set(false)
+        isConsumed.lazySet(false)
     }
 
     val peekContent: T

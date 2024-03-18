@@ -1,7 +1,7 @@
 package com.zizohanto.android.tobuy.ext
 
 val Throwable.errorMessage: String
-    get() = message ?: localizedMessage ?: "An error occurred"
+    get() = message ?: "An error occurred"
 
 fun <T> List<T>.replaceFirst(element: T, predicate: (T) -> Boolean): List<T> {
     val items: ArrayList<T> = ArrayList(this)

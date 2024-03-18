@@ -17,6 +17,7 @@ buildscript {
     dependencies {
         classpath(libs.android.gradle.plugin)
         classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.kotlinx.atomicfu.gradle.plugin)
         classpath(libs.spotless.gradle.plugin)
     }
 }
