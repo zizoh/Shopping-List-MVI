@@ -6,7 +6,6 @@ fun KoinApplication.commonModule() {
     modules(
         cacheModule,
         dataModule,
-        executorModule,
         mapperModule,
         platformModule(),
         productModule,

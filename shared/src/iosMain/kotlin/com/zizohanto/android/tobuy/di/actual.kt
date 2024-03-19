@@ -1,8 +1,11 @@
 package com.zizohanto.android.tobuy.di
 
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
+import com.zizohanto.android.tobuy.executor.PostExecutionThread
 import com.zizohanto.android.tobuy.repository.IDProvider
 import com.zizohanto.android.tobuy.sq.ShoppingListDatabase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -15,8 +18,15 @@ actual fun platformModule() = module {
     }
 
     singleOf(::IDProviderIOS) { bind<IDProvider>() }
+    singleOf(::PostExecutionThreadIOS) { bind<PostExecutionThread>() }
 }
 
 class IDProviderIOS : IDProvider {
     override fun getId() = NSUUID().UUIDString()
+}
+
+class PostExecutionThreadIOS : PostExecutionThread {
+    override val main: CoroutineDispatcher = Dispatchers.Main
+    override val io: CoroutineDispatcher = Dispatchers.Default
+    override val default: CoroutineDispatcher = Dispatchers.Default
 }
