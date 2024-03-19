@@ -25,7 +25,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "shared"
             export("com.arkivanov.decompose:decompose:${libs.versions.decompose}")
-            export("com.arkivanov.essenty:lifecycle:1.3.0")
+            export("com.arkivanov.essenty:lifecycle:${libs.versions.essenty.lifecycle}")
         }
     }
 
@@ -41,6 +41,8 @@ kotlin {
         }
 
         commonMain.dependencies {
+            api(libs.essenty.lifecycle)
+
             val composeBom = project.dependencies.platform(libs.androidx.compose.bom)
 
             implementation(composeBom)
