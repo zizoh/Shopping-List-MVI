@@ -9,10 +9,9 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
 import com.zizohanto.android.tobuy.presentation.mvi.products.ProductsComponent
 import com.zizohanto.android.tobuy.presentation.mvi.shopping_list.ShoppingListComponent
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 interface AppComponent {
 
@@ -35,6 +34,7 @@ class DefaultAppComponent(
     override val stack: Value<ChildStack<*, AppComponent.Child>> =
         childStack(
             source = navigation,
+            serializer = Config.serializer(),
             initialConfiguration = Config.ShoppingList,
             handleBackButton = true,
             childFactory = ::child,
@@ -72,12 +72,12 @@ class DefaultAppComponent(
         navigation.popTo(index = toIndex)
     }
 
-    @Parcelize
-    private sealed interface Config : Parcelable {
-        @Parcelize
+    @Serializable
+    private sealed interface Config {
+        @Serializable
         data object ShoppingList : Config
 
-        @Parcelize
+        @Serializable
         data class Products(val shoppingListId: String) : Config
     }
 }
