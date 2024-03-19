@@ -3,13 +3,13 @@ agp = "8.2.1"
 android-minSdk = "21"
 android-compileSdk = "34"
 android-targetSdk = "34"
-atomicfu-gradle-plugin = "0.23.2"
 version-name = "1.0"
 version-code = "1"
 androidx-core-ktx = "1.12.0"
 androidx-multidex = "2.0.1"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
+atomicfu = "0.23.2"
 compose-plugin = "1.5.12"
 decompose = "2.2.2"
 decompose-experimental = "2.2.2-compose-experimental"
@@ -58,6 +58,7 @@ androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-te
 androidx-test-ext = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "rules" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "runner" }
+atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
 decompose-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-decompose-ios = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose-experimental" }
 decompose-extensions-compose-jetpack = { module = "com.arkivanov.decompose:extensions-compose-jetpack", version.ref = "decompose" }
@@ -68,7 +69,6 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-and
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-android" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlinx-atomicfu-gradle-plugin = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "atomicfu-gradle-plugin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines-android" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-test" }
@@ -90,6 +90,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
-kotlinx-atomicfu = { id = "kotlinx-atomicfu" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }

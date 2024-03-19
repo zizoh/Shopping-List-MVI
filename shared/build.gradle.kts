@@ -5,7 +5,6 @@ plugins {
     id(libs.plugins.jetbrainsCompose.get().pluginId)
     id(libs.plugins.kotlin.serialization.get().pluginId)
     id(libs.plugins.kotlinMultiplatform.get().pluginId)
-    id(libs.plugins.kotlinx.atomicfu.get().pluginId)
     id(libs.plugins.sqldelight.get().pluginId)
 }
 
@@ -52,6 +51,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.runtime)
             implementation(compose.ui)
+            implementation(libs.atomicfu)
             implementation(libs.decompose.decompose)
             implementation(libs.decompose.decompose.ios)
             implementation(libs.decompose.extensions.compose.jetbrains)
