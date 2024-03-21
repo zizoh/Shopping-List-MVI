@@ -1,0 +1,13 @@
+name: iOS Publish
+on:
+  workflow_dispatch:
+
+jobs:
+  call-kmmbridge-publish:
+    permissions:
+      contents: write
+      packages: write
+    uses: touchlab/KMMBridgeGithubWorkflow/.github/workflows/faktorybuildautoversion.yml@v1.1
+    with:
+      jvmVersion: 17
+      versionBaseProperty: LIBRARY_VERSION
