@@ -15,6 +15,7 @@ compose-plugin = "1.5.12"
 decompose = "2.2.2"
 decompose-experimental = "2.2.2-compose-experimental"
 material-component = "1.11.0"
+kmmBridge = "0.5.2"
 koin-android = "3.5.3"
 koin-core = "3.5.3"
 kotlin-compiler-extension = "1.5.6"
@@ -88,9 +89,11 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt-android" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kmmbridge = { id = "co.touchlab.kmmbridge", version.ref = "kmmBridge" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "agp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+maven-publish = { id = "maven-publish"}
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }

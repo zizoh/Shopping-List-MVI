@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE")
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -6,6 +7,8 @@ plugins {
     id(libs.plugins.kotlin.serialization.get().pluginId)
     id(libs.plugins.kotlinMultiplatform.get().pluginId)
     id(libs.plugins.sqldelight.get().pluginId)
+    id(libs.plugins.kmmbridge.get().pluginId)
+    id(libs.plugins.maven.publish.get().pluginId)
 }
 
 kotlin {
@@ -23,7 +26,8 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "ShoppingListKit"
+            isStatic = true
             export("com.arkivanov.decompose:decompose:${libs.versions.decompose}")
             export("com.arkivanov.essenty:lifecycle:${libs.versions.essenty.lifecycle}")
         }
@@ -60,6 +64,16 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.datetime)
             implementation(libs.sqldelight.runtime)
+        }
+    }
+
+    //todo consider removing if redundant
+    applyDefaultHierarchyTemplate {
+        common {
+            group("mobile") {
+                withIos()
+                withAndroidTarget()
+            }
         }
     }
 }
@@ -109,6 +123,26 @@ sqldelight {
     databases {
         create("ShoppingListDatabase") {
             packageName.set("com.zizohanto.android.tobuy.sq")
+        }
+    }
+}
+
+addGithubPackagesRepository()
+
+kmmbridge {
+    frameworkName.set("ShoppingListKit")
+    mavenPublishArtifacts()
+    spm()
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/zizoh/Shopping-List-MVI")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_PASSWORD")
+            }
         }
     }
 }
