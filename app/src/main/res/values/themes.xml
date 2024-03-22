@@ -1,5 +1,0 @@
-<resources>
-    <style name="Theme.ShoppingList" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/amber_dark</item>
-    </style>
-</resources>

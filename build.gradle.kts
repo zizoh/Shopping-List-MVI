@@ -2,6 +2,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.sqldelight) apply false
+    alias(libs.plugins.jetbrainsCompose) apply false
+    alias(libs.plugins.kmmbridge) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
 }
 
 buildscript {
@@ -14,7 +18,6 @@ buildscript {
 
     dependencies {
         classpath(libs.android.gradle.plugin)
-        classpath(libs.hilt.android.gradle.plugin)
         classpath(libs.kotlin.gradle.plugin)
         classpath(libs.spotless.gradle.plugin)
     }

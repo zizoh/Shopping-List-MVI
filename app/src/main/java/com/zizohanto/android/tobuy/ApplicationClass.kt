@@ -1,14 +1,18 @@
 package com.zizohanto.android.tobuy
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import net.danlew.android.joda.JodaTimeAndroid
+import com.zizohanto.android.tobuy.di.commonModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext.startKoin
 
-@HiltAndroidApp
 class ApplicationClass : Application() {
+
     override fun onCreate() {
         super.onCreate()
 
-        JodaTimeAndroid.init(this)
+        startKoin {
+            androidContext(this@ApplicationClass)
+            commonModule()
+        }
     }
 }
