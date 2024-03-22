@@ -11,3 +11,5 @@ jobs:
     with:
       jvmVersion: 17
       versionBaseProperty: LIBRARY_VERSION
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
