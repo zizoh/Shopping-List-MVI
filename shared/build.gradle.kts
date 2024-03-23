@@ -85,7 +85,6 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         multiDexEnabled = true
         testInstrumentationRunner = "com.zizohanto.android.tobuy.utilities.CustomTestRunner"
