@@ -27,6 +27,7 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ShoppingListKit"
+            binaryOption("bundleId", "com.zizohanto.android.tobuy.shared")
             isStatic = true
             export("com.arkivanov.decompose:decompose:${libs.versions.decompose}")
             export("com.arkivanov.essenty:lifecycle:${libs.versions.essenty.lifecycle}")
