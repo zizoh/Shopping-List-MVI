@@ -140,8 +140,8 @@ publishing {
         maven {
             url = uri("https://maven.pkg.github.com/zizoh/Shopping-List-MVI")
             credentials {
-                username = System.getenv("GITHUB_USERNAME")
-                password = System.getenv("GITHUB_PASSWORD")
+                username = project.findProperty("GITHUB_USERNAME") as String?
+                password = project.findProperty("GITHUB_PASSWORD") as String?
             }
         }
     }
