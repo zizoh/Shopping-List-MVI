@@ -2,8 +2,8 @@
 import PackageDescription
 
 // BEGIN KMMBRIDGE VARIABLES BLOCK (do not edit)
-let remoteKotlinUrl = "https://maven.pkg.github.com/zizoh/Shopping-List-MVI/ShoppingList/shared-kmmbridge/unspecified/shared-kmmbridge-unspecified.zip"
-let remoteKotlinChecksum = "0672bda61a948c7507a950facab792b4475ca56762dadd3c231225294d7c0718"
+let remoteKotlinUrl = "https://maven.pkg.github.com/zizoh/Shopping-List-MVI/com/zizohanto/android/tobuy/shared-kmmbridge/0.2/shared-kmmbridge-0.2.zip"
+let remoteKotlinChecksum = "48ff3b1598ee5f49d3378e62d8687b0721bd981b7fdbd8d8e837e9a9b40b1948"
 let packageName = "ShoppingListKit"
 // END KMMBRIDGE BLOCK
 
